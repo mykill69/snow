@@ -51,7 +51,7 @@
 
                                     <!-- Button Container -->
                                     <div class="d-flex">
-                                        <button class="btn btn-default bg-warning btn-hover btn-sm me-2 mr-2">
+                                        <button class="btn btn-default bg-warning btn-hover btn-sm me-2 mr-2" data-toggle="tab"  id="resolved-tab" href="#resolved" role="tab">
                                             <i class="fas fa-smile"></i><span> Follow-up Survey:</span> 
                                             <span class="fw-bold">{{ $mypendingSurveyCount }}</span>
                                         </button>

@@ -182,8 +182,8 @@
                     <div class="btn-group">
                         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
                             aria-expanded="false">
-                            <i class="fas fa-cogs"></i>
-                            <span class="d-none d-sm-inline"> Settings</span>
+                            <i class="fas fa-cogs"></i> 
+                            <span class="d-none d-sm-inline">Settings</span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-right">
                             @if (auth()->check() && auth()->user()->role !== 'Administrator')
@@ -247,7 +247,6 @@
     <script src="{{ asset('template/plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
     
 
-    
 <script>
         @if (Session::has('error'))
             toastr.options = {

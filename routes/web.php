@@ -70,7 +70,7 @@ Route::group(['middleware'=>['guest']],function(){
     Route::put('/users/update/{id}', [UserController::class, 'userUpdate'])->name('userUpdate');
     Route::put('/users/update-pic/{id}', [UserController::class, 'updateProfilePic'])->name('updateProfilePic');
 
-
+    Route::get('/search-suggestions', [AccessController::class, 'suggestions'])->name('search.suggestions');
 
     //access pages for users
     Route::get('/home', [AccessController::class, 'home'])->name('home');

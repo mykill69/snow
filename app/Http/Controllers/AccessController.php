@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\TicketDtl;
 use App\Models\Survey;
 use App\Models\Logs;
+use App\Models\Article;
 use App\Models\Comments;
 use App\Mail\TicketSubmittedMail;
 use Illuminate\Support\Facades\DB;
@@ -39,6 +40,30 @@ public function home()
 
     return view('access.home', compact('tickets', 'allTickets', 'user', 'pendingSurveyCount','overallUserTicket'));
 }
+
+public function suggestions(Request $request)
+{
+    $query = $request->get('query', '');
+
+    $tickets = TicketDtl::where('ticket_no', 'like', "%$query%")
+        ->orWhere('category', 'like', "%$query%")
+        ->orWhere('sub_cat', 'like', "%$query%")
+        ->orWhere('subject', 'like', "%$query%")
+        ->limit(5)
+        ->get();
+
+    $articles = Article::where('title', 'like', "%$query%")
+        ->orWhere('content', 'like', "%$query%")
+        ->limit(5)
+        ->get();
+
+    return response()->json([
+        'tickets' => $tickets,
+        'articles' => $articles,
+    ]);
+}
+
+
 
     public function requestForm()
     {

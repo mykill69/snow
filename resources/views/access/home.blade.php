@@ -1,4 +1,6 @@
 @extends('access.layout')
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 @section('body')
     <div class="divider-wrapper mb-5" style="width: 100%; ">
         <div class="divider-wave-bg position-relative"
@@ -49,19 +51,20 @@
             </svg>
         </div>
 
-        <div class="d-flex justify-content-center">
-            <div style="width: 100%; max-width: 900px;">
-                <form class="position-relative">
-                    <div class="input-group shadow rounded" style="border: 1px solid lightgray;">
-                        <input type="search" name="search" class="form-control form-control-lg bg-white text-dark"
-                            placeholder="Search by ticket number or subject..." style="height: 48px; border: none;">
-                        <button type="submit" class="btn btn-primary px-4" style="height: 48px;">
-                            <i class="fas fa-search"></i>
-                        </button>
+        <div class="d-flex justify-content-center my-4">
+            <div style="width: 100%; max-width: 1000px;">
+                <div class="position-relative">
+                    <input type="text" id="search-input" class="form-control form-control-lg shadow-sm rounded-pill px-4"
+                        placeholder="🔍 Search tickets or articles…" style="background-color: white;" />
+
+                    <!-- Suggestions dropdown -->
+                    <div id="suggestions" class="list-group position-absolute w-100 rounded shadow-sm"
+                        style="top: 105%; z-index: 1000; display: none; background: #ffffff; max-height: 300px; overflow-y: auto;">
                     </div>
-                </form>
+                </div>
             </div>
         </div>
+
 
         <div class="d-flex pt-2" style="min-height: 300px;">
             <div class="divider-content-left flex-grow-1" style="flex-basis: 66.66%; padding: 20px;">
@@ -165,7 +168,7 @@
                         <div class="tab-content" id="ticketStatusTabsContent">
                             <div class="tab-pane fade show active" id="active" role="tabpanel"
                                 aria-labelledby="active-tab">
-                                @if ($tickets->where('status', 2)->count())
+                                @if ($tickets->where('status', 1)->count())
                                     <table class="table table-bordered text-sm text-center mb-0">
                                         <thead class="table-light">
                                             <tr>
@@ -734,7 +737,8 @@
                             class="btn btn-lg w-100 d-flex text-md flex-column text-bold text-start py-1 px-3"
                             style="background-color: #BBE6E4;">
                             Ticket Created
-                            <span class="badge text-black mt-1 text-xl" style="background-color: #F0F6F6;">{{ $overallUserTicket }} </span>
+                            <span class="badge text-black mt-1 text-xl"
+                                style="background-color: #F0F6F6;">{{ $overallUserTicket }} </span>
                         </a>
                     </div>
 
@@ -782,7 +786,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script src="{{ asset('template/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
         <script>
             function toggleAdminList(id) {
@@ -813,4 +817,54 @@
             }
         </script>
 
+
+
+
+
+        <script>
+            $(function() {
+                $('#search-input').on('input', function() {
+                    const q = this.value.trim();
+
+                    if (q.length < 2) {
+                        $('#suggestions').hide();
+                        return;
+                    }
+
+                    $.get("{{ route('search.suggestions') }}", {
+                        query: q
+                    }, function(res) {
+                        let html = '';
+
+                        if (res.tickets.length) {
+                            html += '<div class="list-group-item active">Tickets</div>';
+                            res.tickets.forEach(t => {
+                                html +=
+                                    `<div class="list-group-item">${t.ticket_no} — ${t.subject} — (${t.sub_cat})</div>`;
+                            });
+                        }
+
+                        if (res.articles.length) {
+                            html += '<div class="list-group-item active">Articles</div>';
+                            res.articles.forEach(a => {
+                                html += `<div class="list-group-item">${a.title}</div>`;
+                            });
+                        }
+
+                        if (!html) {
+                            html = '<div class="list-group-item text-muted">No results found</div>';
+                        }
+
+                        $('#suggestions').html(html).show();
+                    });
+                });
+
+                // Hide when clicking outside
+                $(document).on('click', function(e) {
+                    if (!$(e.target).closest('#search-input, #suggestions').length) {
+                        $('#suggestions').hide();
+                    }
+                });
+            });
+        </script>
     @endsection
