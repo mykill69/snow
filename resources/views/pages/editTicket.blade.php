@@ -125,17 +125,24 @@
                             <div class="form-group">
                                 <label for="status">Status</label>
                                 <select class="form-control" id="status" name="status" required>
-                                    <option value="" disabled>Select Status</option>
-                                    <option value="1" {{ $ticket->status == 1 ? 'selected' : '' }}>New</option>
-                                    <option value="2" {{ $ticket->status == 2 ? 'selected' : '' }}>Pending</option>
+                                    <option value="" disabled {{ is_null($ticket->status) ? 'selected' : '' }}>Select
+                                        Status</option>
+
+                                    {{-- Show current status (disabled but visible) --}}
+                                    @if ($ticket->status == 1)
+                                        <option value="1" disabled selected>New</option>
+                                    @endif
+
                                     <option value="3" {{ $ticket->status == 3 ? 'selected' : '' }}>Resolved</option>
+                                    <option value="2" {{ $ticket->status == 2 ? 'selected' : '' }}>Pending</option>
                                     <option value="4" {{ $ticket->status == 4 ? 'selected' : '' }}>Closed</option>
                                 </select>
+
                             </div>
                             <div class="form-group">
                                 <label for="remarks">Remarks</label>
                                 <textarea class="form-control" id="remarks" name="remarks" rows="3"
-                                    placeholder="Kindly provide any remarks or additional details" required>{{ $ticket->remarks }}</textarea>
+                                    placeholder="Kindly provide any remarks or additional details on how you resolved the ticket" required>{{ $ticket->remarks }}</textarea>
                             </div>
 
                             <!-- /.card-body -->

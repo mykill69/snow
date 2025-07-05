@@ -615,11 +615,39 @@ public function ticketReports(Request $request)
         $overallRating = $totalCount > 0 ? round($totalScore / $totalCount, 2) : null;
     }
 
-    return view('pages.reportsPage', compact('ticketReports', 'adminUsers', 'users', 'surveyReports', 'overallRating'));
+
+
+$categoryCounts = TicketDtl::select('category', DB::raw('count(*) as total'))
+    ->groupBy('category')
+    ->orderBy('category')
+    ->get();
+
+$pieLabels = $categoryCounts->pluck('category')->toArray();
+$pieData = $categoryCounts->pluck('total')->toArray();
+
+
+    return view('pages.reportsPage', compact('ticketReports', 'adminUsers', 'users', 'surveyReports', 'overallRating','pieLabels','pieData'));
 }
 
 
+public function barChartData(Request $request)
+{
+    $query = \App\Models\TicketDtl::query();
 
+    if ($request->filled('start') && $request->filled('end')) {
+        $query->whereBetween('created_at', [$request->start, $request->end]);
+    }
+
+    $categoryCounts = $query->select('category', DB::raw('count(*) as total'))
+        ->groupBy('category')
+        ->orderBy('category')
+        ->get();
+
+    return response()->json([
+        'labels' => $categoryCounts->pluck('category'),
+        'data' => $categoryCounts->pluck('total'),
+    ]);
+}
 
 
 
@@ -654,10 +682,10 @@ public function downloadTicketReportsPDF(Request $request)
     }
 
     // Generate PDF
-    $pdf = Pdf::loadView('pdf.ticketReportsPdf', compact('ticketReports', 'users', 'surveyReports'))
-              ->setPaper('a4', 'portrait');
+$pdf = Pdf::loadView('pdf.ticketReportsPdf', compact('ticketReports', 'users', 'surveyReports'))
+          ->setPaper('a4', 'portrait');
 
-    return $pdf->stream('ticketReports.pdf');
+return $pdf->stream('ticketReports.pdf');
 }
 
 public function downloadSurveyReportsPDF(Request $request)

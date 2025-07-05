@@ -44,6 +44,8 @@ Route::group(['middleware'=>['guest']],function(){
 
     //Generate reports
     Route::get('/reports-pages', [PagesController::class, 'ticketReports'])->name('ticketReports');
+    Route::get('/reports-pages/bar-data', [PagesController::class, 'barChartData'])->name('reports.barChartData');
+
     // web.php
     Route::get('/reports/pdf', [PagesController::class, 'downloadTicketReportsPDF'])->name('downloadTicketReportsPDF');
     Route::get('/reports/survey-pdf', [PagesController::class, 'downloadSurveyReportsPDF'])->name('downloadSurveyReportsPDF');
