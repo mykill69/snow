@@ -21,27 +21,30 @@
                             <div class="card-body">
                                 {{-- Bootstrap Nav Tabs --}}
                                 <ul class="nav nav-tabs mb-3" id="ticketTabs" role="tablist">
-    <li class="nav-item">
-        <a class="nav-link active" id="new-tab" data-toggle="tab" href="#new" role="tab">
-            <i class="fas fa-plus-circle me-1 text-primary"></i> New Ticket
-        </a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" id="resolved-tab" data-toggle="tab" href="#resolved" role="tab">
-            <i class="fas fa-check-circle me-1 text-success"></i> Resolved Ticket
-        </a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" id="pending-tab" data-toggle="tab" href="#pending" role="tab">
-            <i class="fas fa-hourglass-half me-1 text-warning"></i> Pending Ticket
-        </a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" id="closed-tab" data-toggle="tab" href="#closed" role="tab">
-            <i class="fas fa-times-circle me-1 text-danger"></i> Canceled/Closed Ticket
-        </a>
-    </li>
-</ul>
+                                    <li class="nav-item">
+                                        <a class="nav-link active" id="new-tab" data-toggle="tab" href="#new"
+                                            role="tab">
+                                            <i class="fas fa-plus-circle me-1 text-primary"></i> New Ticket
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="resolved-tab" data-toggle="tab" href="#resolved"
+                                            role="tab">
+                                            <i class="fas fa-check-circle me-1 text-success"></i> Resolved Ticket
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="pending-tab" data-toggle="tab" href="#pending"
+                                            role="tab">
+                                            <i class="fas fa-hourglass-half me-1 text-warning"></i> Pending Ticket
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="closed-tab" data-toggle="tab" href="#closed" role="tab">
+                                            <i class="fas fa-times-circle me-1 text-danger"></i> Canceled/Closed Ticket
+                                        </a>
+                                    </li>
+                                </ul>
 
 
                                 {{-- Tab Content --}}

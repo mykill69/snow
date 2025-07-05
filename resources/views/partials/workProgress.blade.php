@@ -1,3 +1,10 @@
+
+
+<!-- Date Range Picker -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+
+
 <div class="card">
     <div class="card-header">
         <h3 class="card-title" style=" color: #1E152A;font-weight: bold;">Work Progress Overview</h3>
@@ -7,6 +14,7 @@
                 style="background-color: #1E152A">
                 <i class="fa fa-plus text-white"></i> Add Project
             </button>
+                                                        
         </div>
         <div class="card-body p-0">
             <table class="table table-bordered table-hover projects">
@@ -169,3 +177,6 @@
         </div>
         <!-- /.card-body -->
     </div>
+
+
+

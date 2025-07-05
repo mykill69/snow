@@ -12,11 +12,17 @@
     <title>SNOW - MIS Ticketing System {{ isset($title) ? '| ' . $title : '' }}</title>
     <!-- Google Font: Source Sans Pro -->
     <!-- Bootstrap JS (include this before closing body tag) -->
-
+<!-- Date Range Picker -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     {{-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback"> --}}
     <!-- Toastr -->
     <link rel="stylesheet" href="{{ asset('template/plugins/toastr/toastr.min.css') }}">
-    <!-- SweetAlert2 -->
+
+  <!-- SweetAlert2 -->
+  <link rel="stylesheet" href="{{ asset('template/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
+  <!-- daterange picker -->
+  <link rel="stylesheet" href="{{ asset('template/plugins/daterangepicker/daterangepicker.css') }}">
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{{ asset('template/plugins/fontawesome-free/css/all.min.css') }}">
     <!-- Theme style -->
@@ -214,9 +220,9 @@
                 </li>
                 <div class="btn-group">
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
-                        aria-expanded="false">
-                        <i class="fas fa-cogs"></i>
-                        <span class="d-none d-sm-inline"> Settings</span>
+                        aria-expanded="false" style="background-color: #FFB140;">
+                        <i class="fas fa-cogs text-white"></i>
+                        <span class="d-none d-sm-inline text-white"> Settings</span>
                     </button>
                     <ul class="dropdown-menu">
                         @if (auth()->check() && auth()->user()->role !== 'Administrator')
@@ -343,11 +349,14 @@
     <script src="{{ asset('template/plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
     <!-- Select2 -->
     <script src="{{ asset('template/plugins/select2/js/select2.full.min.js') }}"></script>
-
+<!-- date-range-picker -->
+<script src="{{ asset('template/plugins/daterangepicker/daterangepicker.js') }}"></script>
     <!-- Summernote -->
     <script src="{{ asset('template/plugins/summernote/summernote-bs4.min.js') }}"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+
+    
 
     <script>
         $(function() {
@@ -367,6 +376,8 @@
                 "responsive": true,
             });
         });
+
+ 
     </script>
 
     <script>
@@ -375,6 +386,8 @@
                 placeholder: "Select About"
             });
         });
+ 
+
     </script>
 
 

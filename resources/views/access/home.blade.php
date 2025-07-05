@@ -66,66 +66,66 @@
         <div class="d-flex pt-2" style="min-height: 300px;">
             <div class="divider-content-left flex-grow-1" style="flex-basis: 66.66%; padding: 20px;">
 
-               <div class="container" style="max-width: 100%;">
-    <div class="row g-3">
-        {{-- 1 ▸ Create Ticket --}}
-        <div class="col-12 col-md-4">
-            <a href="{{ route('requestForm') }}" class="text-decoration-none w-100 d-block"
-               style="background:#42BFDD; border-radius:20px; color:#000; height:100%;">
-                <div class="d-flex align-items-center p-3 h-100 w-100 ">
-                    <div class="flex-shrink-0 text-center pr-3">
-                        <div class="bg-white rounded-circle d-flex align-items-center justify-content-center"
-                             style="width:90px;height:90px;">
-                            <i class="fas fa-ticket-alt fa-3x" style="color:#42BFDD;"></i>
+                <div class="container" style="max-width: 100%;">
+                    <div class="row g-3">
+                        {{-- 1 ▸ Create Ticket --}}
+                        <div class="col-12 col-md-4">
+                            <a href="{{ route('requestForm') }}" class="text-decoration-none w-100 d-block"
+                                style="background:#42BFDD; border-radius:20px; color:#000; height:100%;">
+                                <div class="d-flex align-items-center p-3 h-100 w-100 ">
+                                    <div class="flex-shrink-0 text-center pr-3">
+                                        <div class="bg-white rounded-circle d-flex align-items-center justify-content-center"
+                                            style="width:90px;height:90px;">
+                                            <i class="fas fa-ticket-alt fa-3x" style="color:#42BFDD;"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <span class="h5 d-block mb-1 text-dark text-bold">Create New Ticket</span>
+                                        <small class="text-dark">Create a new MIS support ticket</small>
+                                    </div>
+                                </div>
+                            </a>
                         </div>
-                    </div>
-                    <div class="flex-grow-1">
-                        <span class="h5 d-block mb-1 text-dark text-bold">Create New Ticket</span>
-                        <small class="text-dark">Create a new MIS support ticket</small>
-                    </div>
-                </div>
-            </a>
-        </div>
 
-        {{-- 2 ▸ Knowledge Base --}}
-        <div class="col-12 col-md-4">
-            <a href="{{ route('articlesUser') }}" class="text-decoration-none w-100 d-block"
-               style="background:#BBE6E4; border-radius:20px; color:#000; height:100%;">
-                <div class="d-flex align-items-center p-3 h-100 w-100">
-                    <div class="flex-shrink-0 text-center pr-3">
-                        <div class="bg-white rounded-circle d-flex align-items-center justify-content-center"
-                             style="width:90px;height:90px;">
-                            <i class="fas fa-lightbulb fa-3x" style="color:#F0A500;"></i>
+                        {{-- 2 ▸ Knowledge Base --}}
+                        <div class="col-12 col-md-4">
+                            <a href="{{ route('articlesUser') }}" class="text-decoration-none w-100 d-block"
+                                style="background:#BBE6E4; border-radius:20px; color:#000; height:100%;">
+                                <div class="d-flex align-items-center p-3 h-100 w-100">
+                                    <div class="flex-shrink-0 text-center pr-3">
+                                        <div class="bg-white rounded-circle d-flex align-items-center justify-content-center"
+                                            style="width:90px;height:90px;">
+                                            <i class="fas fa-lightbulb fa-3x" style="color:#F0A500;"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <span class="h5 d-block mb-1 text-dark text-bold">Knowledge Base</span>
+                                        <small class="text-dark">Browse help articles and FAQs</small>
+                                    </div>
+                                </div>
+                            </a>
                         </div>
-                    </div>
-                    <div class="flex-grow-1">
-                        <span class="h5 d-block mb-1 text-dark text-bold">Knowledge Base</span>
-                        <small class="text-dark">Browse help articles and FAQs</small>
-                    </div>
-                </div>
-            </a>
-        </div>
 
-        {{-- 3 ▸ Get Help --}}
-        <div class="col-12 col-md-4">
-            <a href="{{ route('misPersonnel') }}" class="text-decoration-none w-100 d-block"
-               style="background:#F0F6F6; border-radius:20px; color:#000; height:100%;">
-                <div class="d-flex align-items-center p-3 h-100 w-100">
-                    <div class="flex-shrink-0 text-center pr-3">
-                        <div class="bg-white rounded-circle d-flex align-items-center justify-content-center"
-                             style="width:90px;height:90px;">
-                            <i class="fas fa-headset fa-3x" style="color:#4E6766;"></i>
+                        {{-- 3 ▸ Get Help --}}
+                        <div class="col-12 col-md-4">
+                            <a href="{{ route('misPersonnel') }}" class="text-decoration-none w-100 d-block"
+                                style="background:#F0F6F6; border-radius:20px; color:#000; height:100%;">
+                                <div class="d-flex align-items-center p-3 h-100 w-100">
+                                    <div class="flex-shrink-0 text-center pr-3">
+                                        <div class="bg-white rounded-circle d-flex align-items-center justify-content-center"
+                                            style="width:90px;height:90px;">
+                                            <i class="fas fa-headset fa-3x" style="color:#4E6766;"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <span class="h5 d-block mb-1 text-dark text-bold">Get Help</span>
+                                        <small class="text-dark">Contact the MIS support team</small>
+                                    </div>
+                                </div>
+                            </a>
                         </div>
                     </div>
-                    <div class="flex-grow-1">
-                        <span class="h5 d-block mb-1 text-dark text-bold">Get Help</span>
-                        <small class="text-dark">Contact the MIS support team</small>
-                    </div>
                 </div>
-            </a>
-        </div>
-    </div>
-</div>
 
 
 
@@ -165,8 +165,8 @@
                         <div class="tab-content" id="ticketStatusTabsContent">
                             <div class="tab-pane fade show active" id="active" role="tabpanel"
                                 aria-labelledby="active-tab">
-                                @if ($tickets->where('status', 1)->count())
-                                    <table class="table table-bordered text-center mb-0">
+                                @if ($tickets->where('status', 2)->count())
+                                    <table class="table table-bordered text-sm text-center mb-0">
                                         <thead class="table-light">
                                             <tr>
                                                 <th>TICKET NO.</th>
@@ -189,6 +189,7 @@
                                                             class="text-primary" target="_blank"
                                                             style="text-decoration: none;">
                                                             {{ $ticket->ticket_no }}
+                                                            <small>Click to chat</small>
                                                         </a></td>
                                                     <td>
                                                         @php
@@ -230,7 +231,8 @@
                                                             @break
 
                                                             @case(3)
-                                                                <span class="badge" style="background-color: #42BFDD;">Resolved</span>
+                                                                <span class="badge"
+                                                                    style="background-color: #42BFDD;">Resolved</span>
                                                             @break
 
                                                             @case(4)
@@ -271,7 +273,8 @@
                                                         <div id="admin-list-{{ $ticket->id }}">
                                                             {{-- first two badges --}}
                                                             @foreach ($visibleAdmins as $admin)
-                                                                <span class="badge text-white me-1 mb-1" style="background-color: #42BFDD;">
+                                                                <span class="badge text-white me-1 mb-1"
+                                                                    style="background-color: #42BFDD;">
                                                                     {{ $admin->fname }} {{ $admin->lname }}
                                                                 </span>
                                                             @endforeach
@@ -281,7 +284,8 @@
                                                                 <span id="more-admins-{{ $ticket->id }}"
                                                                     style="display:none;">
                                                                     @foreach ($admins->slice(2) as $admin)
-                                                                         <span class="badge text-white me-1 mb-1" style="background-color: #42BFDD;">
+                                                                        <span class="badge text-white me-1 mb-1"
+                                                                            style="background-color: #42BFDD;">
                                                                             {{ $admin->fname }} {{ $admin->lname }}
                                                                         </span>
                                                                     @endforeach
@@ -321,8 +325,8 @@
 
                             </div>
                             <div class="tab-pane fade" id="resolved" role="tabpanel" aria-labelledby="resolved-tab">
-                                @if ($tickets->where('status', 1)->count())
-                                    <table class="table table-bordered text-center mb-0">
+                                @if ($tickets->where('status', 3)->count())
+                                    <table class="table table-bordered text-sm text-center mb-0">
                                         <thead class="table-light">
                                             <tr>
                                                 <th>TICKET NO.</th>
@@ -465,7 +469,7 @@
                             </div>
                             <div class="tab-pane fade" id="pending" role="tabpanel" aria-labelledby="pending-tab">
                                 @if ($tickets->where('status', 2)->count())
-                                    <table class="table table-bordered text-center mb-0">
+                                    <table class="table table-bordered text-sm text-center mb-0">
                                         <thead class="table-light">
                                             <tr>
                                                 <th>TICKET NO.</th>
@@ -589,7 +593,7 @@
                             </div>
                             <div class="tab-pane fade" id="canceled" role="tabpanel" aria-labelledby="canceled-tab">
                                 @if ($tickets->where('status', 4)->count())
-                                    <table class="table table-bordered text-center mb-0">
+                                    <table class="table table-bordered text-sm text-center mb-0">
                                         <thead class="table-light">
                                             <tr>
                                                 <th>TICKET NO.</th>
@@ -715,10 +719,11 @@
                 <!-- ✅ Buttons Section -->
                 <div class="row">
                     <!-- Pending Survey -->
-                    <div class="col-md-6 mb-2 rounded" style="background-color: #084B83;">
+                    <div class="col-md-6 mb-2 rounded" style="background-color: #BBE6E4;">
                         <a href="#"
-                            class="btn btn-lg w-100 d-flex flex-column text-white text-start text-bold text-md py-1 px-3" style="background-color: #084B83;">
-                            Pending Client Satisfaction Survey
+                            class="btn btn-lg w-100 d-flex flex-column text-black text-start text-bold text-md py-1 px-3"
+                            style="background-color: #BBE6E4;">
+                            Pending Client Survey
                             <span class="badge bg-light text-dark text-xl mt-1">{{ $pendingSurveyCount }}</span>
                         </a>
                     </div>
@@ -726,12 +731,38 @@
                     <!-- Follow Up Ticket -->
                     <div class="col-md-6 mb-2">
                         <a href="#"
-                            class="btn btn-lg w-100 d-flex text-md flex-column text-bold text-start py-1 px-3" style="background-color: #BBE6E4;">
+                            class="btn btn-lg w-100 d-flex text-md flex-column text-bold text-start py-1 px-3"
+                            style="background-color: #BBE6E4;">
                             Ticket Created
-                            <span class="badge text-black mt-1 text-xl" style="background-color: #F0F6F6;">12</span>
+                            <span class="badge text-black mt-1 text-xl" style="background-color: #F0F6F6;">{{ $overallUserTicket }} </span>
+                        </a>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <!-- Self Reset Password -->
+                    <div class="col-md-12 rounded mb-2">
+                        <a href="#" class="btn btn-lg w-100 text-white text-start py-3 px-4"
+                            style="background-color: #42BFDD;">
+
+                            <div class="row align-items-center w-100">
+                                <!-- Icon (col-2) -->
+                                <div class="col-md-1 pl-4 d-flex justify-content-center align-items-center"
+                                    style="font-size: 3.5rem;">
+                                    <i class="fas fa-unlock-alt"></i>
+                                </div>
+
+                                <!-- Text content (col-10) -->
+                                <div class="col-md-11 text-center">
+                                    <div class="h4 mb-0 fw-bold">Self Reset Password</div>
+                                    <small class="text-white-50">Institutional Email & Teams</small>
+                                </div>
+                            </div>
+
                         </a>
                     </div>
                 </div>
+
 
 
 

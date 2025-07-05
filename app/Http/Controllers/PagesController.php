@@ -499,7 +499,12 @@ public function myTickets()
     ->latest()        
     ->get();
 
-    return view('pages.myTickets', compact('allTickets'));
+    $mypendingSurveyCount = TicketDtl::where('status', 3)
+    ->where('survey', 0)
+    ->where('admin_id', $user->id)
+    ->count();
+
+    return view('pages.myTickets', compact('allTickets','mypendingSurveyCount'));
 }
 
 

@@ -20,28 +20,52 @@
 
                             <div class="card-body">
                                 {{-- Bootstrap Nav Tabs --}}
-                                <ul class="nav nav-tabs mb-3" id="ticketTabs" role="tablist">
-    <li class="nav-item">
-        <a class="nav-link active" id="new-tab" data-toggle="tab" href="#new" role="tab">
-            <i class="fas fa-plus-circle me-1 text-primary"></i> New Ticket
-        </a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" id="resolved-tab" data-toggle="tab" href="#resolved" role="tab">
-            <i class="fas fa-check-circle me-1 text-success"></i> Resolved Ticket
-        </a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" id="pending-tab" data-toggle="tab" href="#pending" role="tab">
-            <i class="fas fa-hourglass-half me-1 text-warning"></i> Pending Ticket
-        </a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" id="closed-tab" data-toggle="tab" href="#closed" role="tab">
-            <i class="fas fa-times-circle me-1 text-danger"></i> Canceled/Closed Ticket
-        </a>
-    </li>
-</ul>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <!-- Tabs -->
+                                    <ul class="nav nav-tabs" id="ticketTabs" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" id="new-tab" data-toggle="tab" href="#new"
+                                                role="tab">
+                                                <i class="fas fa-plus-circle me-1 text-primary"></i> New Ticket
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="resolved-tab" data-toggle="tab" href="#resolved"
+                                                role="tab">
+                                                <i class="fas fa-check-circle me-1 text-success"></i> Resolved Ticket
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="pending-tab" data-toggle="tab" href="#pending"
+                                                role="tab">
+                                                <i class="fas fa-hourglass-half me-1 text-warning"></i> Pending Ticket
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="closed-tab" data-toggle="tab" href="#closed"
+                                                role="tab">
+                                                <i class="fas fa-times-circle me-1 text-danger"></i> Canceled/Closed Ticket
+                                            </a>
+                                        </li>
+                                    </ul>
+
+                                    <!-- Button Container -->
+                                    <div class="d-flex">
+                                        <button class="btn btn-default bg-warning btn-hover btn-sm me-2 mr-2">
+                                            <i class="fas fa-smile"></i><span> Follow-up Survey:</span> 
+                                            <span class="fw-bold">{{ $mypendingSurveyCount }}</span>
+                                        </button>
+                                        <button class="btn btn-default bg-success btn-hover btn-sm">
+                                            <i class="fas fa-tags"></i> Resolved:
+                                            <span class="fw-bold">{{ $allTickets->where('status', 3)->count() }}</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+
+                                <!-- Total Tickets Button -->
+
+
 
                                 {{-- Tab Content --}}
                                 <div class="tab-content" id="ticketTabContent">

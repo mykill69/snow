@@ -32,7 +32,12 @@ public function home()
     ->where('survey', '!=', 1)
     ->count();
 
-    return view('access.home', compact('tickets', 'allTickets', 'user', 'pendingSurveyCount'));
+    $overallUserTicket = TicketDtl::where('user_id', $user->id)
+    ->where('status','!=', 4 )
+    ->count()
+;        
+
+    return view('access.home', compact('tickets', 'allTickets', 'user', 'pendingSurveyCount','overallUserTicket'));
 }
 
     public function requestForm()

@@ -60,6 +60,75 @@
                     </div>
                 </div>
 
+
+
+                {{--                     
+                    <!-- /.info-box -->
+                
+                <!-- /.col -->
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="info-box mb-3">
+                        <span class="info-box-icon bg-success elevation-1 d-flex align-items-center justify-content-center"
+                            style="font-size:4rem; min-width: 33%; height: 80px; min-height: 80px;"><i
+                                class="fa fa-check"></i></span>
+
+                        <div class="info-box-content">
+                            <span class="info-box-number display-4 w-100 text-center" style="font-size:2.5rem;">
+                                {{ $ticketCount->where('status', 3)->count() }}
+                            </span>
+                            <span class="info-box-text w-100 text-center" style="font-size:1rem; font-weight: normal;">
+                                RESOLVED
+                            </span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                </div>
+                <!-- /.col -->
+
+                <!-- fix for small devices only -->
+                <div class="clearfix hidden-md-up"></div>
+
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="info-box mb-3">
+                        <span class="info-box-icon bg-warning elevation-1 d-flex align-items-center justify-content-center"
+                            style="font-size:4rem; min-width: 33%; height: 80px; min-height: 80px;">
+                            <i class="fas fa-hourglass-half" style="color: #fff;"></i>
+                        </span>
+
+                        <div class="info-box-content">
+                            <span class="info-box-number display-4 w-100 text-center" style="font-size:2.5rem;">
+                                {{ $ticketCount->where('status', 2)->count() }}
+                            </span>
+                            <span class="info-box-text w-100 text-center" style="font-size:1rem; font-weight: normal;">
+                                PENDING
+                            </span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                </div>
+                <!-- /.col -->
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="info-box mb-3">
+                        <span class="info-box-icon bg-danger elevation-1 d-flex align-items-center justify-content-center"
+                            style="font-size:4rem; min-width: 33%; height: 80px; min-height: 80px;"><i
+                                class="fas fa-ban"></i></span>
+
+                        <div class="info-box-content">
+                            <span class="info-box-number display-4 w-100 text-center" style="font-size:2.5rem;">
+                                {{ $ticketCount->where('status', 4)->count() }}
+                            </span>
+                            <span class="info-box-text w-100 text-center" style="font-size:1rem; font-weight: normal;">
+                                CANCELED/CLOSED
+                            </span>
+                        </div>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box --> --}}
+
+
                 <!-- /.col -->
 
                 <section class="content">
@@ -71,19 +140,21 @@
                                         <h3 class="card-title" style=" color: #1E152A;font-weight: bold;">Daily Tickets
                                             Submitted</h3>
 
-<button id="tickets-range" class="btn btn-default float-right mb-3"
-    style="cursor: pointer; background-color:#FFB140;">
-    <i class="far fa-calendar-alt text-white"></i>
-    <span class="text-white">Select date</span>
-    <i class="fas fa-caret-down text-white"></i>
-</button>
+
+                                        <button id="reportrange" class="btn btn-default float-right"
+                                            style="cursor: pointer;">
+                                            <i class="far fa-calendar-alt"></i>
+                                            <span>Select date range</span>
+                                            <i class="fas fa-caret-down"></i>
+
+                                        </button>
                                     </div>
                                     <div class="card-body">
                                         <div class="chart">
-    <canvas id="dailyline"
-        style="min-height: 300px; height: 300px; max-height: 300px; max-width: 100%;"
-        class="chartjs-render-monitor"></canvas>
-</div>
+                                            <canvas id="dailyline"
+                                                style="min-height: 300px; height: 300px; max-height: 300px; max-width: 100%;"
+                                                class="chartjs-render-monitor"></canvas>
+                                        </div>
                                     </div>
                                     <!-- /.card-body -->
                                 </div>
@@ -612,10 +683,10 @@
     <!-- Moment.js -->
     <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-{{-- 
+
     <script>
         $(function() {
-            $('#tickets-range').daterangepicker({
+            $('#reportrange').daterangepicker({
                     ranges: {
                         'Today': [moment(), moment()],
                         'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
@@ -629,13 +700,13 @@
                     endDate: moment()
                 },
                 function(start, end) {
-                    $('#tickets-range span').html(start.format('MMMM D, YYYY') + ' - ' + end.format(
+                    $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format(
                         'MMMM D, YYYY'));
                     // Optional: Call function here to filter data based on selected date
                 }
             );
         });
-    </script> --}}
+    </script>
 
     <script>
         // gauge chart
@@ -914,121 +985,77 @@
         //-------------
         //- DAILY LINE CHART (Created vs Resolved Tickets) -
         //-------------
-         // Full data from backend
-    const datesAll      = @json($dailyDates);
-    const createdAll    = @json($dailyCreatedCounts);
-    const resolvedAll   = @json($dailyResolvedCounts);
+        const dailyLineCanvas = document.getElementById('dailyline').getContext('2d');
 
-    // Chart initialization
-    const ctx = document.getElementById('dailyline').getContext('2d');
-    const dailyLineChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: datesAll,
-            datasets: [
-                {
-                    label: 'Created Tickets',
-                    data: createdAll,
-                    backgroundColor: '#FFB140',
-                    borderColor: '#FFB140',
-                    fill: false,
-                    tension: 0.3,
-                    pointRadius: 4,
-                    pointBackgroundColor: '#FFB140',
-                    pointBorderColor: '#FFB140',
-                    pointHoverBackgroundColor: '#fff',
-                    pointHoverBorderColor: '#FFB140'
+        const dailyLineChart = new Chart(dailyLineCanvas, {
+            type: 'line',
+            data: {
+                labels: {!! json_encode($dailyDates) !!},
+                datasets: [{
+                        label: 'Created Tickets',
+                        data: {!! json_encode($dailyCreatedCounts) !!},
+                        backgroundColor: '#FFB140',
+                        borderColor: '#FFB140',
+                        fill: false,
+                        tension: 0.3,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#FFB140',
+                        pointBorderColor: '#FFB140',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#FFB140'
+                    },
+                    {
+                        label: 'Resolved Tickets',
+                        data: {!! json_encode($dailyResolvedCounts) !!},
+                        backgroundColor: '#1E152A',
+                        borderColor: '#1E152A',
+                        fill: false,
+                        tension: 0.3,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#4E6766',
+                        pointBorderColor: '#4E6766',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#4E6766'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                return tooltipItems[0].label;
+                            },
+                            label: function(tooltipItem) {
+                                return 'Tickets: ' + tooltipItem.formattedValue;
+                            }
+                        }
+                    },
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    }
                 },
-                {
-                    label: 'Resolved Tickets',
-                    data: resolvedAll,
-                    backgroundColor: '#1E152A',
-                    borderColor: '#1E152A',
-                    fill: false,
-                    tension: 0.3,
-                    pointRadius: 4,
-                    pointBackgroundColor: '#4E6766',
-                    pointBorderColor: '#4E6766',
-                    pointHoverBackgroundColor: '#fff',
-                    pointHoverBorderColor: '#4E6766'
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: true,
-                    position: 'top'
-                },
-                tooltip: {
-                    callbacks: {
-                        title: function(tooltipItems) {
-                            return tooltipItems[0].label;
-                        },
-                        label: function(tooltipItem) {
-                            return 'Tickets: ' + tooltipItem.formattedValue;
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Ticket Count'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            maxRotation: 45,
+                            minRotation: 45
                         }
                     }
                 }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Ticket Count'
-                    }
-                },
-                x: {
-                    ticks: {
-                        maxRotation: 45,
-                        minRotation: 45
-                    }
-                }
             }
-        }
-    });
+        });
 
-    // Date Range Picker integration
-    $(function () {
-        $('#tickets-range').daterangepicker(
-            {
-                ranges: {
-                    'Today': [moment(), moment()],
-                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                    'This Month': [moment().startOf('month'), moment().endOf('month')],
-                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-                },
-                startDate: moment().subtract(29, 'days'),
-                endDate: moment()
-            },
-            function (start, end) {
-                $('#tickets-range span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-
-                const filteredDates = [];
-                const filteredCreated = [];
-                const filteredResolved = [];
-
-                datesAll.forEach((date, index) => {
-                    const momentDate = moment(date, 'MMM D, YYYY');
-                    if (momentDate.isBetween(start, end, 'day', '[]')) {
-                        filteredDates.push(date);
-                        filteredCreated.push(createdAll[index]);
-                        filteredResolved.push(resolvedAll[index]);
-                    }
-                });
-
-                dailyLineChart.data.labels = filteredDates;
-                dailyLineChart.data.datasets[0].data = filteredCreated;
-                dailyLineChart.data.datasets[1].data = filteredResolved;
-                dailyLineChart.update();
-            }
-        );
-    });
 
         // monthly
 
