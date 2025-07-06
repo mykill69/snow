@@ -245,6 +245,8 @@
     <script src="{{ asset('template/plugins/datatables-buttons/js/buttons.html5.min.js') }}"></script>
     <script src="{{ asset('template/plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
     <script src="{{ asset('template/plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
+      <!-- Select2 -->
+    <script src="{{ asset('template/plugins/select2/js/select2.full.min.js') }}"></script>
     
 
 <script>
@@ -308,6 +310,15 @@
     </script>
     
     
+    <script>
+        $(document).ready(function() {
+            $('#about').select2({
+                placeholder: "Select About"
+            });
+        });
+ 
+
+    </script>
 
 </body>
 

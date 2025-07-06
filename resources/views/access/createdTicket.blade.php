@@ -1,6 +1,25 @@
 @extends('access.layout')
+
+<style type="text/css">
+    .no-left-radius {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+
+    .select2-selection__choice {
+        background-color: #007bff !important;
+        /* Blue background */
+        color: #fff !important;
+        /* White text */
+        border: none !important;
+        padding: 2px 10px;
+        border-radius: 0.2rem;
+        margin-top: 4px;
+    }
+</style>
+
 @section('body')
-    <div class="row justify-content-center pt-3 w-100">
+    <div class="row justify-content-center pt-3 pb-4 w-100">
         <div class="col-10">
 
             <div class="row">
@@ -182,6 +201,41 @@
                         </table>
 
                     </div> <!-- /.card -->
+                    <form action="" method="POST" enctype="multipart/form-data">
+                        @csrf
+
+                        <div class="card-body text-sm">
+                            {{-- File Upload --}}
+                            <div class="form-group">
+                                <label for="attachment">Upload Additional File</label>
+                                <div class="input-group">
+                                    <div class="custom-file">
+                                        <input type="file" name="attachment" class="custom-file-input" id="attachment">
+                                        <label class="custom-file-label" for="attachment">Choose file</label>
+                                    </div>
+                                </div>
+
+                                {{-- Users Watchlist --}}
+                                <div class="form-group">
+                                    <label for="users">Add Users to Watchlist</label>
+                                    <select class="form-control select2" name="users[]" id="users" multiple="multiple"
+                                        style="width: 100%;" data-placeholder="Add users to watchlist">
+                                        @foreach ($users as $user)
+                                            <option value="{{ $user->id }}">
+                                                {{ $user->fname . ' ' . $user->lname }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Submit Button -->
+
+                            <button type="submit" class="btn btn-primary w-100">Submit</button>
+
+                    </form>
+
+
                 </div> <!-- /.col-4 -->
             </div>
 
@@ -250,5 +304,12 @@
                 // Show names in the input field (comma-separated)
                 adminField.value = adminNames.join(", ");
             }
+        </script>
+        <script>
+            $(document).ready(function() {
+                $('#users').select2({
+                    placeholder: "Add user to watchlist"
+                });
+            });
         </script>
     @endsection

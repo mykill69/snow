@@ -72,6 +72,9 @@ public function suggestions(Request $request)
 
 public function createdTicket($ticketNo)
 {
+
+    $users = User::all();
+
     $ticket = TicketDtl::where('ticket_no', $ticketNo)->first();
 
     if (!$ticket) {
@@ -81,7 +84,7 @@ public function createdTicket($ticketNo)
     // Fetch all comments related to this ticket number
     $comments = Comments::where('ticket_no', $ticketNo)->orderBy('created_at', 'asc')->get();
 
-    return view('access.createdTicket', compact('ticket', 'comments'));
+    return view('access.createdTicket', compact('ticket', 'comments','users'));
 }
 
 

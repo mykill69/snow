@@ -277,29 +277,32 @@
 
                                     </div>
                                     <div class="tab-pane fade" id="custom-tabs-two-messages" role="tabpanel"
-    aria-labelledby="custom-tabs-two-messages-tab">
+                                        aria-labelledby="custom-tabs-two-messages-tab">
 
-    <div class="d-flex justify-content-end mb-2">
-        <button id="tickets-range" class="btn btn-default"
-            style="cursor: pointer; background-color:#FFB140; z-index:1050;">
-            <i class="far fa-calendar-alt text-white"></i>
-            <span class="text-white">Select date</span>
-            <i class="fas fa-caret-down text-white"></i>
-        </button>
-    </div>
+                                        <div class="d-flex justify-content-end mb-2">
+                                            <button id="tickets-range" class="btn btn-default"
+                                                style="cursor: pointer; background-color:#FFB140; z-index:1050;">
+                                                <i class="far fa-calendar-alt text-white"></i>
+                                                <span class="text-white">Select date</span>
+                                                <i class="fas fa-caret-down text-white"></i>
+                                            </button>
+                                        </div>
 
-    <div class="card">
-        <div class="card-body">
-            <h3 class="card-title">
-                MIS Services Report 
-                <small id="selected-range-label" class="text-muted" style="font-size: 1rem;"></small>
-            </h3>
-            <div style="height: 400px; position: relative;">
-                <canvas id="horizontalBarChart" style="z-index: 1;"></canvas>
-            </div>
-        </div>
-    </div>
-</div>
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h3 class="card-title">
+                                                    MIS Services Report
+                                                    <small id="selected-range-label" class="text-muted"
+                                                        style="font-size: 1rem;"></small>
+                                                </h3>
+                                                <div style="height: 400px; position: relative;">
+                                                    <canvas id="horizontalBarChart" style="z-index: 1;"></canvas>
+                                                </div>
+                                                
+                                            </div>
+                                           
+                                        </div>
+                                    </div>
 
                                     <div class="tab-pane fade" id="custom-tabs-two-settings" role="tabpanel"
                                         aria-labelledby="custom-tabs-two-settings-tab">
@@ -357,94 +360,114 @@
     <script src="template/plugins/jquery/jquery.min.js"></script>
     <!-- Bootstrap 4 -->
     <script src="template/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <!-- ChartJS -->
-    <script src="template/plugins/chart.js/Chart.min.js"></script>
+
 
     <!-- AdminLTE App -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-   <!-- Include Moment.js, Daterangepicker, Chart.js if not already included -->
-<script src="https://cdn.jsdelivr.net/npm/moment"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-<link href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" rel="stylesheet" />
+    <!-- Include Moment.js, Daterangepicker, Chart.js if not already included -->
+    <script src="https://cdn.jsdelivr.net/npm/moment"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" rel="stylesheet" />
 
 
     <script>
-$(document).ready(function () {
-    // Bar chart initialization
-    const barChartCanvas = document.getElementById('horizontalBarChart').getContext('2d');
-
+       $(function () {
+    const ctx = document.getElementById('horizontalBarChart').getContext('2d');
     let chartInstance;
 
-    function renderChart(labels, data) {
-        if (chartInstance) {
-            chartInstance.destroy();
-        }
+    function renderChart(labels, datasets) {
+        if (chartInstance) chartInstance.destroy();
 
-        chartInstance = new Chart(barChartCanvas, {
+        chartInstance = new Chart(ctx, {
             type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Ticket Count',
-                    data: data,
-                    backgroundColor: [
-                        '#FFB140', '#4E6766', '#1E152A', '#C94C4C', '#3B8EA5',
-                        '#A1C349', '#B388EB', '#F4F1DE', '#3C3C3C', '#D9BF77', '#95A78D'
-                    ],
-                    borderRadius: 5,
-                    barThickness: 20
-                }]
-            },
+            data: { labels, datasets },
             options: {
-                indexAxis: 'y',
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: { enabled: true }
-                },
-                scales: {
-                    x: {
-                        beginAtZero: true,
-                        title: { display: true, text: 'Ticket Count' }
-                    },
-                    y: {
-                        ticks: { font: { size: 14 } }
-                    }
-                }
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+        legend: {
+            position: 'top'
+        },
+        tooltip: {
+    mode: 'index',
+    intersect: false,
+    callbacks: {
+        // Show category as title
+        title: function(tooltipItems) {
+            return tooltipItems[0].label; // this is the category
+        },
+        // Show subcategory and value (only if value > 0)
+        label: function(context) {
+            const value = context.raw;
+            if (value === 0) return null; // hide if zero
+            const subCategory = context.dataset.label;
+            return `${subCategory}: ${value}`;
+        }
+    }
+}
+    },
+    scales: {
+        x: {
+            stacked: true,
+            beginAtZero: true,
+            title: {
+                display: true,
+                text: 'Ticket Count'
             }
+        },
+        y: {
+            stacked: true
+        }
+    }
+}
+
         });
     }
 
-    // Initial render
-    const initialLabels = @json($pieLabels);
-    const initialData = @json($pieData);
-    renderChart(initialLabels, initialData);
+    // ⬅️ initial load (no filter)
+    $.get('{{ route("reports.barChartData") }}', res => {
+        renderChart(res.labels, formatDatasets(res.datasets));
+    });
 
-    // Daterange Picker
+    // helper to apply colours & style
+    function formatDatasets(raw) {
+        const palette = [
+            '#FFB140','#4E6766','#1E152A','#C94C4C','#3B8EA5',
+            '#A1C349','#B388EB','#F4F1DE','#3C3C3C','#D9BF77','#95A78D'
+        ];
+        return raw.map((d,i) => ({
+            ...d,
+            backgroundColor: palette[i % palette.length],
+            borderRadius: 3,
+            barThickness: 25
+        }));
+    }
+
+    // ⬅️ date‑range picker
     $('#tickets-range').daterangepicker({
         ranges: {
-            'Today': [moment(), moment()],
-            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-            'This Month': [moment().startOf('month'), moment().endOf('month')],
-            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            'Today':       [moment(), moment()],
+            'Yesterday':   [moment().subtract(1,'days'), moment().subtract(1,'days')],
+            'Last 7 Days': [moment().subtract(6,'days'), moment()],
+            'Last 30 Days':[moment().subtract(29,'days'), moment()],
+            'This Month':  [moment().startOf('month'), moment().endOf('month')],
+            'Last Month':  [moment().subtract(1,'month').startOf('month'),
+                            moment().subtract(1,'month').endOf('month')]
         },
-        startDate: moment().subtract(6, 'days'),
-        endDate: moment()
-    }, function (start, end) {
-        const rangeText = start.format('MMM D, YYYY') + ' - ' + end.format('MMM D, YYYY');
+        startDate: moment().subtract(6,'days'),
+        endDate  : moment()
+    }, (start,end) => {
+        const rangeText = `${start.format('MMM D, YYYY')} - ${end.format('MMM D, YYYY')}`;
         $('#tickets-range span.text-white').text(rangeText);
         $('#selected-range-label').text(`(${rangeText})`);
 
-        // You can call AJAX here to fetch new data based on start/end
-        // Example:
-        // $.get('/your-chart-data-endpoint', { start: start.format('YYYY-MM-DD'), end: end.format('YYYY-MM-DD') }, function(res) {
-        //     renderChart(res.labels, res.data);
-        // });
+        $.get('{{ route("reports.barChartData") }}',
+            { start: start.format('YYYY-MM-DD'), end: end.format('YYYY-MM-DD') },
+            res => renderChart(res.labels, formatDatasets(res.datasets))
+        );
     });
 });
 

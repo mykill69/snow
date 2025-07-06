@@ -630,26 +630,99 @@ $pieData = $categoryCounts->pluck('total')->toArray();
 }
 
 
+// public function barChartData(Request $request)
+// {
+//     $query = \App\Models\TicketDtl::query();
+
+//     if ($request->filled('start') && $request->filled('end')) {
+//         $query->whereBetween('created_at', [$request->start, $request->end]);
+//     }
+
+//     $categoryCounts = $query->select('category', DB::raw('count(*) as total'))
+//         ->groupBy('category')
+//         ->orderBy('category')
+//         ->get();
+
+//     return response()->json([
+//         'labels' => $categoryCounts->pluck('category'),
+//         'data' => $categoryCounts->pluck('total'),
+//     ]);
+// }
 public function barChartData(Request $request)
 {
-    $query = \App\Models\TicketDtl::query();
+    // 1. Filter tickets by date range (if provided)
+    $tickets = \App\Models\TicketDtl::query()
+        ->when(
+            $request->filled(['start', 'end']),
+            fn ($q) => $q->whereBetween('created_at', [$request->start, $request->end])
+        )
+        ->get(['category', 'sub_cat']);
 
-    if ($request->filled('start') && $request->filled('end')) {
-        $query->whereBetween('created_at', [$request->start, $request->end]);
-    }
+    // 2. Get unique categories & sub‑categories
+    $categories   = $tickets->pluck('category')->unique()->values();
+    $subCats      = $tickets->pluck('sub_cat')->unique()->values();
 
-    $categoryCounts = $query->select('category', DB::raw('count(*) as total'))
-        ->groupBy('category')
-        ->orderBy('category')
-        ->get();
+    // 3. Build datasets ‑ one for each sub‑category
+    $datasets = $subCats->map(function ($sub) use ($categories, $tickets) {
+        // Count tickets per category & this sub‑category
+        $data = $categories->map(function ($cat) use ($sub, $tickets) {
+            return $tickets
+                ->where('category', $cat)
+                ->where('sub_cat', $sub)
+                ->count();
+        });
+
+        return [
+            'label' => $sub ?: '—',          // handle null/empty sub_cat
+            'data'  => $data,
+        ];
+    });
 
     return response()->json([
-        'labels' => $categoryCounts->pluck('category'),
-        'data' => $categoryCounts->pluck('total'),
+        'labels'   => $categories,   // y‑axis
+        'datasets' => $datasets,     // stacked series
     ]);
 }
 
+public function adminStackChartData(Request $request)
+{
+    // 1. grab only what we need (category + admin’s fname/lname)
+    $tickets = TicketDtl::with('admin:id,fname,lname')
+        ->when(
+            $request->filled(['start', 'end']),
+            fn ($q) => $q->whereBetween('created_at', [$request->start, $request->end])
+        )
+        ->get(['category', 'assigned_to']);
 
+    // 2. axis labels
+    $admins     = $tickets->pluck('admin.full_name')          // «— NEW
+                         ->filter()                           // drop tickets with no admin
+                         ->unique()
+                         ->sort()
+                         ->values();
+
+    $categories = $tickets->pluck('category')->unique()->sort()->values();
+
+    // 3. datasets (one per category)
+    $datasets = $categories->map(function ($cat) use ($admins, $tickets) {
+        $data = $admins->map(function ($admin) use ($cat, $tickets) {
+            return $tickets
+                ->where('admin.full_name', $admin)            // «— NEW
+                ->where('category',        $cat)
+                ->count();
+        });
+
+        return [
+            'label' => $cat ?: '—',
+            'data'  => $data,
+        ];
+    });
+
+    return response()->json([
+        'labels'   => $admins,
+        'datasets' => $datasets,
+    ]);
+}
 
 public function downloadTicketReportsPDF(Request $request)
 {

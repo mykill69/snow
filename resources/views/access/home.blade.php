@@ -83,7 +83,7 @@
                                         </div>
                                     </div>
                                     <div class="flex-grow-1">
-                                        <span class="h5 d-block mb-1 text-dark text-bold">Create New Ticket</span>
+                                        <span class="h4 d-block mb-1 text-dark text-bold">Create New Ticket</span>
                                         <small class="text-dark">Create a new MIS support ticket</small>
                                     </div>
                                 </div>
@@ -102,7 +102,7 @@
                                         </div>
                                     </div>
                                     <div class="flex-grow-1">
-                                        <span class="h5 d-block mb-1 text-dark text-bold">Knowledge Base</span>
+                                        <span class="h4 d-block mb-1 text-dark text-bold">Knowledge Base</span>
                                         <small class="text-dark">Browse help articles and FAQs</small>
                                     </div>
                                 </div>
@@ -121,7 +121,7 @@
                                         </div>
                                     </div>
                                     <div class="flex-grow-1">
-                                        <span class="h5 d-block mb-1 text-dark text-bold">Get Help</span>
+                                        <span class="h4 d-block mb-1 text-dark text-bold">Get Help</span>
                                         <small class="text-dark">Contact the MIS support team</small>
                                     </div>
                                 </div>
