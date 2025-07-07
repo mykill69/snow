@@ -24,7 +24,7 @@ class TicketDtl extends Model
         'file_name',
         'status',
         'remarks',
-        'follow_up',
+        'watch_list',
     ];
 
     public function user()
@@ -39,4 +39,5 @@ public function admin()
 {
     return $this->belongsTo(User::class, 'admin_id');
 }
+
 }

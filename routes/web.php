@@ -8,6 +8,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AccessController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\ArticlesController;
+use App\Http\Controllers\WatchListController;
 
 /*
 |--------------------------------------------------------------------------
@@ -87,7 +88,8 @@ Route::group(['middleware'=>['guest']],function(){
 
     Route::put('/edit-ticketSurvey/{ticket_no}', [AccessController::class, 'updateSurvey'])->name('updateSurvey');
 
-    
+    // watchlist
+    Route::put('/ticket/{ticketNo}/watchlist', [WatchListController::class, 'updateWatchlist'])->name('updateWatchlist');
     
     Route::get('/fetch-comments/{ticketNo}', [AccessController::class, 'fetchComments'])->name('fetchComments');
 

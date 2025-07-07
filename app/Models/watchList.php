@@ -2,17 +2,20 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class watchList extends Model
+class WatchList extends Model
 {
-    use HasFactory;
+    protected $table    = 'watch_list';
+    protected $fillable = ['ticket_no', 'user_id', 'file_path'];
 
-      protected $table = 'watch_list'; 
-    protected $fillable = [
-        'watch_id',
-        
-    ];
+    public function ticket()
+    {
+        return $this->belongsTo(TicketDtl::class, 'ticket_no');
+    }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

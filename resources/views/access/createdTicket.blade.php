@@ -201,38 +201,23 @@
                         </table>
 
                     </div> <!-- /.card -->
-                    <form action="" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('updateWatchlist', $ticket->ticket_no) }}" method="POST">
                         @csrf
+                        @method('PUT')
 
-                        <div class="card-body text-sm">
-                            {{-- File Upload --}}
-                            <div class="form-group">
-                                <label for="attachment">Upload Additional File</label>
-                                <div class="input-group">
-                                    <div class="custom-file">
-                                        <input type="file" name="attachment" class="custom-file-input" id="attachment">
-                                        <label class="custom-file-label" for="attachment">Choose file</label>
-                                    </div>
-                                </div>
+                        <div class="form-group">
+                            <label for="watch_list">Add Users to Watchlist</label>
+                            <select class="form-control select2" name="watch_list[]" id="watch_list" multiple>
+                                @foreach ($users as $user)
+                                    <option value="{{ $user->id }}"
+                                        {{ in_array($user->id, explode(',', $ticket->watch_list ?? '')) ? 'selected' : '' }}>
+                                        {{ $user->fname }} {{ $user->lname }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
 
-                                {{-- Users Watchlist --}}
-                                <div class="form-group">
-                                    <label for="users">Add Users to Watchlist</label>
-                                    <select class="form-control select2" name="users[]" id="users" multiple="multiple"
-                                        style="width: 100%;" data-placeholder="Add users to watchlist">
-                                        @foreach ($users as $user)
-                                            <option value="{{ $user->id }}">
-                                                {{ $user->fname . ' ' . $user->lname }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-
-                            <!-- Submit Button -->
-
-                            <button type="submit" class="btn btn-primary w-100">Submit</button>
-
+                        <button type="submit" class="btn btn-info w-100">Update Watchlist</button>
                     </form>
 
 
@@ -307,7 +292,7 @@
         </script>
         <script>
             $(document).ready(function() {
-                $('#users').select2({
+                $('#watch_list').select2({
                     placeholder: "Add user to watchlist"
                 });
             });
