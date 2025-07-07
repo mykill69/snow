@@ -232,11 +232,13 @@
                                     Edit Account</a>
                             </li>
                         @endif
-                        <li class="dropdown-item">
+                        <li class="dropdown-item" data-toggle="modal" data-target="#aboutMISModal">
                             <a href="#">
                                 <i class="fa fa-info-circle nav-icon"></i>
-                                About</a>
+                                About MIS Ticketing System
+                            </a>
                         </li>
+
                         <a href="{{ route('logout') }}">
                             <li class="dropdown-item">
 
@@ -393,5 +395,5 @@
 
 
 </body>
-
+@include('modal.about')
 </html>

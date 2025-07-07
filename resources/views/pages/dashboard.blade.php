@@ -552,14 +552,14 @@
                                 <div class="col-md-6">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h3 class="card-title" style=" color: #1E152A;font-weight: bold;">Client
-                                                Feedback
-                                            </h3>
+                                            <h3 class="card-title" style="color: #1E152A; font-weight: bold;">Client
+                                                Feedback</h3>
                                         </div>
                                         <div class="card-body">
-                                            <div style="max-height: 500px; overflow-y: auto;">
+                                            <!-- Set fixed height for exactly 4 items; make it scrollable if more -->
+                                            <div style="max-height: 355px; overflow-y: auto;">
                                                 <ul class="contacts-list list-unstyled">
-                                                    @foreach ($clientFeedbacks->take(5) as $feedback)
+                                                    @foreach ($clientFeedbacks as $feedback)
                                                         @php
                                                             $isLong = strlen($feedback['message']) > 150;
                                                             $shortMessage = \Illuminate\Support\Str::limit(
@@ -568,12 +568,12 @@
                                                             );
                                                         @endphp
                                                         <li class="mb-3 pb-2 border-bottom">
-                                                            <div class="d-flex text-black">
+                                                            <div class="d-flex text-black" style="min-height: 50px;">
                                                                 <!-- Column 1: Icon -->
                                                                 <div class="pr-3">
                                                                     <div class="rounded-circle d-flex align-items-center justify-content-center text-black"
-                                                                        style="width: 50px; height: 50px; font-size: 24px;background-color:#FFB140;">
-                                                                        <i class="fas fa-user" style="color: #ffff;"></i>
+                                                                        style="width: 50px; height: 50px; font-size: 24px; background-color: #FFB140;">
+                                                                        <i class="fas fa-user" style="color: #fff;"></i>
                                                                     </div>
                                                                 </div>
 
@@ -608,10 +608,9 @@
                                                 </ul>
                                             </div>
                                         </div>
-
                                     </div>
-
                                 </div>
+
                             </div>
 
                             <div class="row">

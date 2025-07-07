@@ -75,17 +75,17 @@
                                                             $isAdmin = $currentUser->role === 'Administrator';
 
                                                             // Allow if the current user is editing themselves OR they're an admin editing a non-admin
-$canEdit =
-    $currentUser->id === $user->id ||
-    ($isAdmin && $user->role !== 'Administrator');
+                                                            $canEdit =
+                                                            $currentUser->id === $user->id ||
+                                                            ($isAdmin && $user->role !== 'Administrator');
                                                         @endphp
 
                                                         <!-- Edit Button -->
                                                         <a href="{{ route('userEdit', $user->id) }}"
                                                             class="btn btn-primary d-flex align-items-center justify-content-center"
                                                             style="width: 35px; height: 35px; border-top-right-radius: 0; border-bottom-right-radius: 0;
-                   pointer-events: {{ $canEdit ? 'auto' : 'none' }};
-                   opacity: {{ $canEdit ? '1' : '0.6' }};">
+                                                        pointer-events: {{ $canEdit ? 'auto' : 'none' }};
+                                                        opacity: {{ $canEdit ? '1' : '0.6' }};">
                                                             <i class="fas fa-pen"></i>
                                                         </a>
 
@@ -98,8 +98,8 @@ $canEdit =
                                                             <button type="submit"
                                                                 class="btn btn-danger d-flex align-items-center justify-content-center"
                                                                 style="width: 35px; height: 35px; border-top-left-radius: 0; border-bottom-left-radius: 0;
-                       pointer-events: {{ $canEdit ? 'auto' : 'none' }};
-                       opacity: {{ $canEdit ? '1' : '0.6' }};"
+                                                                    pointer-events: {{ $canEdit ? 'auto' : 'none' }};
+                                                                    opacity: {{ $canEdit ? '1' : '0.6' }};"
                                                                 {{ $canEdit ? '' : 'disabled' }}>
                                                                 <i class="fas fa-trash-alt"></i>
                                                             </button>

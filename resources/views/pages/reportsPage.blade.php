@@ -310,11 +310,10 @@
 
                                         <h3>Tickets per MIS Personnel (by Category) <small id="range-admin-label"
                                                 class="text-muted" style="font-size: 1rem;"></small></h3>
-                                        <div style="position: relative;">
+                                        <div style="position: relative; width: 100%; height: 450px;">
                                             <canvas id="categoryAdmin"
-                                                style="min-height: 353px; height: 353px; max-height: 353px; max-width: 100%;"></canvas>
+                                                style="width: 100%; height: 100%; display: block;"></canvas>
                                         </div>
-
 
 
                                     </div>
@@ -383,7 +382,7 @@
 
 
     <!-- AdminLTE App -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 
     <!-- Include Moment.js, Daterangepicker, Chart.js if not already included -->
     <script src="https://cdn.jsdelivr.net/npm/moment"></script>
@@ -473,6 +472,7 @@
                     },
                     options: {
                         responsive: true,
+                        maintainAspectRatio: false,
                         plugins: {
                             legend: {
                                 position: 'top'

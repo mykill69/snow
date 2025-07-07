@@ -112,24 +112,8 @@
     </div><!--/. container-fluid -->
     </section>
 
-    <!-- AdminLTE for demo purposes -->
-    <script src="template/dist/js/demo.js"></script>
-    <!-- jQuery -->
-    <script src="template/plugins/jquery/jquery.min.js"></script>
-    <!-- Bootstrap 4 -->
-    <script src="template/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <!-- ChartJS -->
-    <script src="template/plugins/chart.js/Chart.min.js"></script>
-    <script src="template/plugins/chart.js/Chart.js"></script>
-    <!-- AdminLTE App -->
-    <script src="template/dist/js/adminlte.min.js"></script>
-
-
-
-<!-- jQuery and Summernote JS -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-bs4.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="{{ asset('template/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
 
     </body>
