@@ -1,4 +1,68 @@
 @extends('access.layout')
+
+<style>
+    .swal2-article-popup {
+        font-family: 'Segoe UI', sans-serif;
+        font-size: 1rem;
+        text-align: left;
+        line-height: 1.6;
+    }
+
+    .swal-article-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #2c3e50;
+        border-bottom: 2px solid #f4f4f4;
+        padding-bottom: 0.5rem;
+    }
+
+    .swal-article-content {
+        max-height: 400px;
+        overflow-y: auto;
+        white-space: pre-line;
+        font-family: 'Segoe UI', sans-serif;
+        font-size: 1rem;
+        color: #333;
+    }
+
+    .swal-article-content::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .swal-article-content::-webkit-scrollbar-thumb {
+        background-color: #ccc;
+        border-radius: 4px;
+    }
+
+    .swal-article-meta {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        font-size: 0.9rem;
+        color: #666;
+    }
+    .swal2-article-popup .swal-article-body {
+        text-align: left;
+    }
+
+    .swal-article-title {
+        font-weight: bold;
+        font-size: 1.4rem;
+    }
+
+    .swal-article-content {
+        font-size: 1rem;
+        line-height: 1.6;
+        white-space: pre-wrap;
+    }
+
+    .swal-article-meta {
+        font-size: 0.9rem;
+        color: #666;
+    }
+</style>
+
+
 @section('body')
     <div class="content-wrapper" style="background-color: white;">
         <div class="content" style="padding-top: 1%;">
@@ -76,39 +140,28 @@
 
                                     <div class="card-body">
                                         @foreach ($articles as $article)
-                                            @php
-                                                $plainTextContent = strip_tags($article->content);
-                                                $isLong = strlen($plainTextContent) > 230;
-                                            @endphp
-
-                                            <div class="mb-2 border-bottom"
-                                                style="height: 150px; overflow: hidden; position: relative;">
+                                            <div class="mb-3 pb-2 border-bottom">
                                                 <!-- Title -->
-                                                <div class="mb-1">
-                                                    <h6 class="text-primary font-weight-bold mb-1">
+                                                <a href="#" class="swalDefaultInfo d-block text-decoration-none"
+                                                    data-title="{{ $article->title }}"
+                                                    data-content="{{ strip_tags($article->content) }}"
+                                                    data-code="{{ $article->article_code }}"
+                                                    data-author="{{ $article->admin->fname ?? 'Unknown' }}"
+                                                    data-date="{{ $article->created_at->format('M d, Y') }}">
+
+                                                    <h5 class="text-primary font-weight-bold mb-2">
                                                         <i class="fas fa-book mr-2"></i> {{ $article->title }}
-                                                    </h6>
-                                                </div>
+                                                    </h5>
+                                                </a>
 
-                                                <!-- Content -->
-                                                <p class="text-muted mb-2"
-                                                    style="max-height: 95px; overflow: hidden; text-overflow: ellipsis;">
-                                                    {!! nl2br(e(Str::limit($plainTextContent, 230, '...'))) !!}
-                                                    @if ($isLong)
-                                                        <a href="#" class="text-primary small">See more</a>
-                                                    @endif
-                                                </p>
-
-                                                <!-- Metadata -->
-                                                <div class="position-absolute w-100" style="bottom: 0;">
-                                                    <div class="small text-muted d-flex justify-content-between pt-2">
-                                                        <span>Article:
-                                                            <strong>{{ $article->article_code ?? 'Unknown' }}</strong></span>
-                                                        <span>Published by:
-                                                            <strong>{{ $article->admin->fname ?? 'Unknown' }}</strong></span>
-                                                        <span>Date:
-                                                            <strong>{{ $article->created_at->format('M d, Y') }}</strong></span>
-                                                    </div>
+                                                <!-- Footer Metadata -->
+                                                <div class="text-muted small d-flex flex-wrap justify-content-between">
+                                                    <span><strong>Article:</strong>
+                                                        {{ $article->article_code ?? 'Unknown' }}</span>
+                                                    <span><strong>Published by:</strong>
+                                                        {{ $article->admin->fname ?? 'Unknown' }}</span>
+                                                    <span><strong>Date:</strong>
+                                                        {{ $article->created_at->format('M d, Y') }}</span>
                                                 </div>
                                             </div>
                                         @endforeach
@@ -148,6 +201,58 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="{{ asset('template/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="{{ asset('template/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
+
+    <script>
+        $(function() {
+            $(document).on('click', '.swalDefaultInfo', function(e) {
+                e.preventDefault();
+
+                const title = $(this).data('title');
+                const content = $(this).data('content');
+                const code = $(this).data('code');
+                const author = $(this).data('author');
+                const date = $(this).data('date');
+
+                const htmlContent = `
+            <div class="swal-article-body">
+                <h4 class="swal-article-title mb-3">${title}</h4>
+                <div class="swal-article-content mb-4">${escapeHtml(content)}</div>
+                <hr>
+                <div class="swal-article-meta text-muted small">
+                    <div><strong>Article Code:</strong> ${code}</div>
+                    <div><strong>Published by:</strong> ${author}</div>
+                    <div><strong>Date:</strong> ${date}</div>
+                </div>
+            </div>
+        `;
+
+                Swal.fire({
+                    html: htmlContent,
+                    showConfirmButton: false,
+                    width: '720px',
+                    padding: '2rem',
+                    customClass: {
+                        popup: 'swal2-article-popup'
+                    }
+                });
+            });
+
+            // Escape unsafe HTML, preserve basic formatting
+            function escapeHtml(str) {
+                return String(str)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/\n/g, '<br>') // preserve line breaks
+                    .replace(/  /g, '&nbsp;&nbsp;'); // preserve spacing
+            }
+        });
+    </script>
+
+
+
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
