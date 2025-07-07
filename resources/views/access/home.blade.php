@@ -1,6 +1,13 @@
 @extends('access.layout')
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    .swal2-large-text {
+        font-size: 1.2rem;
+    }
+</style>
+
 @section('body')
     <div class="divider-wrapper mb-5" style="width: 100%; ">
         <div class="divider-wave-bg position-relative"
@@ -745,30 +752,25 @@
                 </div>
                 <div class="row">
                     <!-- Self Reset Password -->
-                    <div class="col-md-12 rounded mb-2">
-                        <a href="#" class="btn btn-lg w-100 text-white text-start py-3 px-4"
-                            style="background-color: #42BFDD;">
-
-                            <div class="row align-items-center w-100">
-                                <!-- Icon (col-2) -->
-                                <div class="col-md-1 pl-4 d-flex justify-content-center align-items-center"
-                                    style="font-size: 3.5rem;">
+                    <div class="col-md-12 mb-3">
+                        <button type="button" class="btn btn-lg text-white w-100 swalDefaultInfo"
+                            style="background: linear-gradient(135deg, #42BFDD, #1DA1F2); border: none; padding: 1.5rem 1rem; border-radius: 5px; transition: background 0.3s ease;">
+                            <div class="row align-items-center">
+                                <!-- Icon -->
+                                <div class="col-md-2 d-flex justify-content-center align-items-center pl-4"
+                                    style="font-size: 5rem;">
                                     <i class="fas fa-unlock-alt"></i>
                                 </div>
 
-                                <!-- Text content (col-10) -->
-                                <div class="col-md-11 text-center">
-                                    <div class="h4 mb-0 fw-bold">Self Reset Password</div>
-                                    <small class="text-white-50">Institutional Email & Teams</small>
+                                <!-- Text content -->
+                                <div class="col-md-10 text-start">
+                                    <div class="h1 fw-bold mb-1">Self Reset Password</div>
+                                    <div class="text-white-50">Institutional Email or Teams</div>
                                 </div>
                             </div>
-
-                        </a>
+                        </button>
                     </div>
                 </div>
-
-
-
 
             </div>
 
@@ -787,6 +789,10 @@
         <script src="{{ asset('template/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <!-- SweetAlert2 -->
+        <script src="{{ asset('template/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
+
+
 
         <script>
             function toggleAdminList(id) {
@@ -867,4 +873,82 @@
                 });
             });
         </script>
+
+        <script>
+            /* CLICK HANDLER */
+            $('.swalDefaultInfo').click(function() {
+
+                Swal.fire({
+                    title: 'Self Reset Password Request',
+                    icon: 'info',
+
+                    /* ---------- THE WHOLE FORM LIVES HERE ---------- */
+                    html: `
+            <form id="swal-request-form"
+                  action="{{ route('storeRequestForm') }}"
+                  method="POST" enctype="multipart/form-data">
+                @csrf
+
+                <!-- fixed / hidden values -------------------------------------->
+                <input type="hidden" name="full_name"
+                       value="{{ Auth::user()->fname }} {{ Auth::user()->mname }} {{ Auth::user()->lname }}">
+                <input type="hidden" name="department"  value="{{ Auth::user()->department }}">
+                <input type="hidden" name="category"    value="Institutional Email/MS Teams">
+                <input type="hidden" name="sub_cat"     value="Password Reset">
+                <input type="hidden" name="admin_id"    value="2,11">
+                <input type="hidden" name="priority"    value="2">      <!-- 2 = Medium -->
+                <input type="hidden" name="contact_no"  value="123">
+
+                <!-- subject ---------------------------------------------------->
+                <div class="form-group text-left mb-3">
+                  
+                    <input type="text" id="subject" name="subject"
+                           class="form-control"
+                           placeholder="Enter your MS Teams or Institutional Email here" required>
+                </div>
+
+                <!-- optional attachment --------------------------------------->
+                
+            </form>
+        `,
+                    /* ---------- /form -------------------------------------------------- */
+
+                    width: '650px',
+                    padding: '2em',
+                    customClass: {
+                        popup: 'swal2-large-text'
+                    },
+
+                    showCancelButton: true,
+                    confirmButtonText: 'Submit',
+                    cancelButtonText: 'Cancel',
+
+                    focusConfirm: false,
+
+                    /* Validate before closing */
+                    preConfirm: () => {
+                        const form = document.getElementById('swal-request-form');
+                        const subject = form.subject.value.trim();
+
+                        if (!subject) {
+                            Swal.showValidationMessage('Subject is required');
+                            return false;
+                        }
+
+                        /* ⇢ submit the form ⇠ */
+                        form.submit();
+                    }
+                });
+
+            });
+        </script>
+
+        <style>
+            /* Optional enlargement of default SweetAlert font */
+            .swal2-large-text {
+                font-size: 1.2rem;
+            }
+        </style>
+
+
     @endsection

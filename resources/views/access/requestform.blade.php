@@ -33,8 +33,15 @@
     }
 
     @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 </style>
 
@@ -160,7 +167,7 @@
                 </div>
             </form>
         </div>
-{{--         
+        {{--         
         <div id="page-loader"
      class="position-fixed top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center">
     <div class="spinner-border text-primary" role="status"></div>
@@ -172,23 +179,24 @@
         <div class="spinner-border text-primary" role="status"></div>
         <p>Submitting your request… please wait</p>
     </div> --}}
-<div id="page-loader"
-     class="position-fixed top-0 start-0 w-100 h-100 flex-column justify-content-center align-items-center"
-     style="z-index:1055;display:none;background:linear-gradient(135deg,#f8f9fa,#e9ecef);font-family:'Segoe UI',Tahoma,sans-serif">
+        <div id="page-loader"
+            class="position-fixed top-0 start-0 w-100 h-100 flex-column justify-content-center align-items-center"
+            style="z-index:1055;display:none;background:linear-gradient(135deg,#f8f9fa,#e9ecef);font-family:'Segoe UI',Tahoma,sans-serif">
 
-    {{-- static logo --}}
-    <img src="{{ asset('template/img/mis_logo2.png') }}" alt="MIS logo"
-         style="width:110px;height:auto;margin-bottom:28px">
+            {{-- static logo --}}
+            <img src="{{ asset('template/img/mis_logo2.png') }}" alt="MIS logo"
+                style="width:110px;height:auto;margin-bottom:28px">
 
-    {{-- progress bar --}}
-    <div class="progress-loader" style="width:220px;height:12px;background:#dee2e6;border-radius:6px;overflow:hidden">
-        <div id="progress-bar" style="width:0;height:100%;background:#0d6efd;transition:width .4s ease"></div>
-    </div>
+            {{-- progress bar --}}
+            <div class="progress-loader"
+                style="width:220px;height:12px;background:#dee2e6;border-radius:6px;overflow:hidden">
+                <div id="progress-bar" style="width:0;height:100%;background:#0d6efd;transition:width .4s ease"></div>
+            </div>
 
-    <p style="margin-top:1.3rem;font-size:1.15rem;font-weight:500;color:#343a40">
-        Submitting your request… please wait
-    </p>
-</div>
+            <p style="margin-top:1.3rem;font-size:1.15rem;font-weight:500;color:#343a40">
+                Submitting your request… please wait
+            </p>
+        </div>
 
         <!-- Fixed Footer -->
         <footer class="text-muted text-center bg-white py-2"
@@ -207,56 +215,58 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 
-   <script>
-document.addEventListener('DOMContentLoaded', () => {
-    const form   = document.getElementById('request-form');
-    const loader = document.getElementById('page-loader');
-    const bar    = document.getElementById('progress-bar');
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const form = document.getElementById('request-form');
+                const loader = document.getElementById('page-loader');
+                const bar = document.getElementById('progress-bar');
 
-    form.addEventListener('submit', e => {
-        e.preventDefault();                        // keep page
-        loader.style.display = 'flex';             // show overlay
-        animateBarTo(90, 8000);                    // creep 0‑→‑90 % over ~8 s
+                form.addEventListener('submit', e => {
+                    e.preventDefault(); // keep page
+                    loader.style.display = 'flex'; // show overlay
+                    animateBarTo(90, 8000); // creep 0‑→‑90 % over ~8 s
 
-        const fd = new FormData(form);
+                    const fd = new FormData(form);
 
-        fetch("{{ route('storeRequestForm') }}", {
-            method : 'POST',
-            headers: { 'X-Requested-With':'XMLHttpRequest',
-                       'X-CSRF-TOKEN'   : document.querySelector('input[name=_token]').value },
-            body   : fd
-        })
-        .then(r => r.ok ? r.json() : Promise.reject(r))
-        .then(() => finishAndRedirect())
-        .catch(() => showError());
-    });
+                    fetch("{{ route('storeRequestForm') }}", {
+                            method: 'POST',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'X-CSRF-TOKEN': document.querySelector('input[name=_token]').value
+                            },
+                            body: fd
+                        })
+                        .then(r => r.ok ? r.json() : Promise.reject(r))
+                        .then(() => finishAndRedirect())
+                        .catch(() => showError());
+                });
 
-    /* ---- helpers ---- */
-    function animateBarTo(target, duration) {
-        const start   = parseFloat(bar.style.width) || 0;
-        const diff    = target - start;
-        const startTs = performance.now();
-        requestAnimationFrame(function step(now) {
-            const pct = Math.min(1, (now - startTs) / duration);
-            bar.style.width = (start + diff * pct) + '%';
-            if (pct < 1) requestAnimationFrame(step);
-        });
-    }
+                /* ---- helpers ---- */
+                function animateBarTo(target, duration) {
+                    const start = parseFloat(bar.style.width) || 0;
+                    const diff = target - start;
+                    const startTs = performance.now();
+                    requestAnimationFrame(function step(now) {
+                        const pct = Math.min(1, (now - startTs) / duration);
+                        bar.style.width = (start + diff * pct) + '%';
+                        if (pct < 1) requestAnimationFrame(step);
+                    });
+                }
 
-    function finishAndRedirect() {
-        animateBarTo(100, 500);               // fill last 10 %
-        setTimeout(() => window.location.href = "{{ route('home') }}", 600);
-    }
+                function finishAndRedirect() {
+                    animateBarTo(100, 500); // fill last 10 %
+                    setTimeout(() => window.location.href = "{{ route('home') }}", 600);
+                }
 
-    function showError() {
-        bar.style.background = '#dc3545';     // red bar
-        animateBarTo(100, 300);
-        loader.querySelector('p').textContent =
-            'Something went wrong – please try again';
-        setTimeout(() => loader.style.display = 'none', 2000);
-    }
-});
-</script>
+                function showError() {
+                    bar.style.background = '#dc3545'; // red bar
+                    animateBarTo(100, 300);
+                    loader.querySelector('p').textContent =
+                        'Something went wrong – please try again';
+                    setTimeout(() => loader.style.display = 'none', 2000);
+                }
+            });
+        </script>
 
 
         <script>

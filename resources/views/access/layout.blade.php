@@ -17,7 +17,8 @@
     <!-- Toastr -->
     <link rel="stylesheet" href="{{ asset('template/plugins/toastr/toastr.min.css') }}">
    
-    <!-- SweetAlert2 -->
+     <!-- SweetAlert2 -->
+  <link rel="stylesheet" href="{{ asset('template/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{{ asset('template/plugins/fontawesome-free/css/all.min.css') }}">
     <!-- Theme style -->
@@ -316,7 +317,8 @@
                 placeholder: "Select About"
             });
         });
- 
+
+
 
     </script>
 
