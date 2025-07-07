@@ -22,7 +22,7 @@
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table id="example1" class="table table-striped text-sm">
+                                    <table id="example1" class="table table-striped" style="font-size:0.8rem;">
                                         <thead class="table-light">
                                             <tr>
                                                 <th>Logs</th>
