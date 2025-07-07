@@ -648,6 +648,8 @@ $pieData = $categoryCounts->pluck('total')->toArray();
 //         'data' => $categoryCounts->pluck('total'),
 //     ]);
 // }
+
+
 public function barChartData(Request $request)
 {
     // 1. Filter tickets by date range (if provided)
@@ -684,45 +686,57 @@ public function barChartData(Request $request)
     ]);
 }
 
-public function adminStackChartData(Request $request)
+public function adminCategoryReport(Request $request)
 {
-    // 1. grab only what we need (category + admin’s fname/lname)
-    $tickets = TicketDtl::with('admin:id,fname,lname')
-        ->when(
-            $request->filled(['start', 'end']),
-            fn ($q) => $q->whereBetween('created_at', [$request->start, $request->end])
+    // Query: count per (admin_id, category)
+    $rows = DB::table('ticket_dtl')
+        ->selectRaw('admin_id, TRIM(LOWER(category)) AS category, COUNT(*) AS total')
+        ->where('status', 3)
+        ->whereNotIn('admin_id', [3, 12])
+        ->when($request->filled(['start', 'end']), fn ($q) =>
+            $q->whereBetween('created_at', [
+                Carbon::parse($request->start)->startOfDay(),
+                Carbon::parse($request->end)->endOfDay()
+            ])
         )
-        ->get(['category', 'assigned_to']);
+        ->groupBy('admin_id', 'category')
+        ->get();
 
-    // 2. axis labels
-    $admins     = $tickets->pluck('admin.full_name')          // «— NEW
-                         ->filter()                           // drop tickets with no admin
-                         ->unique()
-                         ->sort()
-                         ->values();
+    // Return empty if no data
+    if ($rows->isEmpty()) {
+        return response()->json(['labels' => [], 'datasets' => []]);
+    }
 
-    $categories = $tickets->pluck('category')->unique()->sort()->values();
+    // Get admin names in same order as appearance
+    $adminIds = $rows->pluck('admin_id')->unique()->values();
+    $admins = User::whereIn('id', $adminIds)
+        ->orderByRaw('FIELD(id, ' . $adminIds->join(',') . ')')
+        ->get()
+        ->map(fn ($u) => ['id' => $u->id, 'name' => trim("$u->fname $u->lname")]);
 
-    // 3. datasets (one per category)
-    $datasets = $categories->map(function ($cat) use ($admins, $tickets) {
-        $data = $admins->map(function ($admin) use ($cat, $tickets) {
-            return $tickets
-                ->where('admin.full_name', $admin)            // «— NEW
-                ->where('category',        $cat)
-                ->count();
+    // Unique categories (lowercase, trimmed)
+    $categories = $rows->pluck('category')->unique()->sort()->values();
+
+    // Dataset = 1 per category, showing count per admin
+    $datasets = $categories->map(function ($cat) use ($adminIds, $rows) {
+        $data = $adminIds->map(function ($adminId) use ($cat, $rows) {
+            return $rows
+                ->first(fn ($r) => $r->admin_id == $adminId && $r->category === $cat)
+                ->total ?? 0;
         });
 
         return [
-            'label' => $cat ?: '—',
-            'data'  => $data,
+            'label' => ucwords($cat),
+            'data' => $data,
         ];
     });
 
     return response()->json([
-        'labels'   => $admins,
-        'datasets' => $datasets,
+        'labels' => $admins->pluck('name'),   // X-axis: Admin names
+        'datasets' => $datasets               // One dataset per category
     ]);
 }
+
 
 public function downloadTicketReportsPDF(Request $request)
 {

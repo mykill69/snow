@@ -279,58 +279,78 @@
                                     <div class="tab-pane fade" id="custom-tabs-two-messages" role="tabpanel"
                                         aria-labelledby="custom-tabs-two-messages-tab">
 
+                                        <!-- Date Picker for MIS Services -->
+                                        <!-- Date picker for MIS Services -->
                                         <div class="d-flex justify-content-end mb-2">
-                                            <button id="tickets-range" class="btn btn-default"
-                                                style="cursor: pointer; background-color:#FFB140; z-index:1050;">
+                                            <button id="range-bar" class="btn btn-default"
+                                                style="background-color:#FFB140;">
                                                 <i class="far fa-calendar-alt text-white"></i>
                                                 <span class="text-white">Select date</span>
                                                 <i class="fas fa-caret-down text-white"></i>
                                             </button>
                                         </div>
 
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <h3 class="card-title">
-                                                    MIS Services Report
-                                                    <small id="selected-range-label" class="text-muted"
-                                                        style="font-size: 1rem;"></small>
-                                                </h3>
-                                                <div style="height: 400px; position: relative;">
-                                                    <canvas id="horizontalBarChart" style="z-index: 1;"></canvas>
-                                                </div>
-                                                
-                                            </div>
-                                           
+                                        <h3>MIS Services Report <small id="range-bar-label" class="text-muted"
+                                                style="font-size: 1rem;"></small></h3>
+                                        <div style="height: 400px; width: 100%; position: relative;">
+                                            <canvas id="horizontalBarChart"></canvas>
                                         </div>
-                                    </div>
 
-                                    <div class="tab-pane fade" id="custom-tabs-two-settings" role="tabpanel"
-                                        aria-labelledby="custom-tabs-two-settings-tab">
-                                        Pellentesque vestibulum commodo nibh nec blandit. Maecenas neque magna, iaculis
-                                        tempus turpis ac, ornare sodales tellus. Mauris eget blandit dolor. Quisque
-                                        tincidunt venenatis vulputate. Morbi euismod molestie tristique. Vestibulum
-                                        consectetur dolor a vestibulum pharetra. Donec interdum placerat urna nec pharetra.
-                                        Etiam eget dapibus orci, eget aliquet urna. Nunc at consequat diam. Nunc et felis ut
-                                        nisl commodo dignissim. In hac habitasse platea dictumst. Praesent imperdiet
-                                        accumsan ex sit amet facilisis.
+                                        <hr class="my-4">
+
+                                        <!-- Date picker for Admin Category Chart -->
+                                        <div class="d-flex justify-content-end mb-2">
+                                            <button id="range-admin" class="btn btn-default"
+                                                style="background-color:#FFB140;">
+                                                <i class="far fa-calendar-alt text-white"></i>
+                                                <span class="text-white">Select date</span>
+                                                <i class="fas fa-caret-down text-white"></i>
+                                            </button>
+                                        </div>
+
+                                        <h3>Tickets per MIS Personnel (by Category) <small id="range-admin-label"
+                                                class="text-muted" style="font-size: 1rem;"></small></h3>
+                                        <div style="position: relative;">
+                                            <canvas id="categoryAdmin"
+                                                style="min-height: 353px; height: 353px; max-height: 353px; max-width: 100%;"></canvas>
+                                        </div>
+
+
+
                                     </div>
                                 </div>
-                                <div class="card-body">
-                                    <div id="pdfPreviewContainer" style="display: none;" class="mt-5 mb-3">
-                                        <h5>PDF Preview</h5>
-                                        <iframe id="pdfIframe" src="" width="100%" height="800px"
-                                            frameborder="0"></iframe>
-                                    </div>
-                                </div>
+
+
+
                             </div>
-                            <!-- /.card -->
 
+                            <div class="tab-pane fade" id="custom-tabs-two-settings" role="tabpanel"
+                                aria-labelledby="custom-tabs-two-settings-tab">
+                                Pellentesque vestibulum commodo nibh nec blandit. Maecenas neque magna, iaculis
+                                tempus turpis ac, ornare sodales tellus. Mauris eget blandit dolor. Quisque
+                                tincidunt venenatis vulputate. Morbi euismod molestie tristique. Vestibulum
+                                consectetur dolor a vestibulum pharetra. Donec interdum placerat urna nec pharetra.
+                                Etiam eget dapibus orci, eget aliquet urna. Nunc at consequat diam. Nunc et felis ut
+                                nisl commodo dignissim. In hac habitasse platea dictumst. Praesent imperdiet
+                                accumsan ex sit amet facilisis.
+                            </div>
                         </div>
-
+                        <div class="card-body">
+                            <div id="pdfPreviewContainer" style="display: none;" class="mt-5 mb-3">
+                                <h5>PDF Preview</h5>
+                                <iframe id="pdfIframe" src="" width="100%" height="800px"
+                                    frameborder="0"></iframe>
+                            </div>
+                        </div>
                     </div>
+                    <!-- /.card -->
+
                 </div>
+
             </div>
         </div>
+    </div>
+    </div>
     </div>
 
 
@@ -373,106 +393,172 @@
 
 
     <script>
-       $(function () {
-    const ctx = document.getElementById('horizontalBarChart').getContext('2d');
-    let chartInstance;
+        $(function() {
+            const BAR_URL = @json(route('reports.barChartData'));
+            const ADM_URL = @json(route('adminCategoryReport'));
 
-    function renderChart(labels, datasets) {
-        if (chartInstance) chartInstance.destroy();
+            let horChart, admChart;
+            const horCtx = document.getElementById('horizontalBarChart').getContext('2d');
+            const admCtx = document.getElementById('categoryAdmin').getContext('2d');
 
-        chartInstance = new Chart(ctx, {
-            type: 'bar',
-            data: { labels, datasets },
-            options: {
-    indexAxis: 'y',
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-        legend: {
-            position: 'top'
-        },
-        tooltip: {
-    mode: 'index',
-    intersect: false,
-    callbacks: {
-        // Show category as title
-        title: function(tooltipItems) {
-            return tooltipItems[0].label; // this is the category
-        },
-        // Show subcategory and value (only if value > 0)
-        label: function(context) {
-            const value = context.raw;
-            if (value === 0) return null; // hide if zero
-            const subCategory = context.dataset.label;
-            return `${subCategory}: ${value}`;
-        }
-    }
-}
-    },
-    scales: {
-        x: {
-            stacked: true,
-            beginAtZero: true,
-            title: {
-                display: true,
-                text: 'Ticket Count'
+            const palette = [
+                '#00887A', '#C0392B', '#D68910', '#5B2C6F', '#2C3E50', '#117864',
+                '#884EA0', '#CA6F1E', '#1F618D', '#7B241C', '#2874A6', '#196F3D',
+                '#7D6608', '#4A235A', '#616A6B', '#633974', '#943126', '#2471A3'
+            ];
+
+            const admPalette = [
+                '#FFB140', '#4E6766', '#1E152A', '#F05454', '#6A7FDB', '#73956F',
+                '#4C3A51', '#94B447', '#5C5470', '#55828B', '#D87CAC', '#B4656F'
+            ];
+
+            function formatDatasets(raw) {
+                return raw.map((d, i) => ({
+                    ...d,
+                    backgroundColor: palette[i % palette.length],
+                    borderRadius: 3,
+                    barThickness: 25
+                }));
             }
-        },
-        y: {
-            stacked: true
-        }
-    }
-}
 
+            function renderHor(labels, datasets) {
+                if (horChart) horChart.destroy();
+                horChart = new Chart(horCtx, {
+                    type: 'bar',
+                    data: {
+                        labels,
+                        datasets
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top'
+                            },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false,
+                                callbacks: {
+                                    label: ctx => ctx.raw === 0 ? null : `${ctx.dataset.label}: ${ctx.raw}`
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                stacked: true,
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Ticket Count'
+                                }
+                            },
+                            y: {
+                                stacked: true
+                            }
+                        }
+                    }
+                });
+            }
+
+            function renderAdm(labels, datasets) {
+                if (admChart) admChart.destroy();
+                datasets.forEach((ds, i) => ds.backgroundColor = admPalette[i % admPalette.length]);
+                admChart = new Chart(admCtx, {
+                    type: 'bar',
+                    data: {
+                        labels,
+                        datasets
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top'
+                            }
+                        },
+                        scales: {
+                            x: {
+                                stacked: true
+                            },
+                            y: {
+                                stacked: true,
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+
+            function loadHor(start = null, end = null) {
+                $.get(BAR_URL, {
+                    start,
+                    end
+                }, res => {
+                    renderHor(res.labels, formatDatasets(res.datasets));
+                });
+            }
+
+            function loadAdm(start = null, end = null) {
+                $.get(ADM_URL, {
+                    start,
+                    end
+                }, res => {
+                    renderAdm(res.labels, res.datasets);
+                });
+            }
+
+            // Defaults
+            const startDefault = moment().subtract(6, 'days');
+            const endDefault = moment();
+            const defaultLabel = `${startDefault.format('MMM D, YYYY')} – ${endDefault.format('MMM D, YYYY')}`;
+            $('#range-bar-label').text(`(${defaultLabel})`);
+            $('#range-admin-label').text(`(${defaultLabel})`);
+            loadHor(startDefault.format('YYYY-MM-DD HH:mm:ss'), endDefault.format('YYYY-MM-DD HH:mm:ss'));
+            loadAdm(startDefault.format('YYYY-MM-DD HH:mm:ss'), endDefault.format('YYYY-MM-DD HH:mm:ss'));
+
+            // Datepicker for MIS Services
+            $('#range-bar').daterangepicker({
+                startDate: startDefault,
+                endDate: endDefault,
+                ranges: {
+                    'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1,
+                        'month').endOf('month')]
+                }
+            }, function(start, end) {
+                const label = `${start.format('MMM D, YYYY')} – ${end.format('MMM D, YYYY')}`;
+                $('#range-bar-label').text(`(${label})`);
+                loadHor(start.startOf('day').format('YYYY-MM-DD HH:mm:ss'), end.endOf('day').format(
+                    'YYYY-MM-DD HH:mm:ss'));
+            });
+
+            // Datepicker for Admin Category
+            $('#range-admin').daterangepicker({
+                startDate: startDefault,
+                endDate: endDefault,
+                ranges: {
+                    'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1,
+                        'month').endOf('month')]
+                }
+            }, function(start, end) {
+                const label = `${start.format('MMM D, YYYY')} – ${end.format('MMM D, YYYY')}`;
+                $('#range-admin-label').text(`(${label})`);
+                loadAdm(start.startOf('day').format('YYYY-MM-DD HH:mm:ss'), end.endOf('day').format(
+                    'YYYY-MM-DD HH:mm:ss'));
+            });
         });
-    }
-
-    // ⬅️ initial load (no filter)
-    $.get('{{ route("reports.barChartData") }}', res => {
-        renderChart(res.labels, formatDatasets(res.datasets));
-    });
-
-    // helper to apply colours & style
-    function formatDatasets(raw) {
-        const palette = [
-            '#FFB140','#4E6766','#1E152A','#C94C4C','#3B8EA5',
-            '#A1C349','#B388EB','#F4F1DE','#3C3C3C','#D9BF77','#95A78D'
-        ];
-        return raw.map((d,i) => ({
-            ...d,
-            backgroundColor: palette[i % palette.length],
-            borderRadius: 3,
-            barThickness: 25
-        }));
-    }
-
-    // ⬅️ date‑range picker
-    $('#tickets-range').daterangepicker({
-        ranges: {
-            'Today':       [moment(), moment()],
-            'Yesterday':   [moment().subtract(1,'days'), moment().subtract(1,'days')],
-            'Last 7 Days': [moment().subtract(6,'days'), moment()],
-            'Last 30 Days':[moment().subtract(29,'days'), moment()],
-            'This Month':  [moment().startOf('month'), moment().endOf('month')],
-            'Last Month':  [moment().subtract(1,'month').startOf('month'),
-                            moment().subtract(1,'month').endOf('month')]
-        },
-        startDate: moment().subtract(6,'days'),
-        endDate  : moment()
-    }, (start,end) => {
-        const rangeText = `${start.format('MMM D, YYYY')} - ${end.format('MMM D, YYYY')}`;
-        $('#tickets-range span.text-white').text(rangeText);
-        $('#selected-range-label').text(`(${rangeText})`);
-
-        $.get('{{ route("reports.barChartData") }}',
-            { start: start.format('YYYY-MM-DD'), end: end.format('YYYY-MM-DD') },
-            res => renderChart(res.labels, formatDatasets(res.datasets))
-        );
-    });
-});
-
     </script>
-
 
 
     <script>

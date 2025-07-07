@@ -45,11 +45,7 @@ Route::group(['middleware'=>['guest']],function(){
     //Generate reports
     Route::get('/reports-pages', [PagesController::class, 'ticketReports'])->name('ticketReports');
     Route::get('/reports-pages/bar-data', [PagesController::class, 'barChartData'])->name('reports.barChartData');
-    // Route::get('/reports-pages/admin-bar-data', [PagesController::class, 'barChartAdminData'])->name('reports.adminBarData');
-Route::get(
-    '/reports-pages/admin-stack-data',
-    [PagesController::class, 'adminStackChartData']
-)->name('reports.adminStackChartData');
+    Route::get('/reports-pages/admin-category-report', [PagesController::class, 'adminCategoryReport'])->name('adminCategoryReport');
 
 
 
