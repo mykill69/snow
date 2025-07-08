@@ -65,24 +65,24 @@
 
         <!-- Beautified button group -->
         <div class="d-flex align-items-center mb-2">
-            <div class="btn-group" role="group" aria-label="Text formatting tools">
+            <div class="note-btn-group btn-group note-para" role="group" aria-label="Text formatting tools">
                 <button 
                     type="button" 
-                    class="btn btn-sm btn-outline-primary me-2" 
+                    class="note-btn btn btn-light btn-sm" 
                     onclick="addBulletToSelection()" 
                     title="Toggle bullet">
                     <i class="fas fa-list-ul"></i>
                 </button>
                 <button 
                     type="button" 
-                    class="btn btn-sm btn-outline-secondary me-2" 
+                    class="note-btn btn btn-light btn-sm" 
                     onclick="addNumberingToSelection()" 
                     title="Toggle numbering">
                     <i class="fas fa-list-ol"></i>
                 </button>
                 <button 
                     type="button" 
-                    class="btn btn-sm btn-outline-success" 
+                    class="note-btn btn btn-light btn-sm" 
                     onclick="addParagraphIndent()" 
                     title="Toggle paragraph indent">
                     <i class="fas fa-paragraph"></i>
@@ -124,7 +124,6 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
-
 <script>
 function addBulletToSelection() {
     const textarea = document.getElementById("content");
@@ -134,13 +133,20 @@ function addBulletToSelection() {
     const selectedText = text.substring(start, end);
 
     if (selectedText.trim() !== "") {
-        let newText;
-        if (selectedText.trim().startsWith("•")) {
-            newText = selectedText.replace(/^•\s*/, '');
-        } else {
-            newText = "• " + selectedText;
-        }
+        const lines = selectedText.split("\n");
 
+        // Check if already all have bullet
+        const allBulleted = lines.every(line => line.trim().startsWith("•"));
+
+        const updatedLines = lines.map(line => {
+            if (allBulleted) {
+                return line.replace(/^•\s*/, '');
+            } else {
+                return "• " + line;
+            }
+        });
+
+        const newText = updatedLines.join("\n");
         textarea.value = text.substring(0, start) + newText + text.substring(end);
         textarea.focus();
         textarea.selectionStart = start;
@@ -158,19 +164,14 @@ function addNumberingToSelection() {
     if (selectedText.trim() !== "") {
         const lines = selectedText.split("\n");
 
-        // Detect if already numbered
-        const isNumbered = lines.every(line => /^\d+\.\s/.test(line.trim()));
+        // Check if already numbered
+        const allNumbered = lines.every(line => /^\d+\.\s/.test(line.trim()));
 
-        let newLines;
-        if (isNumbered) {
-            // Remove numbering
-            newLines = lines.map(line => line.replace(/^\d+\.\s*/, ''));
-        } else {
-            // Add numbering
-            newLines = lines.map((line, i) => `${i + 1}. ${line}`);
-        }
+        const updatedLines = allNumbered
+            ? lines.map(line => line.replace(/^\d+\.\s*/, ''))
+            : lines.map((line, i) => `${i + 1}. ${line}`);
 
-        const newText = newLines.join("\n");
+        const newText = updatedLines.join("\n");
         textarea.value = text.substring(0, start) + newText + text.substring(end);
         textarea.focus();
         textarea.selectionStart = start;
@@ -187,11 +188,11 @@ function addParagraphIndent() {
 
     if (selectedText.trim() !== "") {
         let newText;
+
+        // Add or remove a tab or 4 spaces
         if (selectedText.startsWith("\t") || selectedText.startsWith("    ")) {
-            // Remove indent
             newText = selectedText.replace(/^(\t| {4})/, '');
         } else {
-            // Add indent
             newText = "\t" + selectedText;
         }
 

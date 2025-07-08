@@ -50,7 +50,8 @@
                                     <li class="nav-item">
                                         <a class="nav-link" id="custom-tabs-two-settings-tab" data-toggle="pill"
                                             href="#custom-tabs-two-settings" role="tab"
-                                            aria-controls="custom-tabs-two-settings" aria-selected="false">Settings</a>
+                                            aria-controls="custom-tabs-two-settings" aria-selected="false">Accomplishment
+                                            Report</a>
                                     </li>
                                 </ul>
                             </div>
@@ -317,39 +318,35 @@
 
 
                                     </div>
+
+
+                                    <div class="tab-pane fade" id="custom-tabs-two-settings" role="tabpanel"
+                                        aria-labelledby="custom-tabs-two-settings-tab">
+                                        Pellentesque vestibulum commodo nibh nec blandit. Maecenas neque magna, iaculis
+                                        tempus turpis ac, ornare sodales tellus. Mauris eget blandit dolor. Quisque
+                                        tincidunt venenatis vulputate. Morbi euismod molestie tristique. Vestibulum
+                                        consectetur dolor a vestibulum pharetra. Donec interdum placerat urna nec pharetra.
+                                        Etiam eget dapibus orci, eget aliquet urna. Nunc at consequat diam. Nunc et felis ut
+                                        nisl commodo dignissim. In hac habitasse platea dictumst. Praesent imperdiet
+                                        accumsan ex sit amet facilisis.
+                                    </div>
                                 </div>
-
-
-
+                                <div class="card-body">
+                                    <div id="pdfPreviewContainer" style="display: none;" class="mt-5 mb-3">
+                                        <h5>PDF Preview</h5>
+                                        <iframe id="pdfIframe" src="" width="100%" height="800px"
+                                            frameborder="0"></iframe>
+                                    </div>
+                                </div>
                             </div>
+                            <!-- /.card -->
 
-                            <div class="tab-pane fade" id="custom-tabs-two-settings" role="tabpanel"
-                                aria-labelledby="custom-tabs-two-settings-tab">
-                                Pellentesque vestibulum commodo nibh nec blandit. Maecenas neque magna, iaculis
-                                tempus turpis ac, ornare sodales tellus. Mauris eget blandit dolor. Quisque
-                                tincidunt venenatis vulputate. Morbi euismod molestie tristique. Vestibulum
-                                consectetur dolor a vestibulum pharetra. Donec interdum placerat urna nec pharetra.
-                                Etiam eget dapibus orci, eget aliquet urna. Nunc at consequat diam. Nunc et felis ut
-                                nisl commodo dignissim. In hac habitasse platea dictumst. Praesent imperdiet
-                                accumsan ex sit amet facilisis.
-                            </div>
                         </div>
-                        <div class="card-body">
-                            <div id="pdfPreviewContainer" style="display: none;" class="mt-5 mb-3">
-                                <h5>PDF Preview</h5>
-                                <iframe id="pdfIframe" src="" width="100%" height="800px"
-                                    frameborder="0"></iframe>
-                            </div>
-                        </div>
+
                     </div>
-                    <!-- /.card -->
-
                 </div>
-
             </div>
         </div>
-    </div>
-    </div>
     </div>
 
 

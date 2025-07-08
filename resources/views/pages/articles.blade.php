@@ -10,7 +10,68 @@
         padding: 0 10px;
         margin-top: 0.31rem;
     }
+    
+    .swal2-article-popup {
+        font-family: 'Segoe UI', sans-serif;
+        font-size: 1rem;
+        text-align: left;
+        line-height: 1.6;
+    }
+
+    .swal-article-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #2c3e50;
+        border-bottom: 2px solid #f4f4f4;
+        padding-bottom: 0.5rem;
+    }
+
+    .swal-article-content {
+        max-height: 400px;
+        overflow-y: auto;
+        white-space: pre-line;
+        font-family: 'Segoe UI', sans-serif;
+        font-size: 1rem;
+        color: #333;
+    }
+
+    .swal-article-content::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .swal-article-content::-webkit-scrollbar-thumb {
+        background-color: #ccc;
+        border-radius: 4px;
+    }
+
+    .swal-article-meta {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        font-size: 0.9rem;
+        color: #666;
+    }
+    .swal2-article-popup .swal-article-body {
+        text-align: left;
+    }
+
+    .swal-article-title {
+        font-weight: bold;
+        font-size: 1.4rem;
+    }
+
+    .swal-article-content {
+        font-size: 1rem;
+        line-height: 1.6;
+        white-space: pre-wrap;
+    }
+
+    .swal-article-meta {
+        font-size: 0.9rem;
+        color: #666;
+    }
 </style>
+
 
 @section('body')
     <div class="content-wrapper">
@@ -36,30 +97,35 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($articles as $article)
-                                                <tr>
-                                                    <td>
-                                                        <a href="#" class="text-primary text-decoration-none">
-                                                            {{ $article->article_code }}
-                                                        </a>
-                                                    </td>
-                                                    <td>{{ $article->title }}</td>
-                                                    <td>
-                                                        @if ($article->article_type == 1)
-                                                            <span class="badge badge-primary">FAQs</span>
-                                                        @elseif ($article->article_type == 2)
-                                                            <span class="badge badge-success">Article</span>
-                                                        @else
-                                                            <span class="badge badge-secondary">Unknown</span>
-                                                        @endif
-                                                    </td>
+    @foreach ($articles as $article)
+        <tr>
+            <td>
+                <a href="#"
+                   class="text-primary text-decoration-none swalDefaultInfo"
+                   data-title="{{ $article->title }}"
+                   data-content="{{ strip_tags($article->content) }}"
+                   data-code="{{ $article->article_code }}"
+                   data-author="{{ $article->admin->fname ?? 'Unknown' }} {{ $article->admin->lname ?? '' }}"
+                   data-date="{{ $article->created_at->format('M d, Y') }}">
+                    {{ $article->article_code }}
+                </a>
+            </td>
+            <td>{{ $article->title }}</td>
+            <td>
+                @if ($article->article_type == 1)
+                    <span class="badge badge-primary">FAQs</span>
+                @elseif ($article->article_type == 2)
+                    <span class="badge badge-success">Article</span>
+                @else
+                    <span class="badge badge-secondary">Unknown</span>
+                @endif
+            </td>
+            <td>{{ $article->admin->fname ?? 'N/A' }} {{ $article->admin->lname ?? '' }}</td>
+            <td>{{ $article->created_at->format('M d, Y h:i A') }}</td>
+        </tr>
+    @endforeach
+</tbody>
 
-                                                    <td>{{ $article->admin->fname ?? 'N/A' }}
-                                                        {{ $article->admin->lname ?? '' }}</td>
-                                                    <td>{{ $article->created_at->format('M d, Y h:i A') }}</td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
                                     </table>
                                 </div>
                             </div>
@@ -114,8 +180,55 @@
 
    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="{{ asset('template/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <!-- SweetAlert2 -->
+    <script src="{{ asset('template/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
+    <script>
+        $(function() {
+            $(document).on('click', '.swalDefaultInfo', function(e) {
+                e.preventDefault();
 
+                const title = $(this).data('title');
+                const content = $(this).data('content');
+                const code = $(this).data('code');
+                const author = $(this).data('author');
+                const date = $(this).data('date');
 
+                const htmlContent = `
+            <div class="swal-article-body">
+                <h4 class="swal-article-title mb-3">${title}</h4>
+                <div class="swal-article-content mb-4">${escapeHtml(content)}</div>
+                <hr>
+                <div class="swal-article-meta text-muted small">
+                    <div><strong>Article Code:</strong> ${code}</div>
+                    <div><strong>Published by:</strong> ${author}</div>
+                    <div><strong>Date:</strong> ${date}</div>
+                </div>
+            </div>
+        `;
+
+                Swal.fire({
+                    html: htmlContent,
+                    showConfirmButton: false,
+                    width: '720px',
+                    padding: '2rem',
+                    customClass: {
+                        popup: 'swal2-article-popup'
+                    }
+                });
+            });
+
+            // Escape unsafe HTML, preserve basic formatting
+            function escapeHtml(str) {
+                return String(str)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/\n/g, '<br>') // preserve line breaks
+                    .replace(/  /g, '&nbsp;&nbsp;'); // preserve spacing
+            }
+        });
+    </script>
+    
     </body>
 
     </html>
