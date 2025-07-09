@@ -41,11 +41,13 @@ public function home()
     return view('access.home', compact('tickets', 'allTickets', 'user', 'pendingSurveyCount','overallUserTicket'));
 }
 
+
 public function suggestions(Request $request)
 {
     $query = $request->get('query', '');
 
-    $tickets = TicketDtl::where('ticket_no', 'like', "%$query%")
+    $tickets = TicketDtl::with('admin') // relationship defined in TicketDtl model
+        ->where('ticket_no', 'like', "%$query%")
         ->orWhere('category', 'like', "%$query%")
         ->orWhere('sub_cat', 'like', "%$query%")
         ->orWhere('subject', 'like', "%$query%")
