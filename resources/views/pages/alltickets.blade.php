@@ -57,10 +57,11 @@
 
                                             @if ($ticketsForTab->count())
                                                 <div class="table-responsive">
-                                                    <table class="table table-bordered text-sm text-center"
-                                                        id="example-{{ $tabId }}">
+                                                    <table class="table table-bordered table-sm text-center text-muted"
+                                                        id="example-{{ $tabId }}" style="font-size: 12px;">
                                                         <thead class="table-light">
                                                             <tr>
+                                                                <th>ACTION</th>
                                                                 <th>TICKET NO.</th>
                                                                 <th>SUBJECT</th>
                                                                 <th>CATEGORY</th>
@@ -73,17 +74,42 @@
                                                                 <th>DATE RESOLVED</th>
                                                                 <th>DURATION</th>
                                                                 <th>SURVEY</th>
-                                                                <th>ACTION</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
                                                             @foreach ($ticketsForTab as $ticket)
                                                                 <tr>
                                                                     <td>
+                                                                        @if ($ticket->status != 3 && $ticket->status != 4)
+                                                                            <div class="btn-group btn-group-sm d-flex">
+                                                                                <a href="{{ route('editTicket', $ticket->ticket_no) }}"
+                                                                                    class="btn btn-primary" title="Edit">
+                                                                                    <i class="fas fa-edit"></i>
+                                                                                </a>
+                                                                                <button type="submit"
+                                                                                    class="btn btn-danger" title="Delete">
+                                                                                    <i class="fas fa-trash-alt"></i>
+                                                                                </button>
+                                                                            </div>
+                                                                        @else
+                                                                            <div class="btn-group btn-group-sm d-flex">
+                                                                                <button class="btn btn-secondary" disabled
+                                                                                    title="Edit Disabled">
+                                                                                    <i class="fas fa-edit"></i>
+                                                                                </button>
+                                                                                <button class="btn btn-secondary" disabled
+                                                                                    title="Delete Disabled">
+                                                                                    <i class="fas fa-trash-alt"></i>
+                                                                                </button>
+                                                                            </div>
+                                                                        @endif
+                                                                    </td>
+                                                                    <td>
                                                                         <a href="{{ route('ticketDetails', $ticket->ticket_no) }}"
                                                                             class="text-primary" target="_blank"
                                                                             style="text-decoration: none;">
                                                                             {{ $ticket->ticket_no }}
+                                                                            <small>Click to chat</small>
                                                                         </a>
                                                                     </td>
                                                                     <td>
@@ -225,31 +251,6 @@
                                                                                     Client Satisfaction Survey
                                                                                 </a>
                                                                             @endif
-                                                                        @endif
-                                                                    </td>
-                                                                    <td>
-                                                                        @if ($ticket->status != 3)
-                                                                            <div class="btn-group btn-group-sm d-flex">
-                                                                                <a href="{{ route('editTicket', $ticket->ticket_no) }}"
-                                                                                    class="btn btn-primary" title="Edit">
-                                                                                    <i class="fas fa-edit"></i>
-                                                                                </a>
-                                                                                <button type="submit"
-                                                                                    class="btn btn-danger" title="Delete">
-                                                                                    <i class="fas fa-trash-alt"></i>
-                                                                                </button>
-                                                                            </div>
-                                                                        @else
-                                                                            <div class="btn-group btn-group-sm d-flex">
-                                                                                <button class="btn btn-secondary" disabled
-                                                                                    title="Edit Disabled">
-                                                                                    <i class="fas fa-edit"></i>
-                                                                                </button>
-                                                                                <button class="btn btn-secondary" disabled
-                                                                                    title="Delete Disabled">
-                                                                                    <i class="fas fa-trash-alt"></i>
-                                                                                </button>
-                                                                            </div>
                                                                         @endif
                                                                     </td>
                                                                 </tr>

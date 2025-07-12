@@ -51,8 +51,9 @@
 
                                     <!-- Button Container -->
                                     <div class="d-flex">
-                                        <button class="btn btn-default bg-warning btn-hover btn-sm me-2 mr-2" data-toggle="tab"  id="resolved-tab" href="#resolved" role="tab">
-                                            <i class="fas fa-smile"></i><span> Follow-up Survey:</span> 
+                                        <button class="btn btn-default bg-warning btn-hover btn-sm me-2 mr-2"
+                                            data-toggle="tab" id="resolved-tab" href="#resolved" role="tab">
+                                            <i class="fas fa-smile"></i><span> Follow-up Survey:</span>
                                             <span class="fw-bold">{{ $mypendingSurveyCount }}</span>
                                         </button>
                                         <button class="btn btn-default bg-success btn-hover btn-sm">
@@ -77,8 +78,8 @@
 
                                             @if ($ticketsForTab->count())
                                                 <div class="table-responsive">
-                                                    <table class="table table-bordered text-sm text-center"
-                                                        id="example-{{ $tabId }}">
+                                                    <table class="table table-bordered table-sm text-center text-muted"
+                                                        id="example-{{ $tabId }}" style="font-size: 12px;">
                                                         <thead class="table-light">
                                                             <tr>
                                                                 <th>TICKET NO.</th>
@@ -248,10 +249,11 @@
                                                                         @endif
                                                                     </td>
                                                                     <td>
-                                                                        @if ($ticket->status != 3)
+                                                                        @if ($ticket->status != 3 && $ticket->status != 4)
                                                                             <div class="btn-group btn-group-sm d-flex">
                                                                                 <a href="{{ route('editTicket', $ticket->ticket_no) }}"
-                                                                                    class="btn btn-primary" title="Edit">
+                                                                                    class="btn btn-primary"
+                                                                                    title="Edit">
                                                                                     <i class="fas fa-edit"></i>
                                                                                 </a>
                                                                                 <button type="submit"

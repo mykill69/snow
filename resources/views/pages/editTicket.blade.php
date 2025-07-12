@@ -79,7 +79,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="subject">Request Title <span class="text-danger">*</span></label>
+                                <label for="subject">Request Title</span></label>
                                 <textarea class="form-control" id="subject" name="subject" rows="2" value="{{ $ticket->subject }}"
                                     placeholder="Please specify your concern. Be as specific and detailed as possible." readonly>{{ $ticket->subject }} 
                                </textarea>
@@ -123,10 +123,18 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="status">Status</label>
-                                <select class="form-control" id="status" name="status" required>
-                                    <option value="" disabled {{ is_null($ticket->status) ? 'selected' : '' }}>Select
-                                        Status</option>
+                                <label for="status"><strong>Status</strong></label>
+                                <select class="form-control border border-danger text-danger font-weight-bold"
+                                    id="status" name="status" required
+                                    style="
+                border-width: 3px;
+                background-color: #FFFF;
+                box-shadow: 0 0 5px rgba(220, 53, 69, 0.6);
+                font-size: 16px;
+            ">
+                                    <option value="" disabled {{ is_null($ticket->status) ? 'selected' : '' }}>
+                                        Select Status
+                                    </option>
 
                                     {{-- Show current status (disabled but visible) --}}
                                     @if ($ticket->status == 1)
@@ -137,8 +145,9 @@
                                     <option value="2" {{ $ticket->status == 2 ? 'selected' : '' }}>Pending</option>
                                     <option value="4" {{ $ticket->status == 4 ? 'selected' : '' }}>Closed</option>
                                 </select>
-
                             </div>
+
+
                             <div class="form-group">
                                 <label for="remarks">Remarks</label>
                                 <textarea class="form-control" id="remarks" name="remarks" rows="3"
