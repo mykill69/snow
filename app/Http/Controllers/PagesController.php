@@ -480,7 +480,7 @@ public function deleteWorkProgress($id)
     public function allTickets()
 {
     $allTickets = TicketDtl::all();
-    return view('pages.allTickets', compact('allTickets'));
+    return view('pages.alltickets', compact('allTickets'));
 } 
 
 
