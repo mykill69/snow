@@ -102,6 +102,7 @@
                             <option value="" disabled selected>Select Category</option>
                             <option value="ICT Repair/Troubleshooting">ICT Repair/Troubleshooting</option>
                             <option value="Network Connection">Network Connection</option>
+                            <option value="DTR Concern">DTR Concern</option>
                             <option value="UTP Cable Replacement/Installation">UTP Cable Replacement/Installation
                             </option>
                             <option value="System Account Creation">System Account Creation</option>
@@ -285,6 +286,7 @@
                 // Admin logic
                 const categoryToAdmins = {
                     "Network Connection": [5, 10],
+                    "DTR Concern": [6, 7],
                     "System Account Creation": [1, 6, 7, 9],
                     "System Update Request": [1, 6, 7, 9],
                     "UTP Cable Replacement/Installation": [5, 10],
@@ -321,6 +323,11 @@
                     "Network Connection": [
                         "Network Account",
                         "Internet Connection",
+                        "Others"
+                    ],
+                    "DTR Concern": [
+                        "Missing Logs",
+                        "Verify Logs",
                         "Others"
                     ],
                     "UTP Cable Replacement/Installation": [
