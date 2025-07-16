@@ -6,7 +6,8 @@
     .swal2-large-text {
         font-size: 1.2rem;
     }
-        .swal2-article-popup {
+
+    .swal2-article-popup {
         font-family: 'Segoe UI', sans-serif;
         font-size: 1rem;
         text-align: left;
@@ -46,6 +47,7 @@
         font-size: 0.9rem;
         color: #666;
     }
+
     .swal2-article-popup .swal-article-body {
         text-align: left;
     }
@@ -69,77 +71,71 @@
 
 @section('body')
     <div class="divider-wrapper mb-5" style="width: 100%; ">
-       <!-- TOP WAVE HEADER WITH FADE TO WHITE -->
-<div class="divider-wave-bg position-relative"
-     style="width: 100%; height: 110px; overflow: hidden;
+        <!-- TOP WAVE HEADER WITH FADE TO WHITE -->
+        <div class="divider-wave-bg position-relative"
+            style="width: 100%; height: 110px; overflow: hidden;
             background: linear-gradient(to bottom, #084B83 90%, white 100%);">
-    
-    <!-- Welcome Text -->
-    <h1 class="text-center text-white"
-        style="z-index: 1; margin: 0; line-height: 110px; position: relative;">
-        Welcome, {{ auth()->user()->fname }}! How can we assist you today?
-    </h1>
 
-    <!-- Animated SVG Wave Overlay -->
-    <svg class="wave-svg position-absolute top-0 start-0 w-100 h-100"
-         style="z-index: 0; left:0; top:0;"
-         viewBox="0 0 1440 220" preserveAspectRatio="none">
-        
-        <defs>
-            <!-- Middle wave (cyan) -->
-            <linearGradient id="waveGradient2" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="100%" stop-color="#42BFDD" />
-            </linearGradient>
+            <!-- Welcome Text -->
+            <h1 class="text-center text-white" style="z-index: 1; margin: 0; line-height: 110px; position: relative;">
+                Welcome, {{ auth()->user()->fname }}! How can we assist you today?
+            </h1>
 
-            <!-- Front wave (white) -->
-            <linearGradient id="waveGradient1" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stop-color="#FFFFFF" />
-                <stop offset="50%" stop-color="#FFFFFF" />
-                <stop offset="100%" stop-color="#FFFFFF" />
-            </linearGradient>
-        </defs>
+            <!-- Animated SVG Wave Overlay -->
+            <svg class="wave-svg position-absolute top-0 start-0 w-100 h-100" style="z-index: 0; left:0; top:0;"
+                viewBox="0 0 1440 220" preserveAspectRatio="none">
 
-        <!-- Cyan middle wave -->
-        <path fill="url(#waveGradient2)" fill-opacity="0.9"
-              d="M0,160 Q360,210 720,160 T1440,160 V240 H0 Z">
-            <animate attributeName="d" dur="5s" repeatCount="indefinite" begin="0s"
-                     values="
+                <defs>
+                    <!-- Middle wave (cyan) -->
+                    <linearGradient id="waveGradient2" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="100%" stop-color="#42BFDD" />
+                    </linearGradient>
+
+                    <!-- Front wave (white) -->
+                    <linearGradient id="waveGradient1" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stop-color="#FFFFFF" />
+                        <stop offset="50%" stop-color="#FFFFFF" />
+                        <stop offset="100%" stop-color="#FFFFFF" />
+                    </linearGradient>
+                </defs>
+
+                <!-- Cyan middle wave -->
+                <path fill="url(#waveGradient2)" fill-opacity="0.9" d="M0,160 Q360,210 720,160 T1440,160 V240 H0 Z">
+                    <animate attributeName="d" dur="5s" repeatCount="indefinite" begin="0s"
+                        values="
                      M0,160 Q360,210 720,160 T1440,160 V240 H0 Z;
                      M0,170 Q360,120 720,170 T1440,170 V240 H0 Z;
                      M0,150 Q360,200 720,150 T1440,150 V240 H0 Z;
                      M0,160 Q360,210 720,160 T1440,160 V240 H0 Z"
-                     keyTimes="0;0.33;0.66;1"
-                     keySplines="0.42,0,0.58,1;0.42,0,0.58,1;0.42,0,0.58,1" />
-        </path>
+                        keyTimes="0;0.33;0.66;1" keySplines="0.42,0,0.58,1;0.42,0,0.58,1;0.42,0,0.58,1" />
+                </path>
 
-        <!-- Front white wave -->
-        <path fill="url(#waveGradient1)" fill-opacity="1"
-              d="M0,180 Q360,230 720,180 T1440,180 V240 H0 Z">
-            <animate attributeName="d" dur="5s" repeatCount="indefinite" begin="2s"
-                     values="
+                <!-- Front white wave -->
+                <path fill="url(#waveGradient1)" fill-opacity="1" d="M0,180 Q360,230 720,180 T1440,180 V240 H0 Z">
+                    <animate attributeName="d" dur="5s" repeatCount="indefinite" begin="2s"
+                        values="
                      M0,180 Q360,230 720,180 T1440,180 V240 H0 Z;
                      M0,190 Q360,140 720,190 T1440,190 V240 H0 Z;
                      M0,170 Q360,220 720,170 T1440,170 V240 H0 Z;
                      M0,180 Q360,230 720,180 T1440,180 V240 H0 Z"
-                     keyTimes="0;0.33;0.66;1"
-                     keySplines="0.42,0,0.58,1;0.42,0,0.58,1;0.42,0,0.58,1" />
-        </path>
-    </svg>
-</div>
+                        keyTimes="0;0.33;0.66;1" keySplines="0.42,0,0.58,1;0.42,0,0.58,1;0.42,0,0.58,1" />
+                </path>
+            </svg>
+        </div>
 
-            <div class="d-flex justify-content-center my-4">
-                <div style="width: 100%; max-width: 1000px;">
-                    <div class="position-relative">
-                        <input type="text" id="search-input" class="form-control form-control-lg shadow-sm rounded-pill px-4"
-                            placeholder="🔍 Search tickets or articles…" style="background-color: white;" />
+        <div class="d-flex justify-content-center my-4">
+            <div style="width: 100%; max-width: 1000px;">
+                <div class="position-relative">
+                    <input type="text" id="search-input" class="form-control form-control-lg shadow-sm rounded-pill px-4"
+                        placeholder="🔍 Search tickets or articles…" style="background-color: white;" />
 
-                        <!-- Suggestions dropdown -->
-                        <div id="suggestions" class="list-group position-absolute w-100 rounded shadow-sm"
-                            style="top: 105%; z-index: 1000; display: none; background: #ffffff; max-height: 300px; overflow-y: auto;">
-                        </div>
+                    <!-- Suggestions dropdown -->
+                    <div id="suggestions" class="list-group position-absolute w-100 rounded shadow-sm"
+                        style="top: 105%; z-index: 1000; display: none; background: #ffffff; max-height: 300px; overflow-y: auto;">
                     </div>
                 </div>
             </div>
+        </div>
 
 
 
@@ -894,25 +890,28 @@
         </script>
 
 
-<script>
-    $(function () {
-        // Handle live search
-        $('#search-input').on('input', function () {
-            const q = this.value.trim();
+        <script>
+            $(function() {
+                // Handle live search
+                $('#search-input').on('input', function() {
+                    const q = this.value.trim();
 
-            if (q.length < 2) {
-                $('#suggestions').hide();
-                return;
-            }
+                    if (q.length < 2) {
+                        $('#suggestions').hide();
+                        return;
+                    }
 
-            $.get("{{ route('search.suggestions') }}", { query: q }, function (res) {
-                let html = '';
+                    $.get("{{ route('search.suggestions') }}", {
+                        query: q
+                    }, function(res) {
+                        let html = '';
 
-                if (res.tickets.length) {
-                    html += '<div class="list-group-item active">Tickets</div>';
-                    res.tickets.forEach(t => {
-                        const adminName = t.admin ? `${t.admin.fname} ${t.admin.lname}` : 'N/A';
-                        html += `
+                        if (res.tickets.length) {
+                            html += '<div class="list-group-item active">Tickets</div>';
+                            res.tickets.forEach(t => {
+                                const adminName = t.admin ?
+                                    `${t.admin.fname} ${t.admin.lname}` : 'N/A';
+                                html += `
                             <div class="list-group-item swalDefaultInfo"
                                 data-type="ticket"
                                 data-title="${t.category} - ${t.sub_cat}"
@@ -923,13 +922,13 @@
                                 ${t.ticket_no} — ${t.subject} — (${t.sub_cat})
                             </div>
                         `;
-                    });
-                }
+                            });
+                        }
 
-                if (res.articles.length) {
-                    html += '<div class="list-group-item active">Articles</div>';
-                    res.articles.forEach(a => {
-                        html += `
+                        if (res.articles.length) {
+                            html += '<div class="list-group-item active">Articles</div>';
+                            res.articles.forEach(a => {
+                                html += `
                             <div class="list-group-item swalDefaultInfo"
                                 data-type="article"
                                 data-title="${a.title}"
@@ -941,38 +940,38 @@
                                 ${a.title}
                             </div>
                         `;
+                            });
+                        }
+
+                        if (!html) {
+                            html = '<div class="list-group-item text-muted">No results found</div>';
+                        }
+
+                        $('#suggestions').html(html).show();
                     });
-                }
+                });
 
-                if (!html) {
-                    html = '<div class="list-group-item text-muted">No results found</div>';
-                }
+                // Hide suggestions on outside click
+                $(document).on('click', function(e) {
+                    if (!$(e.target).closest('#search-input, #suggestions').length) {
+                        $('#suggestions').hide();
+                    }
+                });
 
-                $('#suggestions').html(html).show();
-            });
-        });
+                // SweetAlert2 popup handler
+                $(document).on('click', '.swalDefaultInfo', function(e) {
+                    e.preventDefault();
 
-        // Hide suggestions on outside click
-        $(document).on('click', function (e) {
-            if (!$(e.target).closest('#search-input, #suggestions').length) {
-                $('#suggestions').hide();
-            }
-        });
+                    const type = $(this).data('type');
 
-        // SweetAlert2 popup handler
-        $(document).on('click', '.swalDefaultInfo', function (e) {
-            e.preventDefault();
+                    if (type === 'ticket') {
+                        const title = $(this).data('title');
+                        const subject = $(this).data('content');
+                        const remarks = $(this).data('remarks');
+                        const admin = $(this).data('admin');
 
-            const type = $(this).data('type');
-
-            if (type === 'ticket') {
-                const title   = $(this).data('title');
-                const subject = $(this).data('content');
-                const remarks = $(this).data('remarks');
-                const admin   = $(this).data('admin');
-
-                Swal.fire({
-                    html: `
+                        Swal.fire({
+                            html: `
                         <div class="swal-article-body">
                             <h5 class="text-primary mb-3">${title}</h5>
                             <div class="mb-2"><strong>Subject:</strong><br>${escapeHtml(subject)}</div>
@@ -983,21 +982,23 @@
                             </div>
                         </div>
                     `,
-                    showConfirmButton: false,
-                    width: '720px',
-                    padding: '2rem',
-                    customClass: { popup: 'swal2-article-popup' }
-                });
+                            showConfirmButton: false,
+                            width: '720px',
+                            padding: '2rem',
+                            customClass: {
+                                popup: 'swal2-article-popup'
+                            }
+                        });
 
-            } else if (type === 'article') {
-                const title  = $(this).data('title');
-                const body   = $(this).data('content');
-                const code   = $(this).data('code');
-                const author = $(this).data('author');
-                const date   = $(this).data('date');
+                    } else if (type === 'article') {
+                        const title = $(this).data('title');
+                        const body = $(this).data('content');
+                        const code = $(this).data('code');
+                        const author = $(this).data('author');
+                        const date = $(this).data('date');
 
-                Swal.fire({
-                    html: `
+                        Swal.fire({
+                            html: `
                         <div class="swal-article-body">
                             <h4 class="swal-article-title mb-3">${title}</h4>
                             <div class="swal-article-content mb-4">${escapeHtml(body)}</div>
@@ -1009,25 +1010,27 @@
                             </div>
                         </div>
                     `,
-                    showConfirmButton: false,
-                    width: '720px',
-                    padding: '2rem',
-                    customClass: { popup: 'swal2-article-popup' }
+                            showConfirmButton: false,
+                            width: '720px',
+                            padding: '2rem',
+                            customClass: {
+                                popup: 'swal2-article-popup'
+                            }
+                        });
+                    }
                 });
-            }
-        });
 
-        // Escape HTML helper
-        function escapeHtml(str) {
-            return String(str)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/\n/g, '<br>')
-                .replace(/  /g, '&nbsp;&nbsp;');
-        }
-    });
-</script>
+                // Escape HTML helper
+                function escapeHtml(str) {
+                    return String(str)
+                        .replace(/&/g, '&amp;')
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;')
+                        .replace(/\n/g, '<br>')
+                        .replace(/  /g, '&nbsp;&nbsp;');
+                }
+            });
+        </script>
 
         <script>
             /* CLICK HANDLER */

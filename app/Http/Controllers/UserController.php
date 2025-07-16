@@ -73,6 +73,14 @@ public function userEdit($id)
     return view('pages.editUser', compact('user', 'offices'));
 }
 
+public function editAcc($id)
+{
+    $user = User::findOrFail($id);
+    $offices = Office::all(); // assuming you have an Office model for the department select
+    return view('access.editAcc', compact('user', 'offices'));
+}
+
+
 // public function userUpdate(Request $request, $id)
 // {
 //     $request->validate([

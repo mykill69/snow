@@ -42,18 +42,17 @@ class ArticlesController extends Controller
 
 public function articlesUser()
 {
-    $articles = Article::with('admin')->oldest()->paginate(4);
+    $user = auth()->user();
 
-    // Fetch authors for dropdown (distinct admins who uploaded articles)
+    $articles = Article::with('admin')->oldest()->paginate(4);
     $authors = \App\Models\User::whereIn('id', Article::pluck('admin_id')->unique())->get();
 
-    // Optional: Add category list if needed
     $categories = [
         1 => 'Frequently Asked Questions',
         2 => 'Knowledge Base',
     ];
 
-    return view('access.articlesFaqs', compact('articles', 'authors', 'categories'));
+    return view('access.articlesFaqs', compact('articles', 'authors', 'categories', 'user'));
 }
 
 }

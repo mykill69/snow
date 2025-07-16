@@ -69,8 +69,11 @@ public function suggestions(Request $request)
 
     public function requestForm()
     {
-     return view('access.requestform');
+    $user = auth()->user();
+    return view('access.requestform', compact('user'));
     }
+
+
 
 public function createdTicket($ticketNo)
 {

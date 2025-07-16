@@ -122,7 +122,7 @@
         <!-- Right: Icons -->
         <ul class="navbar-nav align-items-center ml-auto" style="padding-right: 10px;">
             <!-- Messages Dropdown -->
-            <li class="nav-item dropdown">
+            {{-- <li class="nav-item dropdown">
                 <a class="nav-link text-white" data-toggle="dropdown" href="#">
                     <i class="fas fa-comments"></i>
                     <span class="badge badge-danger navbar-badge">3</span>
@@ -144,7 +144,7 @@
                 <a class="nav-link text-white" data-widget="fullscreen" href="#" role="button">
                     <i class="fas fa-expand-arrows-alt"></i>
                 </a>
-            </li>
+            </li> --}}
             <li class="nav-item dropdown ml-3">
                 <div class="btn-group">
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
@@ -155,7 +155,7 @@
                     <ul class="dropdown-menu dropdown-menu-right">
                         @if (auth()->check() && auth()->user()->role !== 'Administrator')
                             <li class="dropdown-item">
-                                <a href="">
+                                <a href="{{ route('editAcc', $user->id) }}">
                                     <i class="fas fa-user-edit nav-icon"></i>
                                     Edit Account</a>
                             </li>
