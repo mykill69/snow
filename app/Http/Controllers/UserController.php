@@ -160,6 +160,49 @@ public function userUpdate(Request $request, $id)
 
     return redirect()->route('userView', $id)->with('success', 'User updated successfully.');
 }
+public function updateAcc(Request $request, $id)
+{
+    $request->validate([
+        'email' => 'required|string|email|max:255|unique:users,email,' . $id,
+        'fname' => 'required|string|max:255',
+        'mname' => 'nullable|string|max:255',
+        'lname' => 'required|string|max:255',
+        'department' => 'required|string|max:255',
+        'role' => 'required|string|max:255',
+        'mobile_no' => 'nullable|string|max:20',
+        'address' => 'nullable|string|max:255',
+        'about' => 'nullable|array',
+        'password' => 'nullable|string|min:6|confirmed',
+        'profile_pic' => 'nullable|image|mimes:jpeg,png,jpg,gif',
+    ]);
+
+    $user = User::findOrFail($id);
+    $user->email = $request->email;
+    $user->fname = $request->fname;
+    $user->mname = $request->mname;
+    $user->lname = $request->lname;
+    $user->department = $request->department;
+    $user->role = $request->role;
+    $user->mobile_no = $request->mobile_no;
+    $user->address = $request->address;
+    $user->about = is_array($request->about) ? implode(' / ', $request->about) : null;
+
+    if ($request->filled('password')) {
+        $user->password = Hash::make($request->password);
+    }
+
+    // ✅ Handle profile picture upload if provided
+    if ($request->hasFile('profile_pic')) {
+        $profile_pic = $request->file('profile_pic');
+        $filename = time() . '_' . $profile_pic->getClientOriginalName();
+        $profile_pic->storeAs('public/profile_pics', $filename);
+        $user->profile_pic = 'profile_pics/' . $filename;
+    }
+
+    $user->save();
+
+    return redirect()->route('editAcc', $id)->with('success', 'User updated successfully.');
+}
 
 
 public function updateProfilePic(Request $request, $id)

@@ -29,7 +29,7 @@
                             <h3 class="card-title">Edit User Details</h3>
                         </div>
                         <div class="card-body">
-                            <form action="{{ route('userUpdate', $user->id) }}" method="POST">
+                            <form action="{{ route('updateAcc', $user->id) }}" method="POST">
                                 @csrf
                                 @method('PUT')
 
