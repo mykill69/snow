@@ -201,8 +201,8 @@ return redirect()
 public function clientSatisfaction($ticket_no)
 {
     $survey = Survey::where('ticket_no', $ticket_no)->firstOrFail();
-
-    return view('access.clientSatisfaction', compact('survey'));
+    $user = auth()->user();
+    return view('access.clientSatisfaction', compact('survey','user'));
 }
 
 

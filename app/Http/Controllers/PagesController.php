@@ -517,7 +517,6 @@ public function auditLogs()
 
 public function articles()
 {
-    
     $articles = Article::all();
     return view('pages.articles', compact('articles'));
 } 
