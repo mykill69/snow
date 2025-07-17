@@ -109,7 +109,7 @@ public function storeRequestForm(Request $request)
             'subject' => 'required|string|max:1000',
             'priority' => 'required|integer|between:1,3',
             'contact_no' => 'required|string|max:255',
-            'department' => 'required|string',
+            'department' => 'nullable|string',
             'exampleInputFile' => 'nullable|file|max:10240',
         ]);
 

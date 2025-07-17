@@ -26,52 +26,7 @@ class TicketController extends Controller
         return view('pages.editTicket', compact('ticket'));
     }
 
-//     public function updateTicket(Request $request, $ticketNo)
-// {
-//     $ticket = TicketDtl::where('ticket_no', $ticketNo)->first();
-//     if (!$ticket) {
-//         return redirect()->back()->with('error', 'Ticket not found');
-//     }
-
-//     $validator = Validator::make($request->all(), [
-//         'subject' => 'required|string|max:255',
-//         'category' => 'required|string|max:255',
-//         'status' => 'required|integer',
-//         'remarks' => 'nullable|string',
-//     ]);
-
-//     if ($validator->fails()) {
-//         return redirect()->back()->withErrors($validator)->withInput();
-//     }
-
-//     // Update fields manually to include admin_id
-//     $ticket->subject = $request->subject;
-//     $ticket->category = $request->category;
-//     $ticket->status = $request->status;
-//     $ticket->remarks = $request->remarks;
-
-//     // ✅ Update the admin_id to the one who submitted
-//     $ticket->admin_id = auth()->id();
-
-//     $ticket->save();
-
-//     Comments::create([
-//         'ticket_no' => $ticketNo,
-//         'comments' => 'Ticket #' . $ticketNo . ' was RESOLVED by ' . auth()->user()->fname . ' ' . auth()->user()->lname,
-//         'admin_id' => auth()->user()->role === 'Administrator' ? auth()->id() : null,
-//         'user_id' => auth()->user()->role !== 'Administrator' ? auth()->id() : null,
-//     ]);
-
-//     Logs::create([
-//         'ticket_no' => $ticketNo,
-//         'user_id' => auth()->id(),
-//         'role' => auth()->user()->role,
-//         'log_status' => 3,
-//     ]);
-
-//     return redirect()->route('allTickets')->with('success', 'Ticket updated successfully');
-// }
-public function updateTicket(Request $request, $ticketNo)
+    public function updateTicket(Request $request, $ticketNo)
 {
     $ticket = TicketDtl::where('ticket_no', $ticketNo)->first();
     if (!$ticket) {
