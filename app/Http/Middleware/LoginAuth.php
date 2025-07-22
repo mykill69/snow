@@ -17,20 +17,19 @@ class LoginAuth
      */
     public function handle(Request $request, Closure $next)
     {
-       if(Auth::guard('web')->check()){
-            if(!Auth::user()->role){
-                return redirect()->route('getLogin')->with('error','You have to be admin user to access this page');
+       if (Auth::guard('web')->check()) {
+        $user = Auth::user();
+
+        if (!$user->role) {
+            return redirect()->route('getLogin')->with('error', 'You have to be an admin user to access this page');
+        }
+
+        // Example: restrict 'staffs' from accessing 'users' or 'office'
+        if ($user->role==('staffs')) {
+            if ($request->is('users') || $request->is('office') || $request->is('users/*') || $request->is('office/*')) {
+                return redirect()->route('folders')->with('error1', 'You do not have permission to access this page');
             }
-            // if(Auth::user()->hasRole('Administrator')){
-            //     if ($request->is('users') || $request->is('users/*')) {
-            //         return redirect()->route('dashboard')->with('error1', 'You do not have permission to access this page');
-            //     }
-            // }
-            if(Auth::user()->hasRole('staffs')) {
-                if ($request->is('users', 'office') || $request->is('users/*', 'office/*')) {
-                    return redirect()->route('dashboard')->with('error1', 'You do not have permission to access this page');
-                }
-            }
+        }
         }else{
             return redirect()->route('getLogin')->with('error','You have to Sign In first to access this page');
         }
