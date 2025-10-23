@@ -647,8 +647,6 @@
     </div><!--/. container-fluid -->
     </section>
 
-    <!-- AdminLTE for demo purposes -->
-    <script src="template/dist/js/demo.js"></script>
     <!-- jQuery -->
     <script src="template/plugins/jquery/jquery.min.js"></script>
     <!-- Bootstrap 4 -->
