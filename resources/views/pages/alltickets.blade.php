@@ -1,5 +1,3 @@
-@extends('pages.main')
-
 <style>
     .select2-container--default .select2-selection--multiple .select2-selection__choice {
         background-color: #007bff !important;
@@ -9,7 +7,7 @@
         margin-top: 0.31rem;
     }
 </style>
-
+@extends('pages.main')
 @section('body')
     <div class="content-wrapper">
         <div class="content" style="padding-top: 1%;">
@@ -293,17 +291,12 @@
     </div><!--/. container-fluid -->
     </section>
 
-    <!-- AdminLTE for demo purposes -->
-    <script src="template/dist/js/demo.js"></script>
-    <!-- jQuery -->
-    <script src="template/plugins/jquery/jquery.min.js"></script>
-    <!-- Bootstrap 4 -->
-    <script src="template/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+
+
     <!-- ChartJS -->
     <script src="template/plugins/chart.js/Chart.min.js"></script>
     <script src="template/plugins/chart.js/Chart.js"></script>
-    <!-- AdminLTE App -->
-    <script src="template/dist/js/adminlte.min.js"></script>
 
     <script>
         function toggleAdminList(id) {

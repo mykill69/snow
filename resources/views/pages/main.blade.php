@@ -12,10 +12,10 @@
     <title>SNOW - MIS Ticketing System {{ isset($title) ? '| ' . $title : '' }}</title>
     <!-- Google Font: Source Sans Pro -->
     <!-- Bootstrap JS (include this before closing body tag) -->
-<!-- Date Range Picker -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <!-- Date Range Picker -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     {{-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback"> --}}
- <!-- Toastr -->
+    <!-- Toastr -->
     <link rel="stylesheet" href="{{ asset('template/plugins/toastr/toastr.min.css') }}">
 
     <!-- SweetAlert2 -->
@@ -62,7 +62,7 @@
         /* slightly highlight active */
     }
 
-      /* Active menu item */
+    /* Active menu item */
     .main-sidebar .nav-sidebar .nav-link.active i {
         color: white !important;
         background-color: #1E152A;
@@ -126,21 +126,20 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#">
                         <i class="far fa-comments" style="color: #1E152A;"></i>
-                        <span class="badge badge-danger navbar-badge">3</span>
+                        <span class="badge badge-danger navbar-badge"></span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                         <a href="#" class="dropdown-item">
                             <!-- Message Start -->
                             <div class="media">
-                                <img src="" alt="User Avatar"
-                                    class="img-size-50 mr-3 img-circle">
+                                <img src="" alt="User Avatar" class="img-size-50 mr-3 img-circle">
                                 <div class="media-body">
                                     <h3 class="dropdown-item-title">
-                                        Brad Diesel
+
                                         <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
                                     </h3>
-                                    <p class="text-sm">Call me whenever you can...</p>
-                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+                                    <p class="text-sm"></p>
+                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i></p>
                                 </div>
                             </div>
                             <!-- Message End -->
@@ -149,15 +148,14 @@
                         <a href="#" class="dropdown-item">
                             <!-- Message Start -->
                             <div class="media">
-                                <img src="" alt="User Avatar"
-                                    class="img-size-50 img-circle mr-3">
+                                <img src="" alt="User Avatar" class="img-size-50 img-circle mr-3">
                                 <div class="media-body">
                                     <h3 class="dropdown-item-title">
-                                        John Pierce
+
                                         <span class="float-right text-sm text-muted"><i class="fas fa-star"></i></span>
                                     </h3>
-                                    <p class="text-sm">I got your message bro</p>
-                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+                                    <p class="text-sm"></p>
+                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i></p>
                                 </div>
                             </div>
                             <!-- Message End -->
@@ -166,49 +164,48 @@
                         <a href="#" class="dropdown-item">
                             <!-- Message Start -->
                             <div class="media">
-                                <img src="" alt="User Avatar"
-                                    class="img-size-50 img-circle mr-3">
+                                <img src="" alt="User Avatar" class="img-size-50 img-circle mr-3">
                                 <div class="media-body">
                                     <h3 class="dropdown-item-title">
-                                        Nora Silvester
+
                                         <span class="float-right text-sm text-warning"><i
                                                 class="fas fa-star"></i></span>
                                     </h3>
-                                    <p class="text-sm">The subject goes here</p>
-                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+                                    <p class="text-sm"></p>
+                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i></p>
                                 </div>
                             </div>
                             <!-- Message End -->
                         </a>
                         <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
+                        <a href="#" class="dropdown-item dropdown-footer"></a>
                     </div>
                 </li>
                 <!-- Notifications Dropdown Menu -->
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#">
                         <i class="far fa-bell" style="color: #1E152A;"></i>
-                        <span class="badge badge-warning navbar-badge">15</span>
+                        <span class="badge badge-warning navbar-badge"></span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                        <span class="dropdown-item dropdown-header">15 Notifications</span>
+                        <span class="dropdown-item dropdown-header"></span>
                         <div class="dropdown-divider"></div>
                         <a href="#" class="dropdown-item">
-                            <i class="fas fa-envelope mr-2"></i> 4 new messages
-                            <span class="float-right text-muted text-sm">3 mins</span>
+                            <i class="fas fa-envelope mr-2"></i>
+                            <span class="float-right text-muted text-sm"></span>
                         </a>
                         <div class="dropdown-divider"></div>
                         <a href="#" class="dropdown-item">
-                            <i class="fas fa-users mr-2"></i> 8 friend requests
-                            <span class="float-right text-muted text-sm">12 hours</span>
+                            <i class="fas fa-users mr-2"></i>
+                            <span class="float-right text-muted text-sm"></span>
                         </a>
                         <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">  `
-                            <i class="fas fa-file mr-2"></i> 3 new reports
-                            <span class="float-right text-muted text-sm">2 days</span>
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-file mr-2"></i>
+                            <span class="float-right text-muted text-sm"></span>
                         </a>
                         <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+                        <a href="#" class="dropdown-item dropdown-footer"></a>
                     </div>
                 </li>
                 <li class="nav-item">
@@ -224,34 +221,37 @@
                     </button>
                     <ul class="dropdown-menu">
                         @if (auth()->check() && auth()->user()->role !== 'Administrator')
-                            <li class="dropdown-item">
-                                <a href="{{ route('userPassword', ['id' => Auth::user()->id]) }}">
-                                    <i class="fas fa-user-edit nav-icon"></i>
-                                    Edit Account</a>
+                            <li>
+                                <a class="dropdown-item"
+                                    href="{{ route('userPassword', ['id' => Auth::user()->id]) }}">
+                                    <i class="fas fa-user-edit nav-icon"></i> Edit Account
+                                </a>
                             </li>
                         @endif
-                        <li class="dropdown-item" data-toggle="modal" data-target="#aboutMISModal">
-                            <a href="#">
-                                <i class="fa fa-info-circle nav-icon"></i>
-                                About MIS Ticketing System
+
+                        <li>
+                            <a class="dropdown-item" data-toggle="modal" data-target="#aboutMISModal"
+                                href="#">
+                                <i class="fa fa-info-circle nav-icon"></i> About MIS Ticketing System
                             </a>
                         </li>
 
-                        <a href="{{ route('logout') }}">
-                            <li class="dropdown-item">
-
-                                <i class="fas fa-sign-out-alt nav-icon"></i>
-                                Logout
-                            </li>
-                        </a>
-                        <li class="dropdown-item" data-toggle="modal" data-target="#dataP">
-                            <a href="#">
-                                <i class="fa fa-scroll nav-icon"></i>
-                                Terms & Conditions</a>
+                        <li>
+                            <a class="dropdown-item" href="{{ route('logout') }}">
+                                <i class="fas fa-sign-out-alt nav-icon"></i> Logout
+                            </a>
                         </li>
-                        <li class="dropdown-item">
-                            <i class="fas fa-code-branch nav-icon"></i>
-                            <a href="#">System Version 1.0</a>
+
+                        <li>
+                            <a class="dropdown-item" data-toggle="modal" data-target="#dataP" href="#">
+                                <i class="fa fa-scroll nav-icon"></i> Terms & Conditions
+                            </a>
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <i class="fas fa-code-branch nav-icon"></i> System Version 1.0
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -322,8 +322,10 @@
 
     <!-- ./wrapper -->
     <script src="{{ asset('template/plugins/jquery/jquery.min.js') }}"></script>
+
     <!-- Bootstrap 4 -->
-    
+    <script src="{{ asset('template/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
     <!-- AdminLTE App -->
     <script src="{{ asset('template/dist/js/adminlte.min.js') }}"></script>
     <script>
@@ -333,12 +335,6 @@
         });
     </script>
 
-    <!-- ./wrapper -->
-    <script src="{{ asset('template/plugins/jquery/jquery.min.js') }}"></script>
-
-
-    <!-- AdminLTE App -->
-    <script src="{{ asset('template/dist/js/adminlte.min.js') }}"></script>
     <!-- Toastr -->
     <script src="{{ asset('template/plugins/toastr/toastr.min.js') }}"></script>
     <!-- DataTables  & Plugins -->
@@ -356,21 +352,20 @@
     <script src="{{ asset('template/plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
     <!-- Select2 -->
 
-    <!-- Bootstrap 4 -->
-    <script src="{{ asset('template/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
     <!-- Select2 -->
     <script src="{{ asset('template/plugins/select2/js/select2.full.min.js') }}"></script>
     <!-- SweetAlert2 -->
     <script src="{{ asset('template/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
     <script src="template/plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
-<!-- date-range-picker -->
-<script src="{{ asset('template/plugins/daterangepicker/daterangepicker.js') }}"></script>
+    <!-- date-range-picker -->
+    <script src="{{ asset('template/plugins/daterangepicker/daterangepicker.js') }}"></script>
     <!-- Summernote -->
     <script src="{{ asset('template/plugins/summernote/summernote-bs4.min.js') }}"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 
-    
+
 
     <script>
         $(function() {
@@ -390,8 +385,6 @@
                 "responsive": true,
             });
         });
-
- 
     </script>
 
     <script>
@@ -400,11 +393,10 @@
                 placeholder: "Select About"
             });
         });
- 
-
     </script>
 
 
 </body>
 @include('modal.about')
+
 </html>

@@ -314,17 +314,11 @@
     </div><!--/. container-fluid -->
     </section>
 
-    <!-- AdminLTE for demo purposes -->
-    <script src="template/dist/js/demo.js"></script>
-    <!-- jQuery -->
-    <script src="template/plugins/jquery/jquery.min.js"></script>
-    <!-- Bootstrap 4 -->
-    <script src="template/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+
     <!-- ChartJS -->
     <script src="template/plugins/chart.js/Chart.min.js"></script>
     <script src="template/plugins/chart.js/Chart.js"></script>
-    <!-- AdminLTE App -->
-    <script src="template/dist/js/adminlte.min.js"></script>
+
 
     <script>
         function toggleAdminList(id) {
