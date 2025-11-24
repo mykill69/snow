@@ -99,530 +99,524 @@
 
                     <!-- /.col -->
 
-                    <section class="content">
-                        <div class="container-fluid">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h3 class="card-title" style=" color: #1E152A;font-weight: bold;">Daily Tickets
-                                                Created vs Resolved</h3>
 
-                                            <button id="tickets-range" class="btn btn-default float-right"
-                                                style="cursor: pointer; background-color:#FFB140;">
-                                                <i class="far fa-calendar-alt text-white"></i>
-                                                <span class="text-white">Select date</span>
-                                                <i class="fas fa-caret-down text-white"></i>
-                                            </button>
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="chart">
-                                                <canvas id="dailyline"
-                                                    style="min-height: 300px; height: 300px; max-height: 300px; max-width: 100%;"
-                                                    class="chartjs-render-monitor"></canvas>
-                                            </div>
-                                        </div>
-                                        <!-- /.card-body -->
-                                    </div>
-                                </div>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title" style=" color: #1E152A;font-weight: bold;">Daily Tickets
+                                            Created vs Resolved</h3>
 
-                                <div class="col-md-6">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h3 class="card-title" style=" color: #1E152A;font-weight: bold;">Monthly
-                                                Tickets
-                                                Resolved</h3>
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="chart">
-                                                <div class="position-relative mb-4">
-                                                    <canvas id="monthly-chart"
-                                                        style="min-height: 290px; height: 290px; max-height: 290px; max-width: 100%;"></canvas>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- /.card-body -->
+                                        <button id="tickets-range" class="btn btn-default float-right"
+                                            style="cursor: pointer; background-color:#FFB140;">
+                                            <i class="far fa-calendar-alt text-white"></i>
+                                            <span class="text-white">Select date</span>
+                                            <i class="fas fa-caret-down text-white"></i>
+                                        </button>
                                     </div>
+                                    <div class="card-body">
+                                        <div class="chart">
+                                            <canvas id="dailyline"
+                                                style="min-height: 300px; height: 300px; max-height: 300px; max-width: 100%;"
+                                                class="chartjs-render-monitor"></canvas>
+                                        </div>
+                                    </div>
+                                    <!-- /.card-body -->
                                 </div>
                             </div>
-                            <div class="card" style="background-color: white;">
-                                <div class="row m-2 text-center">
 
-                                    {{-- GAUGE 1 – Overall Satisfaction --}}
-                                    <div class="col-md-3" style="border-right: 2px solid black;">
-                                        <div class="d-flex flex-column align-items-center text-center">
-                                            <div class="fw-semibold mb-2" style="font-size: 1rem;">Overall Satisfaction Rate
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title" style=" color: #1E152A;font-weight: bold;">Monthly
+                                            Tickets
+                                            Resolved</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="chart">
+                                            <div class="position-relative mb-4">
+                                                <canvas id="monthly-chart"
+                                                    style="min-height: 290px; height: 290px; max-height: 290px; max-width: 100%;"></canvas>
                                             </div>
+                                        </div>
+                                    </div>
+                                    <!-- /.card-body -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card" style="background-color: white;">
+                            <div class="row m-2 text-center">
 
-                                            <div class="position-relative" style="width: 340px; height: 100px;">
-                                                <canvas id="gaugeChart" width="340" height="100"></canvas>
+                                {{-- GAUGE 1 – Overall Satisfaction --}}
+                                <div class="col-md-3" style="border-right: 2px solid black;">
+                                    <div class="d-flex flex-column align-items-center text-center">
+                                        <div class="fw-semibold mb-2" style="font-size: 1rem;">Overall Satisfaction Rate
+                                        </div>
 
-                                                <!-- Centered number -->
-                                                <div class="position-absolute start-0 translate-middle-x"
-                                                    style="top: 55%; right:42%; font-size: 2rem; font-weight: bold;">
-                                                    {{ number_format($overallAvg, 2) }}
+                                        <div class="position-relative" style="width: 340px; height: 100px;">
+                                            <canvas id="gaugeChart" width="340" height="100"></canvas>
+
+                                            <!-- Centered number -->
+                                            <div class="position-absolute start-0 translate-middle-x"
+                                                style="top: 55%; right:42%; font-size: 2rem; font-weight: bold;">
+                                                {{ number_format($overallAvg, 2) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- GAUGE 2 – Satisfaction vs Last Month --}}
+                                <div class="col-md-3" style="border-right: 2px solid black;">
+                                    <div class="d-flex flex-column align-items-center text-center">
+                                        <div class="fw-semibold mb-2" style="font-size: 1rem;">
+                                            Satisfaction Score vs Last Month
+                                        </div>
+
+                                        <div class="position-relative" style="width: 340px; height: 100px;">
+                                            <canvas id="gaugeChart2" width="340" height="100"></canvas>
+
+                                            {{-- Centered value and trend --}}
+                                            <div class="position-absolute start-0 translate-middle-x"
+                                                style="top: 40%; right:40%; font-size: 2rem;">
+                                                <div style="font-size: 2rem; font-weight: bold;">
+                                                    {{ number_format($currentAvg, 2) }}
+                                                </div>
+                                                <div style="font-size: 1rem; margin-top: -10%;">
+                                                    <span
+                                                        class="fw-bold {{ $currentAvg < $lastAvg ? 'text-danger' : 'text-success' }}">
+                                                        {{ $trendIcon }}
+                                                    </span>
+                                                    from {{ number_format($lastAvg, 2) }}
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                </div>
 
-                                    {{-- GAUGE 2 – Satisfaction vs Last Month --}}
-                                    <div class="col-md-3" style="border-right: 2px solid black;">
-                                        <div class="d-flex flex-column align-items-center text-center">
-                                            <div class="fw-semibold mb-2" style="font-size: 1rem;">
-                                                Satisfaction Score vs Last Month
+
+                                <!-- Top MIS Ticket Resolver -->
+                                <div class="col-md-3" style="border-right: 2px solid black;">
+                                    <div class="row align-items-center">
+                                        <div class="col-3 d-flex justify-content-center align-items-center">
+
+                                            <i class="fas fa-award fa-8x pl-4 pt-2" style="color: #FFB140"></i>
+
+                                        </div>
+                                        <div class="col-9 d-flex flex-column">
+                                            <div class="mb-1 fw-semibold" style="font-size: 1rem;">Top MIS Ticket
+                                                Resolver
                                             </div>
-
-                                            <div class="position-relative" style="width: 340px; height: 100px;">
-                                                <canvas id="gaugeChart2" width="340" height="100"></canvas>
-
-                                                {{-- Centered value and trend --}}
-                                                <div class="position-absolute start-0 translate-middle-x"
-                                                    style="top: 40%; right:40%; font-size: 2rem;">
-                                                    <div style="font-size: 2rem; font-weight: bold;">
-                                                        {{ number_format($currentAvg, 2) }}
-                                                    </div>
-                                                    <div style="font-size: 1rem; margin-top: -10%;">
-                                                        <span
-                                                            class="fw-bold {{ $currentAvg < $lastAvg ? 'text-danger' : 'text-success' }}">
-                                                            {{ $trendIcon }}
-                                                        </span>
-                                                        from {{ number_format($lastAvg, 2) }}
-                                                    </div>
-                                                </div>
+                                            <div class="font-weight-bold" style="font-size: 1.5rem;">
+                                                {{ $topResponderName }}
+                                            </div>
+                                            <div class="text-muted text-md" style="font-size: 0.95rem;">
+                                                <p>{{ $topResolvedCount }} resolved • Avg time: {{ $avgTimeHuman }}
+                                                </p>
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+                                <!-- Average Resolved Time Comparison -->
+                                <div class="col-md-3">
+                                    <div class="row align-items-center">
+                                        <div class="col-3 d-flex justify-content-center align-items-center">
 
+                                            <i class="fas fa-clock fa-6x pl-4 pt-2" style="color: #4E6766"></i>
 
-                                    <!-- Top MIS Ticket Resolver -->
-                                    <div class="col-md-3" style="border-right: 2px solid black;">
-                                        <div class="row align-items-center">
-                                            <div class="col-3 d-flex justify-content-center align-items-center">
+                                        </div>
+                                        @php
+                                            $roundedThisMonth = $thisMonthAvgTimeFormatted;
+                                            $roundedLastMonth = $lastMonthAvgTimeFormatted;
+                                        @endphp
 
-                                                <i class="fas fa-award fa-8x pl-4 pt-2" style="color: #FFB140"></i>
-
+                                        <div class="col-9 d-flex flex-column">
+                                            <div class="mb-1 fw-semibold" style="font-size: 1rem;">
+                                                Avg Resolved Time vs Last Month
                                             </div>
-                                            <div class="col-9 d-flex flex-column">
-                                                <div class="mb-1 fw-semibold" style="font-size: 1rem;">Top MIS Ticket
-                                                    Resolver
-                                                </div>
+
+                                            @if ($thisMonthAvgTime > 0 || $lastMonthAvgTime > 0)
                                                 <div class="font-weight-bold" style="font-size: 1.5rem;">
-                                                    {{ $topResponderName }}
+                                                    {{ $roundedThisMonth }}
+
+                                                    @if ($thisMonthAvgTime < $lastMonthAvgTime)
+                                                        <span class="text-success" style="font-size:2rem;">↓</span>
+                                                        <span class="text-muted">from {{ $roundedLastMonth }}</span>
+                                                    @elseif ($thisMonthAvgTime > $lastMonthAvgTime)
+                                                        <span class="text-danger">↑</span><br>
+                                                        <span class="text-muted">from {{ $roundedLastMonth }}</span>
+                                                    @else
+                                                        <span class="text-secondary">→ same as last month</span>
+                                                    @endif
                                                 </div>
-                                                <div class="text-muted text-md" style="font-size: 0.95rem;">
-                                                    <p>{{ $topResolvedCount }} resolved • Avg time: {{ $avgTimeHuman }}
-                                                    </p>
+                                            @else
+                                                <div class="text-muted" style="font-size: 1.2rem;">No data available
                                                 </div>
-                                            </div>
+                                            @endif
                                         </div>
-                                    </div>
-                                    <!-- Average Resolved Time Comparison -->
-                                    <div class="col-md-3">
-                                        <div class="row align-items-center">
-                                            <div class="col-3 d-flex justify-content-center align-items-center">
 
-                                                <i class="fas fa-clock fa-6x pl-4 pt-2" style="color: #4E6766"></i>
-
-                                            </div>
-                                            @php
-                                                $roundedThisMonth = $thisMonthAvgTimeFormatted;
-                                                $roundedLastMonth = $lastMonthAvgTimeFormatted;
-                                            @endphp
-
-                                            <div class="col-9 d-flex flex-column">
-                                                <div class="mb-1 fw-semibold" style="font-size: 1rem;">
-                                                    Avg Resolved Time vs Last Month
-                                                </div>
-
-                                                @if ($thisMonthAvgTime > 0 || $lastMonthAvgTime > 0)
-                                                    <div class="font-weight-bold" style="font-size: 1.5rem;">
-                                                        {{ $roundedThisMonth }}
-
-                                                        @if ($thisMonthAvgTime < $lastMonthAvgTime)
-                                                            <span class="text-success" style="font-size:2rem;">↓</span>
-                                                            <span class="text-muted">from {{ $roundedLastMonth }}</span>
-                                                        @elseif ($thisMonthAvgTime > $lastMonthAvgTime)
-                                                            <span class="text-danger">↑</span><br>
-                                                            <span class="text-muted">from {{ $roundedLastMonth }}</span>
-                                                        @else
-                                                            <span class="text-secondary">→ same as last month</span>
-                                                        @endif
-                                                    </div>
-                                                @else
-                                                    <div class="text-muted" style="font-size: 1.2rem;">No data available
-                                                    </div>
-                                                @endif
-                                            </div>
-
-                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h3 class="card-title" style=" color: #1E152A;font-weight: bold;">Tickets by
-                                                Offices/Colleges</h3>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title" style=" color: #1E152A;font-weight: bold;">Tickets by
+                                            Offices/Colleges</h3>
 
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="chart">
-                                                <div class="position-relative mb-4">
-                                                    <canvas id="sale-chart"
-                                                        style="min-height: 340px; height: 340px; max-height: 340px; max-width: 100%;"></canvas>
-                                                </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="chart">
+                                            <div class="position-relative mb-4">
+                                                <canvas id="sale-chart"
+                                                    style="min-height: 340px; height: 340px; max-height: 340px; max-width: 100%;"></canvas>
                                             </div>
                                         </div>
-                                        <!-- /.card-body -->
                                     </div>
+                                    <!-- /.card-body -->
                                 </div>
+                            </div>
 
-                                <div class="col-md-6">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h3 class="card-title" style=" color: #1E152A;font-weight: bold;">Average
-                                                Ticket
-                                                Performance of MIS Personnel</h3>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title" style=" color: #1E152A;font-weight: bold;">Average
+                                            Ticket
+                                            Performance of MIS Personnel</h3>
 
 
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="chart">
-                                                <table class="table table-sm" id="example2"
-                                                    style="font-size: 0.85rem; width: 100%; min-width: 400px;">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Personnel</th>
-                                                            <th># of Tickets Resolved</th>
-                                                            <th>Average Response Time</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @php
-                                                            use Carbon\CarbonInterval;
-
-                                                            $totalResolved = 0;
-                                                            $totalSeconds = 0;
-                                                        @endphp
-
-                                                        @foreach ($adminUsers->whereNotIn('id', [3, 12]) as $admin)
-                                                            @php
-                                                                $resolvedTickets = \App\Models\TicketDtl::where(
-                                                                    'status',
-                                                                    3,
-                                                                )
-                                                                    ->where('admin_id', $admin->id)
-                                                                    ->get();
-
-                                                                $resolvedCount = $resolvedTickets->count();
-                                                                $adminTotalSeconds = 0;
-
-                                                                foreach ($resolvedTickets as $ticket) {
-                                                                    $adminTotalSeconds += \Carbon\Carbon::parse(
-                                                                        $ticket->created_at,
-                                                                    )->diffInSeconds($ticket->updated_at);
-                                                                }
-
-                                                                $averageSeconds =
-                                                                    $resolvedCount > 0
-                                                                        ? round($adminTotalSeconds / $resolvedCount)
-                                                                        : 0;
-                                                                $interval = CarbonInterval::seconds(
-                                                                    $averageSeconds,
-                                                                )->cascade();
-
-                                                                $formattedAvg =
-                                                                    $resolvedCount > 0
-                                                                        ? $interval->forHumans([
-                                                                            'parts' => 2,
-                                                                            'short' => true,
-                                                                        ])
-                                                                        : 'N/A';
-
-                                                                $totalResolved += $resolvedCount;
-                                                                $totalSeconds += $adminTotalSeconds;
-                                                            @endphp
-
-                                                            <tr>
-                                                                <td>{{ $admin->fname . ' ' . $admin->lname }}</td>
-                                                                <td>{{ $resolvedCount }}</td>
-                                                                <td><span class="badge"
-                                                                        style="background-color: #FFB140;">{{ $formattedAvg }}</span>
-                                                                </td>
-                                                            </tr>
-                                                        @endforeach
-
-                                                    </tbody>
-
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="chart">
+                                            <table class="table table-sm" id="example2"
+                                                style="font-size: 0.85rem; width: 100%; min-width: 400px;">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Personnel</th>
+                                                        <th># of Tickets Resolved</th>
+                                                        <th>Average Response Time</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
                                                     @php
-                                                        $overallAvgSeconds =
-                                                            $totalResolved > 0
-                                                                ? round($totalSeconds / $totalResolved)
-                                                                : 0;
-                                                        $overallInterval = CarbonInterval::seconds(
-                                                            $overallAvgSeconds,
-                                                        )->cascade();
-                                                        $overallFormatted = $overallInterval->forHumans([
-                                                            'parts' => 2,
-                                                            'short' => true,
-                                                        ]);
+                                                        use Carbon\CarbonInterval;
+
+                                                        $totalResolved = 0;
+                                                        $totalSeconds = 0;
                                                     @endphp
 
-                                                    <tr>
-                                                        <th>Overall Total</th>
-                                                        <th>{{ $totalResolved }}</th>
-                                                        <th>{{ $overallFormatted }}</th>
-                                                    </tr>
-                                                </table>
-                                            </div>
-                                        </div>
-                                        <!-- /.card-body -->
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="row">
-
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <!-- Ticket Categories Chart -->
-                                        <div class="col-md-7">
-                                            <div class="card">
-                                                <div class="card-header">
-                                                    <h3 class="card-title" style=" color: #1E152A;font-weight: bold;">
-                                                        Ticket
-                                                        Categories</h3>
-                                                </div>
-                                                <div class="card-body">
-                                                    <canvas id="piesChart"
-                                                        style="min-height: 250px; height: 250px; max-width: 100%;"></canvas>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Priority Level Chart -->
-                                        <div class="col-md-5">
-                                            <div class="card">
-                                                <div class="card-header">
-                                                    <h3 class="card-title" style=" color: #1E152A;font-weight: bold;">
-                                                        Priority
-                                                        Level</h3>
-                                                </div>
-                                                <div class="card-body">
-                                                    <canvas id="donutChart2"
-                                                        style="min-height: 250px; height: 250px;  max-width: 100%;"></canvas>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h3 class="card-title" style=" color: #1E152A;font-weight: bold;">Monitoring
-                                            </h3>
-
-                                        </div>
-                                        <div class="container-fluid"
-                                            style="min-height: 290px; height: 290px; max-height: 290px; max-width: 100%;">
-
-                                            <div class="row">
-                                                <div class="col-md-6 mb-3">
-                                                    <a href="{{ route('allTickets') }}"
-                                                        class="text-decoration-none btn btn-block p-0 pt-2">
-                                                        <div class="info-box mb-3"
-                                                            style="background-color: white; cursor: pointer;">
-                                                            <span
-                                                                class="info-box-icon elevation-1 d-flex align-items-center justify-content-center"
-                                                                style="font-size:3.5rem; min-width: 33%; height: 80px; min-height: 80px;background-color:#1E152A;">
-                                                                <i class="fa fa-calendar-times" style="color: #fff;"></i>
-                                                            </span>
-                                                            <div class="info-box-content">
-                                                                <span class="info-box-number display-4 w-100 text-center"
-                                                                    style="font-size:2rem;">
-                                                                    {{ $overdueTickets }}
-                                                                </span>
-                                                                <span class="info-box-text w-100 text-center text-muted"
-                                                                    style="font-size:1rem;">
-                                                                    Overdue
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    </a>
-                                                </div>
-                                                <div class="col-md-6 mb-3">
-                                                    <a href="{{ route('allTickets') }}"
-                                                        class="text-decoration-none btn btn-block p-0 pt-2">
-                                                        <div class="info-box mb-3"
-                                                            style="background-color: white; cursor: pointer;">
-                                                            <span
-                                                                class="info-box-icon elevation-1 d-flex align-items-center justify-content-center"
-                                                                style="font-size:3.5rem; min-width: 33%; height: 80px; min-height: 80px;background-color:#4E6766;">
-                                                                <i class="fas fa-smile" style="color: #fff;"></i>
-                                                            </span>
-                                                            <div class="info-box-content">
-                                                                <span class="info-box-number display-4 w-100 text-center"
-                                                                    style="font-size:2rem;">
-                                                                    {{ $pendingSurveyCount }}
-
-                                                                </span>
-                                                                <span class="info-box-text w-100 text-center text-muted"
-                                                                    style="font-size:1rem; font-weight: normal;">
-                                                                    Pending Client Survey
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-6 mb-3">
-                                                    <a href="{{ route('userView') }}"
-                                                        class="text-decoration-none btn btn-block p-0">
-                                                        <div class="info-box mb-3"
-                                                            style="background-color: white; cursor: pointer;">
-                                                            <span
-                                                                class="info-box-icon elevation-1 d-flex align-items-center justify-content-center"
-                                                                style="font-size:3.5rem; min-width: 33%; height: 80px; min-height: 80px;background-color:#FFB140;">
-                                                                <i class="fas fa-users" style="color: #fff;"></i>
-                                                            </span>
-                                                            <div class="info-box-content">
-                                                                <span class="info-box-number display-4 w-100 text-center"
-                                                                    style="font-size:2rem;">
-                                                                    {{ $userCount }}
-                                                                </span>
-                                                                <span class="info-box-text w-100 text-center text-muted"
-                                                                    style="font-size:1rem; font-weight: normal;">
-                                                                    Total Users Created
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    </a>
-                                                </div>
-                                                <div class="col-md-6 mb-3">
-                                                    <a href="#" class="text-decoration-none btn btn-block p-0 ">
-                                                        <div class="info-box mb-3"
-                                                            style="background-color: white; cursor: pointer;">
-                                                            <span
-                                                                class="info-box-icon elevation-1 d-flex align-items-center justify-content-center"
-                                                                style="font-size:3.5rem; min-width: 33%; height: 80px; min-height: 80px;background-color:#3B8EA5;">
-                                                                <i class="fas fa-tags" style="color: #fff;"></i>
-                                                            </span>
-                                                            <div class="info-box-content">
-                                                                <span class="info-box-number display-4 w-100 text-center"
-                                                                    style="font-size:2rem;">
-                                                                    {{ $totalTickets }}
-                                                                </span>
-                                                                <span class="info-box-text w-100 text-center text-muted"
-                                                                    style="font-size:1rem; font-weight: normal;">
-                                                                    Total Tickets
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    </a>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h3 class="card-title" style=" color: #1E152A;font-weight: bold;">MIS
-                                                Personnel
-                                            </h3>
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="chart">
-                                                <canvas id="barChart2"
-                                                    style="min-height: 353px; height: 353px; max-height: 353px; max-width: 100%;"></canvas>
-                                            </div>
-                                        </div>
-                                        <!-- /.card-body -->
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h3 class="card-title" style="color: #1E152A; font-weight: bold;">Client
-                                                Feedback</h3>
-                                        </div>
-                                        <div class="card-body">
-                                            <!-- Set fixed height for exactly 4 items; make it scrollable if more -->
-                                            <div style="max-height: 355px; overflow-y: auto;">
-                                                <ul class="contacts-list list-unstyled">
-                                                    @foreach ($clientFeedbacks as $feedback)
+                                                    @foreach ($adminUsers->whereNotIn('id', [3, 12]) as $admin)
                                                         @php
-                                                            $isLong = strlen($feedback['message']) > 150;
-                                                            $shortMessage = \Illuminate\Support\Str::limit(
-                                                                $feedback['message'],
-                                                                150,
-                                                            );
+                                                            $resolvedTickets = \App\Models\TicketDtl::where('status', 3)
+                                                                ->where('admin_id', $admin->id)
+                                                                ->get();
+
+                                                            $resolvedCount = $resolvedTickets->count();
+                                                            $adminTotalSeconds = 0;
+
+                                                            foreach ($resolvedTickets as $ticket) {
+                                                                $adminTotalSeconds += \Carbon\Carbon::parse(
+                                                                    $ticket->created_at,
+                                                                )->diffInSeconds($ticket->updated_at);
+                                                            }
+
+                                                            $averageSeconds =
+                                                                $resolvedCount > 0
+                                                                    ? round($adminTotalSeconds / $resolvedCount)
+                                                                    : 0;
+                                                            $interval = CarbonInterval::seconds(
+                                                                $averageSeconds,
+                                                            )->cascade();
+
+                                                            $formattedAvg =
+                                                                $resolvedCount > 0
+                                                                    ? $interval->forHumans([
+                                                                        'parts' => 2,
+                                                                        'short' => true,
+                                                                    ])
+                                                                    : 'N/A';
+
+                                                            $totalResolved += $resolvedCount;
+                                                            $totalSeconds += $adminTotalSeconds;
                                                         @endphp
-                                                        <li class="mb-3 pb-2 border-bottom">
-                                                            <div class="d-flex text-black" style="min-height: 50px;">
-                                                                <!-- Column 1: Icon -->
-                                                                <div class="pr-3">
-                                                                    <div class="rounded-circle d-flex align-items-center justify-content-center text-black"
-                                                                        style="width: 50px; height: 50px; font-size: 24px; background-color: #FFB140;">
-                                                                        <i class="fas fa-user" style="color: #fff;"></i>
-                                                                    </div>
-                                                                </div>
 
-                                                                <!-- Column 2: Feedback Text -->
-                                                                <div class="flex-grow-1">
-                                                                    <div class="contacts-list text-black">
-                                                                        <span class="font-weight-bold d-block text-black">
-                                                                            {{ $feedback['name'] }}
-                                                                        </span>
-                                                                        <span class="contacts-list-msg d-block text-black">
-                                                                            <span
-                                                                                class="short-msg">{{ $shortMessage }}</span>
-                                                                            <span
-                                                                                class="full-msg d-none">{{ $feedback['message'] }}</span>
-                                                                            @if ($isLong)
-                                                                                <a href="javascript:void(0);"
-                                                                                    class="see-more-toggle text-primary small">See
-                                                                                    more</a>
-                                                                            @endif
-                                                                        </span>
-                                                                    </div>
-                                                                </div>
-
-                                                                <!-- Column 3: Date -->
-                                                                <div class="text-right pl-3 small text-black"
-                                                                    style="min-width: 100px;">
-                                                                    <small>{{ $feedback['date'] }}</small>
-                                                                </div>
-                                                            </div>
-                                                        </li>
+                                                        <tr>
+                                                            <td>{{ $admin->fname . ' ' . $admin->lname }}</td>
+                                                            <td>{{ $resolvedCount }}</td>
+                                                            <td><span class="badge"
+                                                                    style="background-color: #FFB140;">{{ $formattedAvg }}</span>
+                                                            </td>
+                                                        </tr>
                                                     @endforeach
-                                                </ul>
+
+                                                </tbody>
+
+                                                @php
+                                                    $overallAvgSeconds =
+                                                        $totalResolved > 0 ? round($totalSeconds / $totalResolved) : 0;
+                                                    $overallInterval = CarbonInterval::seconds(
+                                                        $overallAvgSeconds,
+                                                    )->cascade();
+                                                    $overallFormatted = $overallInterval->forHumans([
+                                                        'parts' => 2,
+                                                        'short' => true,
+                                                    ]);
+                                                @endphp
+
+                                                <tr>
+                                                    <th>Overall Total</th>
+                                                    <th>{{ $totalResolved }}</th>
+                                                    <th>{{ $overallFormatted }}</th>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <!-- /.card-body -->
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <!-- Ticket Categories Chart -->
+                                    <div class="col-md-7">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h3 class="card-title" style=" color: #1E152A;font-weight: bold;">
+                                                    Ticket
+                                                    Categories</h3>
+                                            </div>
+                                            <div class="card-body">
+                                                <canvas id="piesChart"
+                                                    style="min-height: 250px; height: 250px; max-width: 100%;"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Priority Level Chart -->
+                                    <div class="col-md-5">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h3 class="card-title" style=" color: #1E152A;font-weight: bold;">
+                                                    Priority
+                                                    Level</h3>
+                                            </div>
+                                            <div class="card-body">
+                                                <canvas id="donutChart2"
+                                                    style="min-height: 250px; height: 250px;  max-width: 100%;"></canvas>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
 
-                            <div class="row">
-                                <div class="col-md-12">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title" style=" color: #1E152A;font-weight: bold;">Monitoring
+                                        </h3>
 
-                                    @include('partials.workProgress')
+                                    </div>
+                                    <div class="container-fluid"
+                                        style="min-height: 290px; height: 290px; max-height: 290px; max-width: 100%;">
 
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <a href="{{ route('allTickets') }}"
+                                                    class="text-decoration-none btn btn-block p-0 pt-2">
+                                                    <div class="info-box mb-3"
+                                                        style="background-color: white; cursor: pointer;">
+                                                        <span
+                                                            class="info-box-icon elevation-1 d-flex align-items-center justify-content-center"
+                                                            style="font-size:3.5rem; min-width: 33%; height: 80px; min-height: 80px;background-color:#1E152A;">
+                                                            <i class="fa fa-calendar-times" style="color: #fff;"></i>
+                                                        </span>
+                                                        <div class="info-box-content">
+                                                            <span class="info-box-number display-4 w-100 text-center"
+                                                                style="font-size:2rem;">
+                                                                {{ $overdueTickets }}
+                                                            </span>
+                                                            <span class="info-box-text w-100 text-center text-muted"
+                                                                style="font-size:1rem;">
+                                                                Overdue
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <a href="{{ route('allTickets') }}"
+                                                    class="text-decoration-none btn btn-block p-0 pt-2">
+                                                    <div class="info-box mb-3"
+                                                        style="background-color: white; cursor: pointer;">
+                                                        <span
+                                                            class="info-box-icon elevation-1 d-flex align-items-center justify-content-center"
+                                                            style="font-size:3.5rem; min-width: 33%; height: 80px; min-height: 80px;background-color:#4E6766;">
+                                                            <i class="fas fa-smile" style="color: #fff;"></i>
+                                                        </span>
+                                                        <div class="info-box-content">
+                                                            <span class="info-box-number display-4 w-100 text-center"
+                                                                style="font-size:2rem;">
+                                                                {{ $pendingSurveyCount }}
+
+                                                            </span>
+                                                            <span class="info-box-text w-100 text-center text-muted"
+                                                                style="font-size:1rem; font-weight: normal;">
+                                                                Pending Client Survey
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <a href="{{ route('userView') }}"
+                                                    class="text-decoration-none btn btn-block p-0">
+                                                    <div class="info-box mb-3"
+                                                        style="background-color: white; cursor: pointer;">
+                                                        <span
+                                                            class="info-box-icon elevation-1 d-flex align-items-center justify-content-center"
+                                                            style="font-size:3.5rem; min-width: 33%; height: 80px; min-height: 80px;background-color:#FFB140;">
+                                                            <i class="fas fa-users" style="color: #fff;"></i>
+                                                        </span>
+                                                        <div class="info-box-content">
+                                                            <span class="info-box-number display-4 w-100 text-center"
+                                                                style="font-size:2rem;">
+                                                                {{ $userCount }}
+                                                            </span>
+                                                            <span class="info-box-text w-100 text-center text-muted"
+                                                                style="font-size:1rem; font-weight: normal;">
+                                                                Total Users Created
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <a href="#" class="text-decoration-none btn btn-block p-0 ">
+                                                    <div class="info-box mb-3"
+                                                        style="background-color: white; cursor: pointer;">
+                                                        <span
+                                                            class="info-box-icon elevation-1 d-flex align-items-center justify-content-center"
+                                                            style="font-size:3.5rem; min-width: 33%; height: 80px; min-height: 80px;background-color:#3B8EA5;">
+                                                            <i class="fas fa-tags" style="color: #fff;"></i>
+                                                        </span>
+                                                        <div class="info-box-content">
+                                                            <span class="info-box-number display-4 w-100 text-center"
+                                                                style="font-size:2rem;">
+                                                                {{ $totalTickets }}
+                                                            </span>
+                                                            <span class="info-box-text w-100 text-center text-muted"
+                                                                style="font-size:1rem; font-weight: normal;">
+                                                                Total Tickets
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </div>
+
+                                        </div>
+                                    </div>
                                 </div>
 
                             </div>
                         </div>
-                    </section>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title" style=" color: #1E152A;font-weight: bold;">MIS
+                                            Personnel
+                                        </h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="chart">
+                                            <canvas id="barChart2"
+                                                style="min-height: 353px; height: 353px; max-height: 353px; max-width: 100%;"></canvas>
+                                        </div>
+                                    </div>
+                                    <!-- /.card-body -->
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title" style="color: #1E152A; font-weight: bold;">Client
+                                            Feedback</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <!-- Set fixed height for exactly 4 items; make it scrollable if more -->
+                                        <div style="max-height: 355px; overflow-y: auto;">
+                                            <ul class="contacts-list list-unstyled">
+                                                @foreach ($clientFeedbacks as $feedback)
+                                                    @php
+                                                        $isLong = strlen($feedback['message']) > 150;
+                                                        $shortMessage = \Illuminate\Support\Str::limit(
+                                                            $feedback['message'],
+                                                            150,
+                                                        );
+                                                    @endphp
+                                                    <li class="mb-3 pb-2 border-bottom">
+                                                        <div class="d-flex text-black" style="min-height: 50px;">
+                                                            <!-- Column 1: Icon -->
+                                                            <div class="pr-3">
+                                                                <div class="rounded-circle d-flex align-items-center justify-content-center text-black"
+                                                                    style="width: 50px; height: 50px; font-size: 24px; background-color: #FFB140;">
+                                                                    <i class="fas fa-user" style="color: #fff;"></i>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Column 2: Feedback Text -->
+                                                            <div class="flex-grow-1">
+                                                                <div class="contacts-list text-black">
+                                                                    <span class="font-weight-bold d-block text-black">
+                                                                        {{ $feedback['name'] }}
+                                                                    </span>
+                                                                    <span class="contacts-list-msg d-block text-black">
+                                                                        <span class="short-msg">{{ $shortMessage }}</span>
+                                                                        <span
+                                                                            class="full-msg d-none">{{ $feedback['message'] }}</span>
+                                                                        @if ($isLong)
+                                                                            <a href="javascript:void(0);"
+                                                                                class="see-more-toggle text-primary small">See
+                                                                                more</a>
+                                                                        @endif
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Column 3: Date -->
+                                                            <div class="text-right pl-3 small text-black"
+                                                                style="min-width: 100px;">
+                                                                <small>{{ $feedback['date'] }}</small>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+
+                                @include('partials.workProgress')
+
+                            </div>
+
+                        </div>
+                    </div>
+
 
                     <!-- /.content -->
         </section>
