@@ -47,7 +47,7 @@
                             style="background-color: #4E6766; border-radius: 20px; height: 140px;">
                             <div class="row w-100 px-4">
                                 <div class="col-8 d-flex flex-column justify-content-center">
-                                    <p class="mb-0" style="font-size: 1.6rem;">Resolved Ticket</p>
+                                    <p class="mb-0" style="font-size: 1.6rem;">Resolved</p>
                                     <h3 class="fw-bold" style="font-size: 4rem;">
                                         {{ $ticketCount->where('status', 3)->count() }}
                                     </h3>
@@ -66,7 +66,7 @@
                             style="background-color: #FFB140; border-radius: 20px; color: #1E152A; height: 140px;">
                             <div class="row w-100 px-4">
                                 <div class="col-8 d-flex flex-column justify-content-center">
-                                    <p class="mb-0" style="font-size: 1.6rem;">Pending Ticket</p>
+                                    <p class="mb-0" style="font-size: 1.6rem;">Pending</p>
                                     <h3 class="fw-bold" style="font-size: 4rem;">
                                         {{ $ticketCount->where('status', 2)->count() }}
                                     </h3>
@@ -84,7 +84,7 @@
                             style="background-color: #C94C4C; border-radius: 20px; height: 140px;">
                             <div class="row w-100 px-4">
                                 <div class="col-8 d-flex flex-column justify-content-center">
-                                    <p class="mb-0" style="font-size: 1.6rem;">Closed Ticket</p>
+                                    <p class="mb-0" style="font-size: 1.6rem;">Closed/Cancelled</p>
                                     <h3 class="fw-bold" style="font-size: 4rem;">
                                         {{ $ticketCount->where('status', 4)->count() }}
                                     </h3>
