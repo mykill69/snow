@@ -66,7 +66,7 @@
                             style="background-color: #FFB140; border-radius: 20px; color: #1E152A; height: 140px;">
                             <div class="row w-100 px-4">
                                 <div class="col-8 d-flex flex-column justify-content-center">
-                                    <p class="mb-0" style="font-size: 1.6rem;">Pending</p>
+                                    <p class="mb-0" style="font-size: 1.6rem;font-weight: bold;">Pending</p>
                                     <h3 class="fw-bold" style="font-size: 4rem;">
                                         {{ $ticketCount->where('status', 2)->count() }}
                                     </h3>
