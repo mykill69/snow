@@ -84,7 +84,7 @@
                             style="background-color: #C94C4C; border-radius: 20px; height: 140px;">
                             <div class="row w-100 px-4">
                                 <div class="col-8 d-flex flex-column justify-content-center">
-                                    <p class="mb-0" style="font-size: 1.6rem;">Closed/Cancelled</p>
+                                    <p class="mb-0" style="font-size: 1.6rem;">Closed</p>
                                     <h3 class="fw-bold" style="font-size: 4rem;">
                                         {{ $ticketCount->where('status', 4)->count() }}
                                     </h3>
