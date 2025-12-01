@@ -136,7 +136,7 @@
                                                                     <td>
                                                                         @if ($ticket->file_name)
                                                                             <a href="{{ asset('storage/' . $ticket->file_name) }}"
-                                                                                target="_blank">View File</a>
+                                                                                target="_blank" class="text-primary">View File</a>
                                                                         @else
                                                                             No File
                                                                         @endif
