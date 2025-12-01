@@ -50,7 +50,7 @@
                                                         <tbody>
                                                             <tr class="py-1">
                                                                 <th width="15%" class="py-1">Ticket Created By</th>
-                                                                <td class="py-1">{{ $ticket->user_id }} {{ $ticket->user->fname }}
+                                                                <td class="py-1">{{ $ticket->user->fname }}
                                                                     {{ $ticket->user->lname }} from the
                                                                     {{ $ticket->department }} office/College</td>
                                                             </tr>
@@ -111,7 +111,7 @@
                                                                 <td class="py-1">
                                                                     @if ($ticket->file_name)
                                                                         <a href="{{ asset('storage/' . $ticket->file_name) }}"
-                                                                            target="_blank">View Attachment</a>
+                                                                            target="_blank"> {{ $ticket->file_name }}</a>
                                                                     @else
                                                                         None
                                                                     @endif
