@@ -111,7 +111,7 @@
                                                                 <td class="py-1">
                                                                     @if ($ticket->file_name)
                                                                         <a href="{{ asset('storage/' . $ticket->file_name) }}"
-                                                                            target="_blank"> {{ $ticket->file_name }}</a>
+                                                                            target="_blank" class="text-primary">View Attachment</a>
                                                                     @else
                                                                         None
                                                                     @endif
