@@ -95,8 +95,8 @@
                     <div class="p-2 rounded chat-bubble {{ $bubbleClass }} left" style="{{ $bubbleStyle }}">
                         {{ $comment->comments }} {{ $commenter->fname }} {{ $commenter->lname }}
 
-                        {{-- ✅ Show ticket remarks if NOT NULL --}}
-                        @if (!empty($ticket->remarks))
+                        {{-- ✅ Show ticket remarks ONLY on the latest comment --}}
+                        @if ($loop->last && !empty($ticket->remarks))
                             <div class="mt-2 p-2 bg-success bg-opacity-25 border rounded text-sm text-dark">
                                 <strong>Resolution Remarks:</strong> {{ $ticket->remarks }}
                             </div>
