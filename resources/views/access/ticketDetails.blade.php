@@ -23,15 +23,26 @@
                                                     {{ $ticket->created_at->format('M d, Y') }}
                                                 </span>
                                             </div>
+
                                             <div class="col-md-6 text-right pr-4">
+
                                                 <form action="{{ route('closeTicket', $ticket->ticket_no) }}" method="POST"
                                                     onsubmit="return confirm('Are you sure you want to close this ticket?')">
                                                     @csrf
-                                                    <button class="btn btn-danger text-bold shadow-sm"
+
+                                                    {{-- ✅ Take Action Button --}}
+                                                    <a href="{{ route('editTicket', $ticket->ticket_no) }}"
+                                                        class="btn btn-primary text-bold shadow-sm me-2">
+                                                        Take Action
+                                                    </a>
+
+                                                    {{-- ✅ Close Ticket Button --}}
+                                                    <button type="submit" class="btn btn-danger text-bold shadow-sm"
                                                         @if (in_array($ticket->status, [3, 4])) disabled @endif>
                                                         Close Ticket
                                                     </button>
                                                 </form>
+
                                             </div>
                                         </div>
                                     </div>
@@ -198,13 +209,15 @@
                                                             </div>
 
                                                             <div class="direct-chat-text text-lg {{ $bubbleClass }}">
-                                                                {{ $comment->comments }} {{ $commenter->fname }} {{ $commenter->lname }}
+                                                                {{ $comment->comments }} {{ $commenter->fname }}
+                                                                {{ $commenter->lname }}
 
                                                                 {{-- ✅ Show ticket remarks if NOT NULL --}}
                                                                 @if (!empty($ticket->remarks))
                                                                     <div
-                                                                        class="mt-2 p-2 bg-warning bg-opacity-25 border rounded text-sm text-dark">
-                                                                        <strong>Remarks:</strong> {{ $ticket->remarks }}
+                                                                        class="mt-2 p-2 bg-success bg-opacity-25 border rounded text-sm text-dark">
+                                                                        <strong>Resolution Remarks:</strong>
+                                                                        {{ $ticket->remarks }}
                                                                     </div>
                                                                 @endif
 

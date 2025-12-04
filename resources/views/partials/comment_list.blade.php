@@ -97,8 +97,8 @@
 
                         {{-- ✅ Show ticket remarks if NOT NULL --}}
                         @if (!empty($ticket->remarks))
-                            <div class="mt-2 p-2 bg-warning bg-opacity-25 border rounded text-sm text-dark">
-                                <strong>Remarks:</strong> {{ $ticket->remarks }}
+                            <div class="mt-2 p-2 bg-success bg-opacity-25 border rounded text-sm text-dark">
+                                <strong>Resolution Remarks:</strong> {{ $ticket->remarks }}
                             </div>
                         @endif
                     </div>

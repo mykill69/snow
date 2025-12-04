@@ -124,8 +124,8 @@
 
                             <div class="form-group">
                                 <label for="status"><strong>Status</strong></label>
-                                <select class="form-control border border-danger text-danger font-weight-bold"
-                                    id="status" name="status" required
+                                <select class="form-control border border-danger text-dark font-weight-bold" id="status"
+                                    name="status" required
                                     style="
                 border-width: 3px;
                 background-color: #FFFF;
