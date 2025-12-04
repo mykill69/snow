@@ -8,6 +8,7 @@ use App\Models\TicketDtl;
 use App\Models\Office;
 use App\Models\Comments;
 use App\Models\Logs;
+
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -135,6 +136,24 @@ class TicketController extends Controller
     // Fetch all comments related to this ticket number
     $comments = Comments::where('ticket_no', $ticketNo)->orderBy('created_at', 'asc')->get();
 
+    $currentUser = auth()->user();
+
+    // Admin can see all comments; mark unseen comments as seen
+    if ($currentUser->role === 'Administrator') {
+        Comments::where('ticket_no', $ticketNo)
+            ->where('com_stat', 0)
+            ->update(['com_stat' => 1]);
+    } else {
+        // For regular users, mark only their comments as seen
+        Comments::where('ticket_no', $ticketNo)
+            ->where('com_stat', 0)
+            ->where(function ($q) use ($currentUser) {
+                $q->where('user_id', $currentUser->id)
+                  ->orWhere('admin_id', $currentUser->id);
+            })
+            ->update(['com_stat' => 1]);
+    }
+
     return view('access.ticketDetails', compact('ticket', 'comments'));
 }
 
@@ -168,5 +187,16 @@ class TicketController extends Controller
 
     return redirect()->back()->with('success', 'Comment added successfully');
 }
+
+
+public static function getLatestUserComments($limit = 10)
+{
+    return Comments::with('user') // now works because user() exists
+        ->whereNotNull('user_id')
+        ->orderBy('created_at', 'desc')
+        ->take($limit)
+        ->get();
+}
+
 
 }

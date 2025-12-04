@@ -75,21 +75,58 @@ public function suggestions(Request $request)
 
 
 
+// public function createdTicket($ticketNo)
+// {
+
+//     $users = User::all();
+
+//     $ticket = TicketDtl::where('ticket_no', $ticketNo)->first();
+
+//     if (!$ticket) {
+//         return redirect()->back()->with('error', 'Ticket not found');
+//     }
+
+//     // Fetch all comments related to this ticket number
+//     $comments = Comments::where('ticket_no', $ticketNo)->orderBy('created_at', 'asc')->get();
+// // Mark unseen comments for the current logged-in user as seen
+//     foreach ($comments as $comment) {
+//         if ($comment->com_stat == 0) {
+//             // If the comment belongs to the currently logged-in user (user_id or admin_id)
+//             if ($comment->user_id == auth()->id() || $comment->admin_id == auth()->id()) {
+//                 $comment->com_stat = 1; // mark as seen
+//                 $comment->save();
+//             }
+//         }
+//     }
+//     return view('access.createdTicket', compact('ticket', 'comments','users'));
+// }
 public function createdTicket($ticketNo)
 {
-
     $users = User::all();
-
     $ticket = TicketDtl::where('ticket_no', $ticketNo)->first();
 
     if (!$ticket) {
         return redirect()->back()->with('error', 'Ticket not found');
     }
 
-    // Fetch all comments related to this ticket number
-    $comments = Comments::where('ticket_no', $ticketNo)->orderBy('created_at', 'asc')->get();
+    $currentUser = auth()->user();
 
-    return view('access.createdTicket', compact('ticket', 'comments','users'));
+    // Mark unseen comments as seen for this user
+    Comments::where('ticket_no', $ticketNo)
+        ->where('com_stat', 0)
+        ->where(function($q) use ($currentUser) {
+            // Only comments for this user
+            $q->where('user_id', $currentUser->id)
+              ->orWhere('admin_id', $currentUser->id);
+        })
+        ->update(['com_stat' => 1]);
+
+    // Fetch all comments for display
+    $comments = Comments::where('ticket_no', $ticketNo)
+                        ->orderBy('created_at', 'asc')
+                        ->get();
+
+    return view('access.createdTicket', compact('ticket', 'comments', 'users'));
 }
 
 

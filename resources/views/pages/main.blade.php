@@ -126,61 +126,39 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#">
                         <i class="far fa-comments" style="color: #1E152A;"></i>
-                        <span class="badge badge-danger navbar-badge"></span>
+                        @if ($latestComments->count() > 0)
+                            <span class="badge badge-danger navbar-badge">{{ $latestComments->count() }}</span>
+                        @endif
                     </a>
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                        <a href="#" class="dropdown-item">
-                            <!-- Message Start -->
-                            <div class="media">
-                                <img src="" alt="User Avatar" class="img-size-50 mr-3 img-circle">
-                                <div class="media-body">
-                                    <h3 class="dropdown-item-title">
 
-                                        <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
-                                    </h3>
-                                    <p class="text-sm"></p>
-                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i></p>
-                                </div>
-                            </div>
-                            <!-- Message End -->
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">
-                            <!-- Message Start -->
-                            <div class="media">
-                                <img src="" alt="User Avatar" class="img-size-50 img-circle mr-3">
-                                <div class="media-body">
-                                    <h3 class="dropdown-item-title">
+                        @forelse($latestComments as $comment)
+                            <a href="{{ route('ticketDetails', $comment->ticket_no) }}" class="dropdown-item">
+                                <!-- Message Start -->
+                                <div class="media">
 
-                                        <span class="float-right text-sm text-muted"><i class="fas fa-star"></i></span>
-                                    </h3>
-                                    <p class="text-sm"></p>
-                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i></p>
+                                    <div class="media-body">
+                                        <h3 class="dropdown-item-title">
+                                            {{ $comment->user->fname ?? 'User' }} {{ $comment->user->lname ?? '' }}
+                                            <span class="float-right text-sm text-muted">
+                                                <i class="far fa-clock"></i>
+                                                {{ $comment->created_at->diffForHumans() }}
+                                            </span>
+                                        </h3>
+                                        <p class="text-sm">{{ Str::limit($comment->comments, 100) }}</p>
+                                    </div>
                                 </div>
-                            </div>
-                            <!-- Message End -->
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">
-                            <!-- Message Start -->
-                            <div class="media">
-                                <img src="" alt="User Avatar" class="img-size-50 img-circle mr-3">
-                                <div class="media-body">
-                                    <h3 class="dropdown-item-title">
+                                <!-- Message End -->
+                            </a>
+                            <div class="dropdown-divider"></div>
+                        @empty
+                            <span class="dropdown-item text-center text-muted">No messages</span>
+                        @endforelse
 
-                                        <span class="float-right text-sm text-warning"><i
-                                                class="fas fa-star"></i></span>
-                                    </h3>
-                                    <p class="text-sm"></p>
-                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i></p>
-                                </div>
-                            </div>
-                            <!-- Message End -->
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item dropdown-footer"></a>
+                        <a href="{{ route('allTickets') }}" class="dropdown-item dropdown-footer">See All Tickets</a>
                     </div>
                 </li>
+
                 <!-- Notifications Dropdown Menu -->
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#">
