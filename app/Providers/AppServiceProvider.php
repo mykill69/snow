@@ -36,6 +36,7 @@ class AppServiceProvider extends ServiceProvider
                 ->where('com_stat', 0) // only unseen
                 ->whereNotNull('user_id') // only user comments
                 ->orderBy('created_at', 'desc')
+                ->take(6)
                 ->get(); // no limit for admin
         }
 
