@@ -60,7 +60,8 @@
                                                             </tr>
                                                             <tr class="py-1">
                                                                 <th class="py-1">Category</th>
-                                                                <td class="py-1">{{ $ticket->category }}</td>
+                                                                <td class="py-1">{{ $ticket->category }} -
+                                                                    {{ $ticket->sub_cat }}</td>
                                                             </tr>
                                                             <tr class="py-1">
                                                                 <th class="py-1">Priority Level</th>
@@ -111,7 +112,8 @@
                                                                 <td class="py-1">
                                                                     @if ($ticket->file_name)
                                                                         <a href="{{ asset('storage/' . $ticket->file_name) }}"
-                                                                            target="_blank" class="text-primary">View Attachment</a>
+                                                                            target="_blank" class="text-primary">View
+                                                                            Attachment</a>
                                                                     @else
                                                                         None
                                                                     @endif
@@ -148,56 +150,67 @@
                                                         </tbody>
                                                     </table>
 
-                                                     @foreach ($comments as $comment)
-                                                    @php
-                                                        $commenter = null;
-                                                        $isCurrentUser = false;
+                                                    @foreach ($comments as $comment)
+                                                        @php
+                                                            $commenter = null;
+                                                            $isCurrentUser = false;
 
-                                                        if ($comment->admin_id) {
-                                                            $commenter = \App\Models\User::find($comment->admin_id);
-                                                            $isCurrentUser = $comment->admin_id === auth()->id();
-                                                        } elseif ($comment->user_id) {
-                                                            $commenter = \App\Models\User::find($comment->user_id);
-                                                            $isCurrentUser = $comment->user_id === auth()->id();
-                                                        }
+                                                            if ($comment->admin_id) {
+                                                                $commenter = \App\Models\User::find($comment->admin_id);
+                                                                $isCurrentUser = $comment->admin_id === auth()->id();
+                                                            } elseif ($comment->user_id) {
+                                                                $commenter = \App\Models\User::find($comment->user_id);
+                                                                $isCurrentUser = $comment->user_id === auth()->id();
+                                                            }
 
-                                                        $commenterName = $isCurrentUser
-                                                            ? 'Me'
-                                                            : ($commenter
-                                                                ? $commenter->fname . ' ' . $commenter->lname
-                                                                : 'User');
+                                                            $commenterName = $isCurrentUser
+                                                                ? 'Me'
+                                                                : ($commenter
+                                                                    ? $commenter->fname . ' ' . $commenter->lname
+                                                                    : 'User');
 
-                                                        $commentTime = $comment->created_at->format('M d, h:i A');
+                                                            $commentTime = $comment->created_at->format('M d, h:i A');
 
-                                                        $chatClass = $isCurrentUser
-                                                            ? 'direct-chat-msg right text-lg'
-                                                            : 'direct-chat-msg';
-                                                        $nameClass = $isCurrentUser ? 'float-right' : 'float-left';
-                                                        $timeClass = $isCurrentUser ? 'float-left' : 'float-right';
+                                                            $chatClass = $isCurrentUser
+                                                                ? 'direct-chat-msg right text-lg'
+                                                                : 'direct-chat-msg';
+                                                            $nameClass = $isCurrentUser ? 'float-right' : 'float-left';
+                                                            $timeClass = $isCurrentUser ? 'float-left' : 'float-right';
 
-                                                        // Background for right-side message bubble
-                                                        $bubbleClass = $isCurrentUser ? 'bg-primary text-white' : '';
-                                                    @endphp
+                                                            // Background for right-side message bubble
+                                                            $bubbleClass = $isCurrentUser
+                                                                ? 'bg-primary text-white'
+                                                                : '';
+                                                        @endphp
 
-                                                    <div class="{{ $chatClass }}">
-                                                        <div class="direct-chat-infos clearfix">
-                                                            <span
-                                                                class="direct-chat-name pt-4 {{ $nameClass }}">{{ $commenterName }}</span>
-                                                            <span
-                                                                class="direct-chat-timestamp pt-4 {{ $timeClass }}">{{ $commentTime }}</span>
+                                                        <div class="{{ $chatClass }}">
+                                                            <div class="direct-chat-infos clearfix">
+                                                                <span
+                                                                    class="direct-chat-name pt-4 {{ $nameClass }}">{{ $commenterName }}</span>
+                                                                <span
+                                                                    class="direct-chat-timestamp pt-4 {{ $timeClass }}">{{ $commentTime }}</span>
+                                                            </div>
+
+                                                            <!-- Replace image with icon -->
+                                                            <div class="direct-chat-img d-flex align-items-center justify-content-center bg-secondary text-white"
+                                                                style="width: 40px; height: 40px; border-radius: 50%;">
+                                                                <i class="fas fa-user"></i>
+                                                            </div>
+
+                                                            <div class="direct-chat-text text-lg {{ $bubbleClass }}">
+                                                                {{ $comment->comments }} {{ $commenter->fname }} {{ $commenter->lname }}
+
+                                                                {{-- ✅ Show ticket remarks if NOT NULL --}}
+                                                                @if (!empty($ticket->remarks))
+                                                                    <div
+                                                                        class="mt-2 p-2 bg-warning bg-opacity-25 border rounded text-sm text-dark">
+                                                                        <strong>Remarks:</strong> {{ $ticket->remarks }}
+                                                                    </div>
+                                                                @endif
+
+                                                            </div>
                                                         </div>
-
-                                                        <!-- Replace image with icon -->
-                                                        <div class="direct-chat-img d-flex align-items-center justify-content-center bg-secondary text-white"
-                                                            style="width: 40px; height: 40px; border-radius: 50%;">
-                                                            <i class="fas fa-user"></i>
-                                                        </div>
-
-                                                        <div class="direct-chat-text text-lg {{ $bubbleClass }}">
-                                                            {{ $comment->comments }}
-                                                        </div>
-                                                    </div>
-                                                @endforeach
+                                                    @endforeach
 
                                                 </div>
                                             </div>
@@ -250,7 +263,7 @@
         </div>
     </div>
     </div>
-    
+
     <!-- Before </body> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>

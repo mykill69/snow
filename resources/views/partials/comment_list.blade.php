@@ -93,10 +93,18 @@
                 </div>
                 <div class="ms-1">
                     <div class="p-2 rounded chat-bubble {{ $bubbleClass }} left" style="{{ $bubbleStyle }}">
-                        {{ $comment->comments }}
+                        {{ $comment->comments }} {{ $commenter->fname }} {{ $commenter->lname }}
+
+                        {{-- ✅ Show ticket remarks if NOT NULL --}}
+                        @if (!empty($ticket->remarks))
+                            <div class="mt-2 p-2 bg-warning bg-opacity-25 border rounded text-sm text-dark">
+                                <strong>Remarks:</strong> {{ $ticket->remarks }}
+                            </div>
+                        @endif
                     </div>
                     <div class="text-muted small mt-1 text-start">
                         {{ $commentTime }}
+
                     </div>
                 </div>
             @endif
