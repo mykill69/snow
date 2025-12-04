@@ -123,37 +123,36 @@
         <ul class="navbar-nav align-items-center ml-auto" style="padding-right: 10px;">
             <!-- Messages Dropdown -->
             <li class="nav-item dropdown">
-                <a class="nav-link text-white" data-toggle="dropdown" href="#">
-                    <i class="fas fa-comments"></i>
-                    @if ($latestComments->count() > 0)
-                        <span class="badge badge-danger navbar-badge">{{ $latestComments->count() }}</span>
-                    @endif
-                </a>
-                <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-
-                    @forelse($latestComments as $comment)
-                        <a href="{{ route('createdTicket', $comment->ticket_no) }}"
-                            class="dropdown-item {{ $comment->com_stat == 0 ? 'bg-light font-weight-bold' : '' }}">
-                            <div class="media">
-                                <div class="media-body">
-                                    <h3 class="dropdown-item-title">
-                                        {{ $comment->user->fname ?? 'User' }} {{ $comment->user->lname ?? '' }}
-                                        <span class="float-right text-sm text-muted">
-                                            <i class="far fa-clock"></i> {{ $comment->created_at->diffForHumans() }}
-                                        </span>
-                                    </h3>
-                                    <p class="text-sm">{{ Str::limit($comment->comments, 100) }}</p>
-                                </div>
-                            </div>
-                        </a>
-                        <div class="dropdown-divider"></div>
-                    @empty
-                        <span class="dropdown-item text-center text-muted">No messages</span>
-                    @endforelse
-
-                    <a href="{{ route('allTickets') }}" class="dropdown-item dropdown-footer">See All Tickets</a>
+    <a class="nav-link text-white" data-toggle="dropdown" href="#">
+        <i class="fas fa-comments"></i>
+        @if ($latestComments->count() > 0)
+            <span class="badge badge-danger navbar-badge">{{ $latestComments->count() }}</span>
+        @endif
+    </a>
+    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+        @forelse($latestComments as $comment)
+            <a href="{{ route('createdTicket', $comment->ticket_no) }}"
+               class="dropdown-item {{ $comment->com_stat == 0 ? 'bg-light font-weight-bold' : '' }}">
+                <div class="media">
+                    <div class="media-body">
+                        <h3 class="dropdown-item-title">
+                            {{ $comment->user->fname ?? 'User' }} {{ $comment->user->lname ?? '' }}
+                            <span class="float-right text-sm text-muted">
+                                <i class="far fa-clock"></i> {{ $comment->created_at->diffForHumans() }}
+                            </span>
+                        </h3>
+                        <p class="text-sm">{{ Str::limit($comment->comments, 100) }}</p>
+                    </div>
                 </div>
-            </li>
+            </a>
+            <div class="dropdown-divider"></div>
+        @empty
+            <span class="dropdown-item text-center text-muted">No messages</span>
+        @endforelse
+
+        <a href="{{ route('allTickets') }}" class="dropdown-item dropdown-footer">See All Tickets</a>
+    </div>
+</li>
 
 
             {{-- <!-- Notifications Dropdown -->

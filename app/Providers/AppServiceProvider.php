@@ -25,9 +25,48 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-   public function boot()
+//    public function boot()
+// {
+//     // Composer for administrators (pages.main)
+//     View::composer('pages.main', function ($view) {
+//         $latestComments = collect();
+
+//         if (Auth::check() && Auth::user()->role === 'Administrator') {
+//             $latestComments = Comments::with('user')
+//                 ->where('com_stat', 0) // only unseen
+//                 ->whereNotNull('user_id') // only user comments
+//                 ->orderBy('created_at', 'desc')
+//                 ->get(); // no limit for admin
+//         }
+
+//         $view->with('latestComments', $latestComments);
+//     });
+
+//     // Composer for regular users (access.layout)
+//    View::composer('access.layout', function ($view) {
+//     $latestComments = collect();
+
+//     if (Auth::check() && Auth::user()->role !== 'Administrator') {
+//         $currentUser = Auth::user();
+
+//         $latestComments = Comments::with('user')
+//             ->where('com_stat', 0) // only unseen
+//             ->where(function ($q) use ($currentUser) {
+//                 // Fetch comments where the user is either the creator or the assigned admin
+//                 $q->where('user_id', $currentUser->id)
+//                   ->orWhere('admin_id', $currentUser->id);
+//             })
+//             ->orderBy('created_at', 'desc')
+//             ->take(6) // limit number for dropdown
+//             ->get();
+//     }
+
+//     $view->with('latestComments', $latestComments);
+// });
+// }
+public function boot()
 {
-    // Composer for administrators (pages.main)
+    // Admin notifications (pages.main)
     View::composer('pages.main', function ($view) {
         $latestComments = collect();
 
@@ -42,26 +81,22 @@ class AppServiceProvider extends ServiceProvider
         $view->with('latestComments', $latestComments);
     });
 
-    // Composer for regular users (access.layout)
-   View::composer('access.layout', function ($view) {
-    $latestComments = collect();
+    // Staff notifications (access.layout)
+    View::composer('access.layout', function ($view) {
+        $latestComments = collect();
 
-    if (Auth::check() && Auth::user()->role !== 'Administrator') {
-        $currentUser = Auth::user();
+        if (Auth::check() && Auth::user()->role !== 'Administrator') {
+            $currentUser = Auth::user();
 
-        $latestComments = Comments::with('user')
-            ->where('com_stat', 0) // only unseen
-            ->where(function ($q) use ($currentUser) {
-                // Fetch comments where the user is either the creator or the assigned admin
-                $q->where('user_id', $currentUser->id)
-                  ->orWhere('admin_id', $currentUser->id);
-            })
-            ->orderBy('created_at', 'desc')
-            ->take(6) // limit number for dropdown
-            ->get();
-    }
+            $latestComments = Comments::with('user')
+                ->where('com_stat', 0) // only unseen
+                ->where('admin_id', $currentUser->id) // assigned to staff
+                ->orderBy('created_at', 'desc')
+                ->take(6) // limit dropdown
+                ->get();
+        }
 
-    $view->with('latestComments', $latestComments);
-});
+        $view->with('latestComments', $latestComments);
+    });
 }
 }
