@@ -35,10 +35,39 @@ class PagesController extends Controller
     ->count();
    
 
-    $departmentStats = TicketDtl::select('department', DB::raw('count(*) as total'))
+    // $departmentStats = TicketDtl::select('department', DB::raw('count(*) as total'))
+    // ->groupBy('department')
+    // ->orderBy('department')
+    // ->get();
+
+$departmentStats = TicketDtl::select('department', DB::raw('count(*) as total'))
     ->groupBy('department')
     ->orderBy('department')
-    ->get();
+    ->get()
+    ->map(function ($item) {
+        $dept = trim($item->department);
+
+        // Split into words
+        $words = preg_split('/\s+/', $dept);
+
+        // ✅ If only 1 word, keep it as-is
+        if (count($words) === 1) {
+            $item->department = $dept;
+            return $item;
+        }
+
+        // ✅ If starts with "College of", remove it
+        if (str_starts_with(strtolower($dept), 'college of')) {
+            $dept = trim(str_ireplace('college of', '', $dept));
+        } 
+        // ✅ Otherwise, get only the first word
+        else {
+            $dept = $words[0];
+        }
+
+        $item->department = $dept;
+        return $item;
+    });
 
 //     // Get ticket counts grouped by day of the week (0=Sunday, ..., 6=Saturday)
 // $dailyTickets = TicketDtl::selectRaw("DATE(created_at) as date, COUNT(*) as total")
