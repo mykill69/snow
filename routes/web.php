@@ -9,6 +9,7 @@ use App\Http\Controllers\AccessController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\ArticlesController;
 use App\Http\Controllers\WatchListController;
+use App\Http\Controllers\NotificationController;
 
 
 Route::group(['middleware'=>['guest']],function(){
@@ -80,6 +81,9 @@ Route::group(['middleware'=>['guest']],function(){
     Route::get('/client-satisfaction/{ticket_no}', [AccessController::class, 'clientSatisfaction'])->name('clientSatisfaction');
     Route::get('/created-ticket/{ticketNo}', [AccessController::class, 'createdTicket'])->name('createdTicket');
 
+    Route::post('/ticket-mark-seen-user', [AccessController::class, 'markSeenUser'])->name('ticket.markSeenUser');
+
+
     Route::put('/edit-ticketSurvey/{ticket_no}', [AccessController::class, 'updateSurvey'])->name('updateSurvey');
 
     // watchlist
@@ -97,9 +101,16 @@ Route::group(['middleware'=>['guest']],function(){
     Route::put('/edit-ticket/{ticketNo}', [TicketController::class, 'updateTicket'])->name('updateTicket');
     Route::post('/ticket-details/{ticketNo}', [TicketController::class, 'closeTicket'])->name('closeTicket');
     Route::get('/ticket-details/{ticketNo}', [TicketController::class, 'ticketDetails'])->name('ticketDetails');
+    
+    Route::post('/ticket-mark-seen', [TicketController::class, 'markTicketSeen'])->name('ticket.markSeen');
 
     //ticket comments
     Route::post('/ticket-comments', [TicketController::class, 'storeComments'])->name('storeComments');
     
+
+    // notifications
+ // Route::get('/notifications/fetch', [NotificationController::class, 'fetch'])->name('notifications.fetch');
+    Route::get('/latest-comment-id/{id}', [NotificationController::class, 'latestCommentId'])->name('latestCommentId');
+    Route::get('/latest-tickets', [NotificationController::class, 'latestTickets'])->name('latestTickets');
 
 });

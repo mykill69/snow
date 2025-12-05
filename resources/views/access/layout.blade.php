@@ -123,53 +123,53 @@
         <ul class="navbar-nav align-items-center ml-auto" style="padding-right: 10px;">
             <!-- Messages Dropdown -->
             <li class="nav-item dropdown">
-    <a class="nav-link text-white" data-toggle="dropdown" href="#">
-        <i class="fas fa-comments"></i>
-        @if ($latestComments->count() > 0)
-            <span class="badge badge-danger navbar-badge">{{ $latestComments->count() }}</span>
-        @endif
-    </a>
-    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-        @forelse($latestComments as $comment)
-            <a href="{{ route('createdTicket', $comment->ticket_no) }}"
-               class="dropdown-item {{ $comment->com_stat == 0 ? 'bg-light font-weight-bold' : '' }}">
-                <div class="media">
-                    <div class="media-body">
-                        <h3 class="dropdown-item-title">
-                            {{ $comment->user->fname ?? 'User' }} {{ $comment->user->lname ?? '' }}
-                            <span class="float-right text-sm text-muted">
-                                <i class="far fa-clock"></i> {{ $comment->created_at->diffForHumans() }}
-                            </span>
-                        </h3>
-                        <p class="text-sm">{{ Str::limit($comment->comments, 100) }}</p>
+                <a class="nav-link text-white" data-toggle="dropdown" href="#" id="notifDropdown">
+                    <i class="fas fa-comments"></i>
+                    <span class="badge badge-danger navbar-badge" id="notifCount" style="display:none;">
+
+                    </span>
+                </a>
+
+                @php
+                    use Illuminate\Support\Str;
+
+                    // Map tickets to their latest chat and count unread messages
+                    $sortedTickets = collect($latestComments)
+                        ->mapWithKeys(function ($comments, $ticketNo) use ($ticketChat) {
+                            $latestChat = $ticketChat->where('ticket_no', $ticketNo)->sortByDesc('created_at')->first();
+
+                            if (!$latestChat) {
+                                return [];
+                            } // Skip tickets without messages
+
+                            $unseenCount = $ticketChat
+                                ->where('ticket_no', $ticketNo)
+                                ->where('com_stat_user', 0) // unread messages for staff
+                                ->count();
+
+                            return [
+                                $ticketNo => [
+                                    'latest_ticket' => $comments->first(),
+                                    'last_chat' => $latestChat,
+                                    'unseen_count' => $unseenCount,
+                                ],
+                            ];
+                        })
+                        ->sortByDesc(fn($data) => $data['last_chat']->created_at); // order by latest chat
+                @endphp
+
+                <div class="dropdown-menu dropdown-menu-right p-0" style="width: 360px;" id="notifMenu">
+                    {{-- Scrollable notifications --}}
+                    <div style="max-height: 400px; overflow-y: auto;" id="notifLatest">
+                        <div id="newChat"></div>
                     </div>
+
+                    {{-- Footer --}}
+                    <a href="{{ route('home') }}" class="dropdown-item dropdown-footer text-center">
+                        See All Tickets
+                    </a>
                 </div>
-            </a>
-            <div class="dropdown-divider"></div>
-        @empty
-            <span class="dropdown-item text-center text-muted">No messages</span>
-        @endforelse
-
-        <a href="{{ route('allTickets') }}" class="dropdown-item dropdown-footer">See All Tickets</a>
-    </div>
-</li>
-
-
-            {{-- <!-- Notifications Dropdown -->
-            <li class="nav-item dropdown ml-3">
-                <a class="nav-link text-white" data-toggle="dropdown" href="#">
-                    <i class="far fa-bell"></i>
-                    <span class="badge badge-warning navbar-badge">15</span>
-                </a>
-                <!-- Dropdown content omitted for brevity -->
             </li>
-
-            <!-- Fullscreen Icon -->
-            <li class="nav-item ml-3">
-                <a class="nav-link text-white" data-widget="fullscreen" href="#" role="button">
-                    <i class="fas fa-expand-arrows-alt"></i>
-                </a>
-            </li> --}}
             <li class="nav-item dropdown ml-3">
                 <div class="btn-group">
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
@@ -239,6 +239,81 @@
     <script src="{{ asset('template/plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
     <!-- Select2 -->
     <script src="{{ asset('template/plugins/select2/js/select2.full.min.js') }}"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+
+
+    <!-- Include this after jQuery and before your script -->
+
+
+    <script>
+        $(document).ready(function() {
+
+            function fetchLatestTickets() {
+                $.ajax({
+                    url: "{{ route('latestTickets') }}",
+                    type: "GET",
+                    success: function(data) {
+                        let html = '';
+                        let totalUnseen = 0;
+
+                        data.forEach(ticket => {
+                            if (!ticket.latest_comment || ticket.unseen_count === 0) return;
+
+                            totalUnseen += ticket.unseen_count;
+                            let message = ticket.latest_comment;
+                            let timeAgo = moment(ticket.latest_comment_date).fromNow();
+                            const formId = `ticketForm-${ticket.ticket_no}`;
+
+                            html += `
+                        <form id="${formId}" action="{{ route('ticket.markSeenUser') }}" method="POST" style="display:none;">
+                            @csrf
+                            <input type="hidden" name="ticket_no" value="${ticket.ticket_no}">
+                        </form>
+
+                        <a href="#" class="dropdown-item d-flex align-items-start ticket-link" data-form="${formId}">
+                            <div class="position-relative mr-3">
+                               <i class="fas fa-user-circle text-secondary" style="font-size:50px; line-height:50px; display:block;"></i>
+                                ${ticket.unseen_count > 0 ? `<span class="badge badge-danger position-absolute" style="bottom:-5px; left:-5px; font-size:12px;">${ticket.unseen_count}</span>` : ''}
+                            </div>
+
+                            <div class="media-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <strong>${ticket.ticket_no}</strong>
+                                    <small class="text-muted">${timeAgo}</small>
+                                </div>
+                                <div class="text-truncate" style="max-width:200px;">
+                                    ${message.length > 100 ? message.substring(0,100) + '...' : message}
+                                </div>
+                            </div>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                    `;
+                        });
+
+                        $('#newChat').html(html);
+                        if (totalUnseen > 0) $('#notifCount').text(totalUnseen).show();
+                        else $('#notifCount').hide();
+                    },
+                    error: function(err) {
+                        console.error(err);
+                    }
+                });
+            }
+
+            fetchLatestTickets();
+            setInterval(fetchLatestTickets, 5000);
+
+            $(document).on('click', '.ticket-link', function(e) {
+                e.preventDefault();
+                const formId = $(this).data('form');
+                document.getElementById(formId).submit();
+            });
+        });
+    </script>
+
+
 
 
     <script>

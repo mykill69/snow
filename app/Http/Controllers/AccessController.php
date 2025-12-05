@@ -100,34 +100,90 @@ public function suggestions(Request $request)
 //     }
 //     return view('access.createdTicket', compact('ticket', 'comments','users'));
 // }
+
+
+// public function createdTicket($ticketNo)
+// {
+//     $users = User::all();
+//     $ticket = TicketDtl::where('ticket_no', $ticketNo)->first();
+
+//     if (!$ticket) {
+//         return redirect()->back()->with('error', 'Ticket not found');
+//     }
+
+//     $currentUser = auth()->user();
+
+//     // Mark unseen comments as seen for this user
+//     Comments::where('ticket_no', $ticketNo)
+//         ->where('com_stat', 0)
+//         ->where(function($q) use ($currentUser) {
+//             // Only comments for this user
+//             $q->where('user_id', $currentUser->id)
+//               ->orWhere('admin_id', $currentUser->id);
+//         })
+//         ->update(['com_stat' => 1]);
+
+//     // Fetch all comments for display
+//     $comments = Comments::where('ticket_no', $ticketNo)
+//                         ->orderBy('created_at', 'asc')
+//                         ->get();
+
+//     return view('access.createdTicket', compact('ticket', 'comments', 'users'));
+// }
+
+
 public function createdTicket($ticketNo)
 {
-    $users = User::all();
-    $ticket = TicketDtl::where('ticket_no', $ticketNo)->first();
+    $currentUser = auth()->user();
 
+    $ticket = TicketDtl::where('ticket_no', $ticketNo)->first();
     if (!$ticket) {
         return redirect()->back()->with('error', 'Ticket not found');
     }
 
-    $currentUser = auth()->user();
-
-    // Mark unseen comments as seen for this user
+    // Mark all unseen comments for this ticket as seen
     Comments::where('ticket_no', $ticketNo)
-        ->where('com_stat', 0)
-        ->where(function($q) use ($currentUser) {
-            // Only comments for this user
-            $q->where('user_id', $currentUser->id)
-              ->orWhere('admin_id', $currentUser->id);
-        })
-        ->update(['com_stat' => 1]);
+        ->where('com_stat_user', 0)
+        ->update(['com_stat_user' => 1]);
 
-    // Fetch all comments for display
     $comments = Comments::where('ticket_no', $ticketNo)
                         ->orderBy('created_at', 'asc')
                         ->get();
 
+    $users = User::all();
+
     return view('access.createdTicket', compact('ticket', 'comments', 'users'));
 }
+
+// public function markTicketSeen(Request $request)
+// {
+//     $ticketNo = $request->ticket_no;
+//     $currentUser = auth()->user();
+
+//     // Update all unseen comments for this user for the ticket
+//     Comments::where('ticket_no', $ticketNo)
+//         ->where('com_stat_user', 0)
+//         ->where('user_id', $currentUser->id)
+//         ->update(['com_stat_user' => 1]);
+
+//     // Redirect to the actual ticket page
+//     return redirect()->route('createdTicket', $ticketNo);
+// }
+public function markSeenUser(Request $request)
+{
+    $ticketNo = $request->ticket_no;
+    $currentUser = auth()->user();
+
+    // Mark unseen comments for this user on the ticket as seen
+    Comments::where('ticket_no', $ticketNo)
+        ->where('com_stat_user', 0)
+        ->where('user_id', $currentUser->id)
+        ->update(['com_stat_user' => 1]);
+
+    // Correctly redirect to the created-ticket route
+    return redirect()->route('createdTicket', ['ticketNo' => $ticketNo]);
+}
+
 
 
 public function fetchComments($ticketNo)

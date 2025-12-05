@@ -125,7 +125,39 @@ class TicketController extends Controller
 }
 
 
-    public function ticketDetails($ticketNo)
+//     public function ticketDetails($ticketNo)
+// {
+//     $ticket = TicketDtl::where('ticket_no', $ticketNo)->first();
+
+//     if (!$ticket) {
+//         return redirect()->back()->with('error', 'Ticket not found');
+//     }
+
+//     // Fetch all comments related to this ticket number
+//     $comments = Comments::where('ticket_no', $ticketNo)->orderBy('created_at', 'asc')->get();
+
+//     $currentUser = auth()->user();
+
+//     // Admin can see all comments; mark unseen comments as seen
+//     if ($currentUser->role === 'Administrator') {
+//         Comments::where('ticket_no', $ticketNo)
+//             ->where('com_stat', 0)
+//             ->update(['com_stat' => 0]);
+//     } else {
+//         // For regular users, mark only their comments as seen
+//         Comments::where('ticket_no', $ticketNo)
+//             ->where('com_stat', 0)
+//             ->where(function ($q) use ($currentUser) {
+//                 $q->where('user_id', $currentUser->id)
+//                   ->orWhere('admin_id', $currentUser->id);
+//             })
+//             ->update(['com_stat' => 0]);
+//     }
+
+//     return view('access.ticketDetails', compact('ticket', 'comments'));
+// }
+
+public function ticketDetails($ticketNo)
 {
     $ticket = TicketDtl::where('ticket_no', $ticketNo)->first();
 
@@ -133,31 +165,72 @@ class TicketController extends Controller
         return redirect()->back()->with('error', 'Ticket not found');
     }
 
-    // Fetch all comments related to this ticket number
-    $comments = Comments::where('ticket_no', $ticketNo)->orderBy('created_at', 'asc')->get();
-
     $currentUser = auth()->user();
 
-    // Admin can see all comments; mark unseen comments as seen
-    if ($currentUser->role === 'Administrator') {
-        Comments::where('ticket_no', $ticketNo)
-            ->where('com_stat', 0)
-            ->update(['com_stat' => 1]);
-    } else {
-        // For regular users, mark only their comments as seen
-        Comments::where('ticket_no', $ticketNo)
-            ->where('com_stat', 0)
-            ->where(function ($q) use ($currentUser) {
-                $q->where('user_id', $currentUser->id)
-                  ->orWhere('admin_id', $currentUser->id);
-            })
-            ->update(['com_stat' => 1]);
-    }
+    // Mark unseen comments as seen for this ticket
+    Comments::where('ticket_no', $ticketNo)
+        ->where('com_stat', 0)
+        ->update(['com_stat' => 1]); // <-- change 0 to 1
+
+    // Fetch all comments related to this ticket number
+    $comments = Comments::where('ticket_no', $ticketNo)
+                        ->orderBy('created_at', 'asc')
+                        ->get();
 
     return view('access.ticketDetails', compact('ticket', 'comments'));
 }
 
-    public function storeComments(Request $request)
+public function markTicketSeen(Request $request)
+{
+    $ticketNo = $request->ticket_no;
+    $currentUser = auth()->user();
+
+    // Update all unseen comments for this user for the ticket
+    Comments::where('ticket_no', $ticketNo)
+        ->where('com_stat_user', 0)
+        ->where(function ($q) use ($currentUser) {
+            $q->where('user_id', $currentUser->id)
+              ->orWhere('admin_id', $currentUser->id);
+        })
+        ->update(['com_stat_user' => 1]);
+
+    // Redirect to the actual ticket page
+    return redirect()->route('ticketDetails', $ticketNo);
+}
+
+
+//     public function storeComments(Request $request)
+// {
+//     $validator = Validator::make($request->all(), [
+//         'ticket_no' => 'required|string|max:255',
+//         'comments' => 'required|string|max:1000',
+//     ]);
+
+//     if ($validator->fails()) {
+//         return redirect()->back()->withErrors($validator)->withInput();
+//     }
+
+//     $comment = new Comments();
+//     $comment->ticket_no = $request->ticket_no;
+//     $comment->comments = $request->comments;
+
+//     // Normalize role to lowercase
+//     $role = Str::lower(auth()->user()->role);
+
+//     if ($role === 'administrator') {
+//         $comment->admin_id = auth()->id();
+//         $comment->user_id = null;
+//     } elseif ($role === 'staff') {
+//         $comment->user_id = auth()->id();
+//         $comment->admin_id = null;
+//     }
+
+//     $comment->save();
+
+//     return redirect()->back()->with('success', 'Comment added successfully');
+// }
+
+public function storeComments(Request $request)
 {
     $validator = Validator::make($request->all(), [
         'ticket_no' => 'required|string|max:255',
@@ -165,6 +238,9 @@ class TicketController extends Controller
     ]);
 
     if ($validator->fails()) {
+        if ($request->ajax()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
         return redirect()->back()->withErrors($validator)->withInput();
     }
 
@@ -172,7 +248,6 @@ class TicketController extends Controller
     $comment->ticket_no = $request->ticket_no;
     $comment->comments = $request->comments;
 
-    // Normalize role to lowercase
     $role = Str::lower(auth()->user()->role);
 
     if ($role === 'administrator') {
@@ -184,6 +259,14 @@ class TicketController extends Controller
     }
 
     $comment->save();
+    $comment->load('user', 'admin'); // include relations for AJAX
+
+    if ($request->ajax()) {
+        return response()->json([
+            'message' => 'Comment added successfully',
+            'comment' => $comment
+        ]);
+    }
 
     return redirect()->back()->with('success', 'Comment added successfully');
 }

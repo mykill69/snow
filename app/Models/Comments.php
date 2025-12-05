@@ -16,7 +16,8 @@ class Comments extends Model
         'user_id',
         'admin_id',
         'comments',
-        'com_stat', // 0 = unseen, 1 = seen
+        'com_stat',
+        'com_stat_user', // 0 = unseen, 1 = seen
         // any other columns
     ];
 

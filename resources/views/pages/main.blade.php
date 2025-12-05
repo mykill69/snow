@@ -124,56 +124,31 @@
 
                 <!-- Messages Dropdown Menu -->
                 <li class="nav-item dropdown">
-    <a class="nav-link" data-toggle="dropdown" href="#">
-        <i class="far fa-comments"></i>
-        @if ($latestComments->count() > 0)
-            <span class="badge badge-danger navbar-badge">
-                {{ $latestComments->count() }}
-            </span>
-        @endif
-    </a>
+                    <a class="nav-link" data-toggle="dropdown" href="#">
+                        <i class="far fa-comments"></i>
+                        <span id="notifBadge" class="badge badge-danger navbar-badge">
+                            {{-- {{ $latestComments->count() }} --}}
+                        </span>
+                    </a>
 
-    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right p-0">
+                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right p-0">
 
-        <!-- ✅ SCROLLABLE CONTAINER -->
-        <div style="max-height: 350px; overflow-y: auto; overflow-x: hidden;">
+                        <!-- ✅ SCROLLABLE CONTAINER -->
+                        <div style="max-height: 350px; overflow-y: auto; overflow-x: hidden;" id="notifLatest">
+                            <div id="newChat">
 
-            @forelse($latestComments as $comment)
-                <a href="{{ route('ticketDetails', $comment->ticket_no) }}" class="dropdown-item">
-                    <div class="media">
-                        <div class="media-body">
-                            <h3 class="dropdown-item-title">
-                                {{ $comment->user->fname ?? 'User' }}
-                                {{ $comment->user->lname ?? '' }}
+                            </div>
 
-                                <span class="float-right text-sm text-muted">
-                                    <i class="far fa-clock"></i>
-                                    {{ $comment->created_at->diffForHumans() }}
-                                </span>
-                            </h3>
 
-                            <p class="text-sm">
-                                {{ Str::limit($comment->comments, 100) }}
-                            </p>
                         </div>
+                        <!-- ✅ END SCROLLABLE -->
+
+                        <a href="{{ route('allTickets') }}" class="dropdown-item dropdown-footer">
+                            See All Tickets
+                        </a>
+
                     </div>
-                </a>
-                <div class="dropdown-divider"></div>
-            @empty
-                <span class="dropdown-item text-center text-muted">
-                    No messages
-                </span>
-            @endforelse
-
-        </div>
-        <!-- ✅ END SCROLLABLE -->
-
-        <a href="{{ route('allTickets') }}" class="dropdown-item dropdown-footer">
-            See All Tickets
-        </a>
-
-    </div>
-</li>
+                </li>
 
                 <!-- Notifications Dropdown Menu -->
                 <li class="nav-item dropdown">
@@ -358,6 +333,117 @@
     <script src="{{ asset('template/plugins/summernote/summernote-bs4.min.js') }}"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+
+
+  <script>
+document.addEventListener("DOMContentLoaded", function() {
+    const newChatContainer = $('#newChat');
+    const notifBadge = $('#notifBadge');
+    const maxComments = 20;
+    let displayedTickets = new Set(); // Track displayed ticket_no
+    let latestId = 0;
+
+    // Initial badge count from Blade
+    let totalUnseen = {{ $latestComments->count() ?? 0 }};
+    if (totalUnseen > 0) notifBadge.text(totalUnseen).show();
+
+    function fetchNewComments() {
+        $.ajax({
+            url: '{{ route("latestCommentId", ":id") }}'.replace(':id', latestId),
+            type: 'GET',
+            success: function(response) {
+                if (response.success && response.newComments.length > 0) {
+                    // Group unseen user comments by ticket_no
+                    const grouped = {};
+                    response.newComments.forEach(comment => {
+                        if (comment.com_stat != 0 || !comment.user_id) return; // skip seen/admin comments
+                        if (!grouped[comment.ticket_no]) grouped[comment.ticket_no] = [];
+                        grouped[comment.ticket_no].push(comment);
+                    });
+
+                    let newTotalUnseen = 0;
+
+                    Object.keys(grouped).forEach(ticketNo => {
+                        const comments = grouped[ticketNo];
+                        newTotalUnseen += comments.length;
+
+                        // Only display one row per ticket
+                        if (displayedTickets.has(ticketNo)) return;
+
+                        const latestComment = comments[0]; // show the latest comment
+                        let userName = latestComment.user ?
+                            latestComment.user.fname + ' ' + latestComment.user.lname :
+                            'User';
+                        const commentText = latestComment.comments.length > 100 ?
+                            latestComment.comments.substring(0, 100) + '...' :
+                            latestComment.comments;
+                        const ticketRoute = '{{ route("ticketDetails", ":ticketNo") }}'
+                            .replace(':ticketNo', ticketNo);
+
+                        const commentHtml = `
+                        <form id="ticketForm-${ticketNo}" action="{{ route('ticket.markSeen') }}" method="POST" style="display: none;">
+                            @csrf
+                            <input type="hidden" name="ticket_no" value="${ticketNo}">
+                        </form>
+
+                        <a href="#" class="dropdown-item d-flex align-items-start ticket-link" data-ticket="${ticketNo}" data-form="ticketForm-${ticketNo}">
+                            <div class="position-relative mr-3">
+                                <i class="fas fa-user-circle text-secondary" style="font-size: 40px;"></i>
+                                ${comments.length > 0 ? `
+                                    <span class="badge badge-danger position-absolute" style="bottom: -5px; left: -5px; font-size: 10px;">
+                                        ${comments.length}
+                                    </span>` : ''}
+                            </div>
+
+                            <div class="media-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <strong>${ticketNo}</strong>
+                                    <small class="text-muted">${moment(latestComment.created_at).fromNow()}</small>
+                                </div>
+                                <div class="text-truncate" style="max-width: 200px;">
+                                    ${commentText}
+                                </div>
+                            </div>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        `;
+
+                        $(commentHtml).hide().prependTo(newChatContainer).fadeIn('slow');
+                        displayedTickets.add(ticketNo);
+                        latestId = Math.max(latestId, latestComment.id);
+                    });
+
+                    totalUnseen = newTotalUnseen;
+                    if (totalUnseen > 0) notifBadge.text(totalUnseen).show();
+                    else notifBadge.hide();
+
+                    // Limit displayed comments
+                    const children = newChatContainer.children('a.dropdown-item');
+                    if (children.length > maxComments) {
+                        children.slice(maxComments).remove();
+                        newChatContainer.children('div.dropdown-divider').slice(maxComments).remove();
+                    }
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX Error:', status, error);
+            }
+        });
+    }
+
+    fetchNewComments();
+    setInterval(fetchNewComments, 1000);
+    
+    // Handle click: submit hidden form to mark as seen, then redirect
+    $(document).on('click', '.ticket-link', function(e) {
+        e.preventDefault();
+        const formId = $(this).data('form');
+        document.getElementById(formId).submit();
+    });
+});
+</script>
+
 
 
 
