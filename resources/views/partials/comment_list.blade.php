@@ -93,7 +93,7 @@
                 </div>
                 <div class="ms-1">
                     <div class="p-2 rounded chat-bubble {{ $bubbleClass }} left" style="{{ $bubbleStyle }}">
-                        {{ $comment->comments }} {{ $commenter->fname }} {{ $commenter->lname }}
+                        {{ $comment->comments }} 
 
                         {{-- ✅ Show ticket remarks ONLY on the latest comment --}}
                         @if ($loop->last && !empty($ticket->remarks))

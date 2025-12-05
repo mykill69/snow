@@ -209,8 +209,7 @@
                                                             </div>
 
                                                             <div class="direct-chat-text text-lg {{ $bubbleClass }}">
-                                                                {{ $comment->comments }} {{ $commenter->fname }}
-                                                                {{ $commenter->lname }}
+                                                                {{ $comment->comments }} 
 
                                                                 {{-- ✅ Show ticket remarks ONLY on the latest comment --}}
                                                                 @if ($loop->last && !empty($ticket->remarks))
