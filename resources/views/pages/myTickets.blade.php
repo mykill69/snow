@@ -84,6 +84,7 @@
                                                             <tr>
                                                                 <th>TICKET NO.</th>
                                                                 <th>SUBJECT</th>
+                                                                <th>REQUESTED BY</th>
                                                                 <th>CATEGORY</th>
                                                                 <th>SUB-CATEGORY</th>
                                                                 <th>ATTACHED FILE</th>
@@ -105,6 +106,8 @@
                                                                             class="text-primary" target="_blank"
                                                                             style="text-decoration: none;">
                                                                             {{ $ticket->ticket_no }}
+                                                                            <br>
+                                                                            <small>Click to chat</small>
                                                                         </a>
                                                                     </td>
                                                                     <td>
@@ -129,6 +132,10 @@
                                                                     <td>{{ $ticket->category }}</td>
                                                                     <td><span
                                                                             class="badge bg-warning">{{ $ticket->sub_cat }}</span>
+                                                                    </td>
+                                                                    <td>
+                                                                        {{ $ticket->user->fname ?? '' }}
+                                                                        {{ $ticket->user->lname ?? '' }}
                                                                     </td>
                                                                     <td>
                                                                         @if ($ticket->file_name)

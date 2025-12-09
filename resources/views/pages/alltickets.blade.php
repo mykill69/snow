@@ -61,6 +61,7 @@
                                                             <tr>
                                                                 <th>ACTION</th>
                                                                 <th>TICKET NO.</th>
+                                                                <th>REQUESTED BY</th>
                                                                 <th>SUBJECT</th>
                                                                 <th>CATEGORY</th>
                                                                 <th>SUB-CATEGORY</th>
@@ -107,8 +108,13 @@
                                                                             class="text-primary" target="_blank"
                                                                             style="text-decoration: none;">
                                                                             {{ $ticket->ticket_no }}
+                                                                            <br>
                                                                             <small>Click to chat</small>
                                                                         </a>
+                                                                    </td>
+                                                                    <td>
+                                                                        {{ $ticket->user->fname ?? '' }}
+                                                                        {{ $ticket->user->lname ?? '' }}
                                                                     </td>
                                                                     <td>
                                                                         @php
@@ -136,7 +142,8 @@
                                                                     <td>
                                                                         @if ($ticket->file_name)
                                                                             <a href="{{ asset('storage/' . $ticket->file_name) }}"
-                                                                                target="_blank" class="text-primary">View File</a>
+                                                                                target="_blank" class="text-primary">View
+                                                                                File</a>
                                                                         @else
                                                                             No File
                                                                         @endif

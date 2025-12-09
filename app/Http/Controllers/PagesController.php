@@ -506,12 +506,11 @@ public function deleteWorkProgress($id)
 }
 
 
-    public function allTickets()
+  public function allTickets()
 {
-    $allTickets = TicketDtl::all();
+    $allTickets = TicketDtl::with(['user', 'admin', 'office'])->get();
     return view('pages.alltickets', compact('allTickets'));
-} 
-
+}
 
 public function myTickets()
 {
