@@ -93,7 +93,7 @@ $departmentStats = TicketDtl::select('department', DB::raw('count(*) as total'))
         $item->department = $dept;
         return $item;
     })
-     ->take(5);
+     ->take(6);
 
 //     // Get ticket counts grouped by day of the week (0=Sunday, ..., 6=Saturday)
 // $dailyTickets = TicketDtl::selectRaw("DATE(created_at) as date, COUNT(*) as total")
