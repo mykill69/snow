@@ -779,6 +779,40 @@
         //-------------
         var salesChartCanvas = $('#sale-chart').get(0).getContext('2d');
 
+        // var salesChartData = {
+        //     labels: {!! json_encode($departmentStats->pluck('department')) !!},
+        //     datasets: [{
+        //         label: 'Office/College',
+        //         backgroundColor: '#4E6766',
+        //         borderColor: '#4E6766',
+        //         data: {!! json_encode($departmentStats->pluck('total')) !!}
+        //     }]
+        // };
+        // var salesChartData = {
+        //     labels: {!! json_encode($departmentStats->pluck('department')) !!},
+        //     datasets: [{
+        //         label: 'Office/College',
+        //         backgroundColor: '#4E6766',
+        //         borderColor: '#4E6766',
+        //         data: {!! json_encode($departmentStats->pluck('total')) !!}
+        //     }]
+        // };
+
+        // var salesChartOptions = {
+        //     responsive: true,
+        //     maintainAspectRatio: false,
+        //     scales: {
+        //         y: {
+        //             beginAtZero: true
+        //         }
+        //     }
+        // };
+
+        // new Chart(salesChartCanvas, {
+        //     type: 'bar',
+        //     data: salesChartData,
+        //     options: salesChartOptions
+        // })
         var salesChartData = {
             labels: {!! json_encode($departmentStats->pluck('department')) !!},
             datasets: [{
@@ -790,11 +824,17 @@
         };
 
         var salesChartOptions = {
+            indexAxis: 'y', // ✅ Makes the bars horizontal
             responsive: true,
             maintainAspectRatio: false,
             scales: {
-                y: {
+                x: {
                     beginAtZero: true
+                },
+                y: {
+                    ticks: {
+                        autoSkip: false
+                    }
                 }
             }
         };
@@ -803,8 +843,7 @@
             type: 'bar',
             data: salesChartData,
             options: salesChartOptions
-        })
-
+        });
 
 
         const donutChartCanvas = document.getElementById('piesChart').getContext('2d');
@@ -945,9 +984,43 @@
 
 
         //-------------
-        //- ADDITIONAL BAR CHART -
+        //- ADDITIONAL BAR CHART - December 10, 2025
         //-------------
+        // var barChart2Canvas = $('#barChart2').get(0).getContext('2d');
+        // var barChart2Data = {
+        //     labels: {!! json_encode($resolvedAdminLabels) !!},
+        //     datasets: [{
+        //         label: 'Tickets Resolved',
+        //         backgroundColor: [
+        //             '#FFB140', '#4E6766', '#1E152A', '#F05454',
+        //             '#6A7FDB', '#73956F', '#4C3A51', '#94B447'
+        //         ],
+        //         borderColor: [
+        //             '#e09f36', '#3f5555', '#140f1d', '#d14949',
+        //             '#5c6fc9', '#5d7f5d', '#3a2d3f', '#7f993d'
+        //         ],
+        //         borderWidth: 1,
+        //         data: {!! json_encode($resolvedAdminData) !!}
+        //     }]
+        // };
+
+        // var barChart2Options = {
+        //     responsive: true,
+        //     maintainAspectRatio: false,
+        //     scales: {
+        //         y: {
+        //             beginAtZero: true
+        //         }
+        //     }
+        // };
+        // new Chart(barChart2Canvas, {
+        //     type: 'bar',
+        //     data: barChart2Data,
+        //     options: barChart2Options
+        // });
+
         var barChart2Canvas = $('#barChart2').get(0).getContext('2d');
+
         var barChart2Data = {
             labels: {!! json_encode($resolvedAdminLabels) !!},
             datasets: [{
@@ -966,19 +1039,27 @@
         };
 
         var barChart2Options = {
+            indexAxis: 'y', // ✅ Makes the bars horizontal
             responsive: true,
             maintainAspectRatio: false,
             scales: {
-                y: {
+                x: {
                     beginAtZero: true
+                },
+                y: {
+                    ticks: {
+                        autoSkip: false // keeps all admin labels visible
+                    }
                 }
             }
         };
+
         new Chart(barChart2Canvas, {
             type: 'bar',
             data: barChart2Data,
             options: barChart2Options
         });
+
 
         //-------------
         //- LINE CHART (Daily Tickets by Personnel) -

@@ -40,28 +40,53 @@ class PagesController extends Controller
     // ->orderBy('department')
     // ->get();
 
+    // December 10, 2025 update
+// $departmentStats = TicketDtl::select('department', DB::raw('count(*) as total'))
+//     ->groupBy('department')
+//     ->orderBy('department')
+//     ->get()
+//     ->map(function ($item) {
+//         $dept = trim($item->department);
+
+//         // Split into words
+//         $words = preg_split('/\s+/', $dept);
+
+//         // ✅ If only 1 word, keep it as-is
+//         if (count($words) === 1) {
+//             $item->department = $dept;
+//             return $item;
+//         }
+
+//         // ✅ If starts with "College of", remove it
+//         if (str_starts_with(strtolower($dept), 'college of')) {
+//             $dept = trim(str_ireplace('college of', '', $dept));
+//         } 
+//         // ✅ Otherwise, get only the first word
+//         else {
+//             $dept = $words[0];
+//         }
+
+//         $item->department = $dept;
+//         return $item;
+//     });
+
 $departmentStats = TicketDtl::select('department', DB::raw('count(*) as total'))
     ->groupBy('department')
-    ->orderBy('department')
+    ->orderByDesc('total') // largest total first
     ->get()
     ->map(function ($item) {
         $dept = trim($item->department);
 
-        // Split into words
         $words = preg_split('/\s+/', $dept);
 
-        // ✅ If only 1 word, keep it as-is
         if (count($words) === 1) {
             $item->department = $dept;
             return $item;
         }
 
-        // ✅ If starts with "College of", remove it
         if (str_starts_with(strtolower($dept), 'college of')) {
             $dept = trim(str_ireplace('college of', '', $dept));
-        } 
-        // ✅ Otherwise, get only the first word
-        else {
+        } else {
             $dept = $words[0];
         }
 
@@ -142,6 +167,30 @@ $priorityData = [
     $priorityCounts->firstWhere('priority', 3)?->total ?? 0,
 ];
 
+// $resolvedByAdmins = [];
+
+// foreach ($adminUsers as $admin) {
+//     // Skip IDs 3 and 12
+//     if (in_array($admin->id, [3, 12])) {
+//         continue;
+//     }
+
+//     $count = TicketDtl::where('status', 3)
+//         ->whereRaw("FIND_IN_SET(?, admin_id)", [$admin->id])
+//         ->orderBy($count,'asc')
+//         ->count();
+
+//    $resolvedByAdmins = collect($resolvedByAdmins)
+//     ->sortByDesc('count')
+//     ->values() // reset array keys
+//     ->toArray();
+// }
+
+
+// // Prepare chart labels and data
+// $resolvedAdminLabels = collect($resolvedByAdmins)->pluck('name')->toArray();
+// $resolvedAdminData = collect($resolvedByAdmins)->pluck('count')->toArray();
+
 $resolvedByAdmins = [];
 
 foreach ($adminUsers as $admin) {
@@ -150,6 +199,7 @@ foreach ($adminUsers as $admin) {
         continue;
     }
 
+    // Count tickets resolved by this admin
     $count = TicketDtl::where('status', 3)
         ->whereRaw("FIND_IN_SET(?, admin_id)", [$admin->id])
         ->count();
@@ -160,6 +210,11 @@ foreach ($adminUsers as $admin) {
     ];
 }
 
+// Sort by count ascending
+$resolvedByAdmins = collect($resolvedByAdmins)
+    ->sortByDesc('count')
+    ->values() // reset array keys
+    ->toArray();
 
 // Prepare chart labels and data
 $resolvedAdminLabels = collect($resolvedByAdmins)->pluck('name')->toArray();
