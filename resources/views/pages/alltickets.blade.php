@@ -47,7 +47,7 @@
 
                                 {{-- Tab Content --}}
                                 <div class="tab-content" id="ticketTabContent">
-                                    @foreach ([1 => 'new', 2 => 'pending', 3 => 'resolved', 4 => 'closed'] as $status => $tabId)
+                                    @foreach ([1 => 'new', 3 => 'resolved', 2 => 'pending', 4 => 'closed'] as $status => $tabId)
                                         @php $ticketsForTab = $allTickets->where('status', $status); @endphp
 
                                         <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}"
@@ -299,11 +299,12 @@
     </section>
 
 
+    <!-- REQUIRED CORE SCRIPTS -->
+    <script src="{{ asset('template/plugins/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('template/dist/js/adminlte.min.js') }}"></script>
 
 
-    <!-- ChartJS -->
-    <script src="template/plugins/chart.js/Chart.min.js"></script>
-    <script src="template/plugins/chart.js/Chart.js"></script>
 
     <script>
         function toggleAdminList(id) {
@@ -333,15 +334,48 @@
             toggleLink.textContent = isShortVisible ? 'See less...' : 'See more...';
         }
     </script>
-    <script>
-        $(document).ready(function() {
-            ['new', 'pending', 'resolved', 'closed'].forEach(function(id) {
-                $('#example-' + id).DataTable({
 
+    <script>
+        window.onload = function() {
+
+            // ✅ Initialize ALL tables at once
+            const tables = {};
+
+            ['new', 'resolved', 'pending', 'closed'].forEach(function(id) {
+
+                let tableEl = document.getElementById('example-' + id);
+
+                if (tableEl) {
+                    tables[id] = $('#example-' + id).DataTable({
+                        responsive: true,
+                        autoWidth: false,
+                        paging: true,
+                        searching: true,
+                        ordering: true,
+                        lengthChange: true,
+                        pageLength: 10,
+                        language: {
+                            search: "Search:",
+                            lengthMenu: "Show _MENU_ entries",
+                            zeroRecords: "No matching tickets found",
+                            info: "Showing _START_ to _END_ of _TOTAL_ tickets",
+                            infoEmpty: "No tickets available"
+                        }
+                    });
+                }
+            });
+
+            // ✅ Recalculate layout when switching tabs
+            $('a[data-toggle="tab"]').on('shown.bs.tab', function() {
+                $.each(tables, function(key, table) {
+                    table.columns.adjust().responsive.recalc();
                 });
             });
-        });
+
+        };
     </script>
+
+
     </body>
 
     </html>

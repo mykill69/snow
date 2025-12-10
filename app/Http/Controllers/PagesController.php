@@ -516,7 +516,7 @@ public function myTickets()
 {
     $user = Auth::user();
 
-    $allTickets = TicketDtl::when(
+    $myTickets = TicketDtl::when(
         $user->role === 'Administrator',
         fn ($q) => $q->where(function ($q) use ($user) {
             $q->where('admin_id', $user->id)                 
@@ -532,7 +532,7 @@ public function myTickets()
     ->where('admin_id', $user->id)
     ->count();
 
-    return view('pages.myTickets', compact('allTickets','mypendingSurveyCount'));
+    return view('pages.myTickets', compact('myTickets','mypendingSurveyCount'));
 }
 
 

@@ -52,13 +52,13 @@
                                     <!-- Button Container -->
                                     <div class="d-flex">
                                         <button class="btn btn-default bg-warning btn-hover btn-sm me-2 mr-2"
-                                            data-toggle="tab" id="resolved-tab" href="#resolved" role="tab">
-                                            <i class="fas fa-smile"></i><span> Follow-up Survey:</span>
+                                            data-toggle="tab" data-target="#resolved">
+                                            <i class="fas fa-smile"></i> Follow-up Survey:
                                             <span class="fw-bold">{{ $mypendingSurveyCount }}</span>
                                         </button>
                                         <button class="btn btn-default bg-success btn-hover btn-sm">
                                             <i class="fas fa-tags"></i> Resolved:
-                                            <span class="fw-bold">{{ $allTickets->where('status', 3)->count() }}</span>
+                                            <span class="fw-bold">{{ $myTickets->where('status', 3)->count() }}</span>
                                         </button>
                                     </div>
                                 </div>
@@ -71,7 +71,7 @@
                                 {{-- Tab Content --}}
                                 <div class="tab-content" id="ticketTabContent">
                                     @foreach ([1 => 'new', 2 => 'pending', 3 => 'resolved', 4 => 'closed'] as $status => $tabId)
-                                        @php $ticketsForTab = $allTickets->where('status', $status); @endphp
+                                        @php $ticketsForTab = $myTickets->where('status', $status); @endphp
 
                                         <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}"
                                             id="{{ $tabId }}" role="tabpanel">
@@ -140,7 +140,8 @@
                                                                     <td>
                                                                         @if ($ticket->file_name)
                                                                             <a href="{{ asset('storage/' . $ticket->file_name) }}"
-                                                                                target="_blank" class="text-primary">View File</a>
+                                                                                target="_blank" class="text-primary">View
+                                                                                File</a>
                                                                         @else
                                                                             No File
                                                                         @endif
@@ -356,14 +357,45 @@
         }
     </script>
     <script>
-        $(document).ready(function() {
-            ['new', 'pending', 'resolved', 'closed'].forEach(function(id) {
-                $('#example-' + id).DataTable({
+        window.onload = function() {
 
+            // ✅ Initialize ALL tables at once
+            const tables = {};
+
+            ['new', 'resolved', 'pending', 'closed'].forEach(function(id) {
+
+                let tableEl = document.getElementById('example-' + id);
+
+                if (tableEl) {
+                    tables[id] = $('#example-' + id).DataTable({
+                        responsive: true,
+                        autoWidth: false,
+                        paging: true,
+                        searching: true,
+                        ordering: true,
+                        lengthChange: true,
+                        pageLength: 10,
+                        language: {
+                            search: "Search:",
+                            lengthMenu: "Show _MENU_ entries",
+                            zeroRecords: "No matching tickets found",
+                            info: "Showing _START_ to _END_ of _TOTAL_ tickets",
+                            infoEmpty: "No tickets available"
+                        }
+                    });
+                }
+            });
+
+            // ✅ Recalculate layout when switching tabs
+            $('a[data-toggle="tab"]').on('shown.bs.tab', function() {
+                $.each(tables, function(key, table) {
+                    table.columns.adjust().responsive.recalc();
                 });
             });
-        });
+
+        };
     </script>
+
     </body>
 
     </html>
