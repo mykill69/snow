@@ -24,10 +24,14 @@
 
                                 <div class="row w-100 px-4">
                                     <!-- Left column: Text content -->
-                                    <div class="col-8 d-flex flex-column justify-content-center">
+                                    {{-- <div class="col-8 d-flex flex-column justify-content-center">
                                         <p class="mb-0" style="font-size: 1.6rem;">New Ticket</p>
                                         <h3 class="fw-bold" style="font-size: 4rem;">
                                             {{ $ticketCount->where('status', 1)->count() }}</h3>
+                                    </div> --}}
+                                    <div class="col-8 d-flex flex-column justify-content-center">
+                                        <p class="mb-0" style="font-size: 1.6rem;">New Ticket</p>
+                                        <h3 class="fw-bold" style="font-size: 4rem;" id="newTicketCount">0</h3>
                                     </div>
                                     <!-- Right column: Icon -->
                                     <div class="col-4 d-flex align-items-center justify-content-end">
@@ -656,6 +660,30 @@
     <!-- Moment.js -->
     <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        function fetchNewTicketCount() {
+            $.ajax({
+                url: "{{ route('ajax.ticket.count') }}",
+                method: "GET",
+                success: function(response) {
+                    $('#newTicketCount').text(response.count);
+                }
+            });
+        }
+
+        // Load immediately
+        fetchNewTicketCount();
+
+        // Auto refresh every 3 seconds
+        setInterval(fetchNewTicketCount, 3000);
+    </script>
+
+
+
     {{-- 
     <script>
         $(function() {

@@ -281,5 +281,13 @@ public static function getLatestUserComments($limit = 10)
         ->get();
 }
 
+public function getNewTicketCount()
+{
+    $count = TicketDtl::where('status', 1)->count();
+
+    return response()->json([
+        'count' => $count
+    ]);
+}
 
 }

@@ -81,6 +81,8 @@ Route::group(['middleware'=>['guest']],function(){
     Route::get('/client-satisfaction/{ticket_no}', [AccessController::class, 'clientSatisfaction'])->name('clientSatisfaction');
     Route::get('/created-ticket/{ticketNo}', [AccessController::class, 'createdTicket'])->name('createdTicket');
 
+    Route::get('/ajax/ticket-count', [TicketController::class, 'getNewTicketCount'])->name('ajax.ticket.count');
+
     Route::post('/ticket-mark-seen-user', [AccessController::class, 'markSeenUser'])->name('ticket.markSeenUser');
 
 
