@@ -275,7 +275,7 @@
                                         <div class="chart">
                                             <div class="position-relative mb-4">
                                                 <canvas id="sale-chart"
-                                                    style="min-height: 360px; height: 360px; max-height: 360px; max-width: 100%;"></canvas>
+                                                    style="min-height: 370px; height: 370px; max-height: 370px370px; max-width: 100%;"></canvas>
                                             </div>
                                         </div>
                                     </div>
