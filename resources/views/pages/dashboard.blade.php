@@ -267,7 +267,7 @@
                             <div class="col-md-6">
                                 <div class="card">
                                     <div class="card-header">
-                                        <h3 class="card-title" style=" color: #1E152A;font-weight: bold;">Tickets by
+                                        <h3 class="card-title" style=" color: #1E152A;font-weight: bold;">Top 5
                                             Offices/Colleges</h3>
 
                                     </div>
