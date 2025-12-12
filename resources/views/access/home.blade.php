@@ -789,9 +789,23 @@
         </script>
 
         <style>
-            /* Optional enlargement of default SweetAlert font */
-            .swal2-large-text {
-                font-size: 1.2rem;
+            .feedback-smiley-wrapper {
+                cursor: pointer;
+                transition: transform 0.2s ease;
+            }
+
+            .feedback-smiley {
+                font-size: 4rem;
+                transition: transform 0.2s ease;
+            }
+
+            .feedback-smiley-wrapper:hover .feedback-smiley {
+                transform: scale(1.3);
+            }
+
+            .feedback-label {
+                font-weight: bold;
+                margin-top: 0.3rem;
             }
         </style>
         <script>
@@ -800,23 +814,41 @@
                     let ticketNo = $(this).data('ticket');
 
                     Swal.fire({
-                        title: 'How was your experience with our service?',
+                        title: 'We value your feedback!',
+                        width: 700, // wider SweetAlert
                         html: `
-            <div class="text-center mb-3">
-                <span class="feedback-smiley" data-value="5" style="font-size: 3rem; cursor:pointer;">🤩</span>
-                <span class="feedback-smiley" data-value="4" style="font-size: 3rem; cursor:pointer;">😃</span>
-                <span class="feedback-smiley" data-value="3" style="font-size: 3rem; cursor:pointer;">🙂</span>
-                <span class="feedback-smiley" data-value="2" style="font-size: 3rem; cursor:pointer;">😐</span>
-                <span class="feedback-smiley" data-value="1" style="font-size: 3rem; cursor:pointer;">😞</span>
-            </div>
-            <div class="form-group text-left">
-                <label>Comments (optional):</label>
-                <textarea id="feedback-comments" class="form-control" rows="3" placeholder="Enter your comments"></textarea>
-            </div>
-            <p class="text-muted small mt-2 text-left">
-                Your feedback is valuable to us and helps improve our services.
-                Click or tap the emoji that best represents your experience.
-            </p>
+                            <p class="text-center mb-3 fw-semibold">
+                                How would you rate your experience with our service?
+                            </p>
+                            <div class="text-center mb-3 d-flex justify-content-center gap-5 flex-wrap">
+                                <div class="feedback-smiley-wrapper text-center">
+                                    <div class="feedback-smiley" data-value="5">🤩</div>
+                                    <div class="feedback-label mt-1 fw-bold">Excellent</div>
+                                </div>
+                                <div class="feedback-smiley-wrapper text-center">
+                                    <div class="feedback-smiley" data-value="4">😃</div>
+                                    <div class="feedback-label mt-1 fw-bold">Good</div>
+                                </div>
+                                <div class="feedback-smiley-wrapper text-center">
+                                    <div class="feedback-smiley" data-value="3">🙂</div>
+                                    <div class="feedback-label mt-1 fw-bold">Average</div>
+                                </div>
+                                <div class="feedback-smiley-wrapper text-center">
+                                    <div class="feedback-smiley" data-value="2">😐</div>
+                                    <div class="feedback-label mt-1 fw-bold">Poor</div>
+                                </div>
+                                <div class="feedback-smiley-wrapper text-center">
+                                    <div class="feedback-smiley" data-value="1">😞</div>
+                                    <div class="feedback-label mt-1 fw-bold">Very Poor</div>
+                                </div>
+                            </div>
+                            <div class="form-group text-left mt-3">
+                                <label style="font-weight: bold;">Additional comments</label>
+                                <textarea id="feedback-comments" class="form-control" rows="3" placeholder="Share any suggestions or details to help us improve"></textarea>
+                            </div>
+                            <p class="text-muted small mt-2 text-left">
+                                Your input helps us enhance our service. Tap the emoji that best represents your experience and share any comments.
+                            </p>
             `,
                         showCancelButton: true,
                         confirmButtonText: 'Submit',
@@ -854,7 +886,7 @@
                                 data: {
                                     _token: "{{ csrf_token() }}",
                                     ticket_no: ticketNo,
-                                    feedback_stat: '1', // feedback submitted
+                                    feedback_stat: '1',
                                     rating: result.value.rating,
                                     comments: result.value.comments
                                 },
@@ -873,7 +905,7 @@
                                         .prop('disabled', true);
                                 },
                                 error: function(xhr) {
-                                    console.log(xhr.responseText); // debug server error
+                                    console.log(xhr.responseText);
                                     Swal.fire({
                                         icon: 'error',
                                         title: 'Oops...',
@@ -886,6 +918,7 @@
                 });
             });
         </script>
+
 
         <script>
             // Toggle long text (subject or remarks)
