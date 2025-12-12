@@ -407,9 +407,9 @@
                             <div class="position-relative mr-3">
                                 <i class="fas fa-user-circle text-secondary" style="font-size: 40px;"></i>
                                 ${comments.length > 0 ? `
-                                            <span class="badge badge-danger position-absolute" style="bottom: -5px; left: -5px; font-size: 10px;">
-                                                ${comments.length}
-                                            </span>` : ''}
+                                                <span class="badge badge-danger position-absolute" style="bottom: -5px; left: -5px; font-size: 10px;">
+                                                    ${comments.length}
+                                                </span>` : ''}
                             </div>
 
                             <div class="media-body">

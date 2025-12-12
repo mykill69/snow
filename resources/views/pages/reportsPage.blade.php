@@ -42,6 +42,15 @@
                                             Satisfaction Survey</a>
                                     </li>
                                     <li class="nav-item">
+                                        <a class="nav-link {{ $activeTab === 'feedback' ? 'active' : '' }}"
+                                            id="custom-tabs-two-feedback-tab" data-toggle="pill"
+                                            href="#custom-tabs-two-feedback" role="tab"
+                                            aria-controls="custom-tabs-two-feedback"
+                                            aria-selected="{{ $activeTab === 'feedback' ? 'true' : 'false' }}">
+                                            Client Feedback Survey
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
                                         <a class="nav-link" id="custom-tabs-two-messages-tab" data-toggle="pill"
                                             href="#custom-tabs-two-messages" role="tab"
                                             aria-controls="custom-tabs-two-messages" aria-selected="false">Reports in
@@ -277,6 +286,96 @@
                                         </div>
 
                                     </div>
+
+                                    {{-- Feedback content --}}
+                                    <div class="tab-pane fade {{ $activeTab === 'feedback' ? 'show active' : '' }}"
+                                        id="custom-tabs-two-feedback">
+                                        {{-- Feedback content --}}
+
+                                        <form method="GET" action="{{ route('ticketReports') }}">
+                                            <input type="hidden" name="active_tab" value="feedback">
+                                            <div class="form-row align-items-end px-2">
+                                                <!-- Date From -->
+                                                <div class="col-md-2">
+                                                    <label for="date_taken_from">From</label>
+                                                    <input type="date" class="form-control" name="date_taken_from"
+                                                        value="{{ request('date_taken_from') }}">
+                                                </div>
+
+                                                <!-- Date To -->
+                                                <div class="col-md-2">
+                                                    <label for="date_taken_to">To</label>
+                                                    <input type="date" class="form-control" name="date_taken_to"
+                                                        value="{{ request('date_taken_to') }}">
+                                                </div>
+
+                                                <!-- Submit -->
+                                                <div class="col-md-2 d-flex align-items-end">
+                                                    <button type="submit"
+                                                        class="btn btn-primary w-100 form-control">Submit</button>
+                                                </div>
+                                            </div>
+                                        </form>
+
+
+                                        <div class="card-body">
+
+                                            <!-- Feedback Table -->
+                                            <table class="table table-bordered mt-3">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Ticket No</th>
+                                                        <th>User</th>
+                                                        <th>Office/College</th>
+                                                        <th>Date Submitted</th>
+                                                        <th>Rating</th>
+                                                        <th>Comments</th>
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody>
+                                                    @forelse ($feedbackReports as $feedback)
+                                                        <tr>
+                                                            <td>{{ $feedback->ticket_no }}</td>
+
+                                                            <td>
+                                                                {{ $feedback->user?->fullname ?? 'Anonymous' }}
+                                                            </td>
+
+                                                            <td>
+                                                                {{ $feedback->user?->department ?? 'N/A' }}
+                                                            </td>
+
+                                                            <td>
+                                                                {{ \Carbon\Carbon::parse($feedback->created_at)->format('M d, Y') }}
+                                                            </td>
+
+                                                            <td>{{ $feedback->rating }}</td>
+
+                                                            <td>{{ $feedback->comments ?: '—' }}</td>
+                                                        </tr>
+                                                    @empty
+                                                        <tr>
+                                                            <td colspan="6" class="text-center">No feedback found.</td>
+                                                        </tr>
+                                                    @endforelse
+                                                </tbody>
+
+                                                <tfoot>
+                                                    <tr style="font-weight: bold;">
+                                                        <td colspan="4">Overall Average Feedback Rating</td>
+                                                        <td colspan="2">
+                                                            {{ $feedbackAverage !== null ? number_format($feedbackAverage, 2) : 'N/A' }}
+                                                        </td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+
+                                        </div>
+
+                                    </div>
+
+
                                     <div class="tab-pane fade" id="custom-tabs-two-messages" role="tabpanel"
                                         aria-labelledby="custom-tabs-two-messages-tab">
 

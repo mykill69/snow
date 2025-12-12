@@ -746,8 +746,31 @@ $categoryCounts = TicketDtl::select('category', DB::raw('count(*) as total'))
 $pieLabels = $categoryCounts->pluck('category')->toArray();
 $pieData = $categoryCounts->pluck('total')->toArray();
 
+// Fetch feedback reports
+$feedbackReports = \App\Models\Feedback::with('user')
+    ->when($request->filled('date_taken_from') && $request->filled('date_taken_to'), function ($q) use ($request) {
+        $q->whereBetween('created_at', [$request->date_taken_from, $request->date_taken_to]);
+    })
+    ->when($request->filled('date_taken_from') && !$request->filled('date_taken_to'), function ($q) use ($request) {
+        $q->whereDate('created_at', $request->date_taken_from);
+    })
+    ->get();
 
-    return view('pages.reportsPage', compact('ticketReports', 'adminUsers', 'users', 'surveyReports', 'overallRating','pieLabels','pieData'));
+// Compute average feedback rating
+$feedbackAverage = $feedbackReports->avg('rating') ?? null;
+
+
+    return view('pages.reportsPage', compact(
+    'ticketReports',
+    'adminUsers',
+    'users',
+    'surveyReports',
+    'overallRating',
+    'pieLabels',
+    'pieData',
+    'feedbackReports',
+    'feedbackAverage'
+));
 }
 
 
