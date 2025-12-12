@@ -98,6 +98,16 @@
                     </a>
                 </li>
             </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item d-none d-sm-flex align-items-center">
+                    <a href="{{ route('dashboard') }}" class="nav-link d-flex align-items-center px-3 py-2 rounded"
+                        style="color: #4E6766; font-size: 20px; font-weight: 700;">
+
+                        MANAGEMENT INFORMATION SYSTEM OFFICE KPI DASHBOARD
+                    </a>
+                </li>
+            </ul>
+
 
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
@@ -362,9 +372,9 @@
                             const grouped = {};
                             response.newComments.forEach(comment => {
                                 if (comment.com_stat != 0 || !comment.user_id)
-                            return; // skip seen/admin comments
+                                    return; // skip seen/admin comments
                                 if (!grouped[comment.ticket_no]) grouped[comment
-                            .ticket_no] = [];
+                                    .ticket_no] = [];
                                 grouped[comment.ticket_no].push(comment);
                             });
 
@@ -397,9 +407,9 @@
                             <div class="position-relative mr-3">
                                 <i class="fas fa-user-circle text-secondary" style="font-size: 40px;"></i>
                                 ${comments.length > 0 ? `
-                                        <span class="badge badge-danger position-absolute" style="bottom: -5px; left: -5px; font-size: 10px;">
-                                            ${comments.length}
-                                        </span>` : ''}
+                                            <span class="badge badge-danger position-absolute" style="bottom: -5px; left: -5px; font-size: 10px;">
+                                                ${comments.length}
+                                            </span>` : ''}
                             </div>
 
                             <div class="media-body">
@@ -416,7 +426,7 @@
                         `;
 
                                 $(commentHtml).hide().prependTo(newChatContainer).fadeIn(
-                                'slow');
+                                    'slow');
                                 displayedTickets.add(ticketNo);
                                 latestId = Math.max(latestId, latestComment.id);
                             });
