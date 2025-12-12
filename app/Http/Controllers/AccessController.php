@@ -349,6 +349,14 @@ public function updateSurvey(Request $request, $ticket_no)
 }
 
 
+public function clientFeedback($ticket_no)
+{
+    $survey = Survey::where('ticket_no', $ticket_no)->firstOrFail();
+    $user = auth()->user();
+    return view('access.clientFeedback', compact('survey','user'));
+}
+
+
 
 public function clientLogs()
     {

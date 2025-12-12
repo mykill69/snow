@@ -520,6 +520,7 @@
                                                             In Progress
                                                         @endif
                                                     </td>
+                                                    <!-- feedback button -->
                                                     <td>
                                                         @if ($ticket->status == 3)
                                                             @if ($ticket->survey == 1)
@@ -527,13 +528,14 @@
                                                                     Survey Submitted
                                                                 </button>
                                                             @else
-                                                                <a href="{{ route('clientSatisfaction', $ticket->ticket_no) }}"
-                                                                    class="btn btn-sm btn-primary">
-                                                                    Client Satisfaction Survey
-                                                                </a>
+                                                                <button class="btn btn-sm btn-primary submit-feedback"
+                                                                    data-ticket="{{ $ticket->ticket_no }}">
+                                                                    Submit a feedback
+                                                                </button>
                                                             @endif
                                                         @endif
                                                     </td>
+
 
                                                 </tr>
                                             @endforeach
@@ -1107,6 +1109,98 @@
                 font-size: 1.2rem;
             }
         </style>
+        <script>
+            $(document).ready(function() {
+                $('.submit-feedback').on('click', function() {
+                    let ticketNo = $(this).data('ticket');
+
+                    Swal.fire({
+                        title: 'How was your experience with our service?',
+                        html: `
+            <div class="text-center mb-3">
+                <span class="feedback-smiley" data-value="5" style="font-size: 3rem; cursor:pointer;">🤩</span>
+                <span class="feedback-smiley" data-value="4" style="font-size: 3rem; cursor:pointer;">😃</span>
+                <span class="feedback-smiley" data-value="3" style="font-size: 3rem; cursor:pointer;">🙂</span>
+                <span class="feedback-smiley" data-value="2" style="font-size: 3rem; cursor:pointer;">😐</span>
+                <span class="feedback-smiley" data-value="1" style="font-size: 3rem; cursor:pointer;">😞</span>
+            </div>
+            <div class="form-group text-left">
+                <label>Comments (optional):</label>
+                <textarea id="feedback-comments" class="form-control" rows="3" placeholder="Enter your comments"></textarea>
+            </div>
+            <p class="text-muted small mt-2 text-left">
+                Your feedback is valuable to us and helps improve our services.
+                Click or tap the emoji that best represents your experience.
+            </p>
+            `,
+                        showCancelButton: true,
+                        confirmButtonText: 'Submit',
+                        cancelButtonText: 'Cancel',
+                        preConfirm: () => {
+                            const ratingEl = Swal.getPopup().querySelector(
+                                '.feedback-smiley.selected');
+                            if (!ratingEl) {
+                                Swal.showValidationMessage('Please select a smiley rating');
+                                return false;
+                            }
+                            return {
+                                rating: ratingEl.dataset.value,
+                                comments: Swal.getPopup().querySelector('#feedback-comments').value
+                            };
+                        },
+                        didOpen: () => {
+                            const smileys = Swal.getPopup().querySelectorAll('.feedback-smiley');
+                            smileys.forEach(smiley => {
+                                smiley.addEventListener('click', () => {
+                                    smileys.forEach(s => s.classList.remove(
+                                        'selected', 'border', 'border-3',
+                                        'border-primary', 'rounded-circle'));
+                                    smiley.classList.add('selected', 'border',
+                                        'border-3', 'border-primary',
+                                        'rounded-circle');
+                                });
+                            });
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                url: "{{ route('feedback.store') }}",
+                                type: 'POST',
+                                data: {
+                                    _token: "{{ csrf_token() }}",
+                                    ticket_no: ticketNo,
+                                    feedback_stat: '1', // feedback submitted
+                                    rating: result.value.rating,
+                                    comments: result.value.comments
+                                },
+                                success: function(response) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Feedback submitted!',
+                                        showConfirmButton: false,
+                                        timer: 1500
+                                    });
+
+                                    $(`button[data-ticket='${ticketNo}']`)
+                                        .text('Survey Submitted')
+                                        .removeClass('btn-primary submit-feedback')
+                                        .addClass('btn-secondary')
+                                        .prop('disabled', true);
+                                },
+                                error: function(xhr) {
+                                    console.log(xhr.responseText); // debug server error
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Oops...',
+                                        text: 'Something went wrong! Check console.'
+                                    });
+                                }
+                            });
+                        }
+                    });
+                });
+            });
+        </script>
 
 
     @endsection

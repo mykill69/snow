@@ -26,6 +26,7 @@
                             <th class="text-center" style="width: 120px;">Duration</th>
                             <th class="text-center" style="width: 120px;">Days Remaining</th>
                             <th style="min-width: 180px;">Project Progress</th>
+                            <th>Attachment/s</th>
                             <th class="text-center" style="width: 120px;">Status</th>
                             <th class="text-center" style="width: 80px;">Action</th>
                         </tr>
@@ -96,7 +97,7 @@
                                     @endif
                                 </td>
 
-
+                               
                                 <td class="align-middle">
                                     <div class="progress progress-sm">
                                         @php
@@ -119,6 +120,16 @@
                                         </div>
                                     </div>
                                     <small class="text-bold">{{ $progress->progress }}% Complete</small>
+                                </td>
+                                <td>
+                                    @if ($progress->attachment)
+                                        <a href="{{ asset('storage/' . $progress->attachment) }}" target="_blank"
+                                            class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-paperclip"></i> View Attachment
+                                        </a>
+                                    @else
+                                        <span class="text-muted">No attachment</span>
+                                    @endif
                                 </td>
                                 <td class="text-center align-middle">
                                     @php

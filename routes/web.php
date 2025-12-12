@@ -10,6 +10,7 @@ use App\Http\Controllers\TicketController;
 use App\Http\Controllers\ArticlesController;
 use App\Http\Controllers\WatchListController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\FeedbackController;
 
 
 Route::group(['middleware'=>['guest']],function(){
@@ -96,6 +97,14 @@ Route::group(['middleware'=>['guest']],function(){
     Route::get('/client-logs', [AccessController::class, 'clientLogs'])->name('clientLogs');
     Route::get('/mis-support', [AccessController::class, 'misPersonnel'])->name('misPersonnel');
     
+
+    // Feedback form page for client
+    Route::get('/feedback/{ticket_no}', [FeedbackController::class, 'clientFeedback'])
+        ->name('feedback.form');
+
+    // Submit feedback
+    Route::post('/feedback/store', [FeedbackController::class, 'storeFeedback'])->name('feedback.store');
+
 
 
     //admin edit ticket

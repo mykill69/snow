@@ -9,6 +9,7 @@ use App\Models\Survey;
 use App\Models\Logs;
 use App\Models\Article;
 use App\Models\Comments;
+use App\Models\Feedback;
 use App\Models\WorkProgress;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -93,7 +94,7 @@ $departmentStats = TicketDtl::select('department', DB::raw('count(*) as total'))
         $item->department = $dept;
         return $item;
     })
-     ->take(5);
+     ->take(10);
 
 //     // Get ticket counts grouped by day of the week (0=Sunday, ..., 6=Saturday)
 // $dailyTickets = TicketDtl::selectRaw("DATE(created_at) as date, COUNT(*) as total")
@@ -374,31 +375,86 @@ $overdueTickets = TicketDtl::whereIn('status', [1, 2])
 $currentMonth = now()->format('Y-m');
 $lastMonth = now()->subMonth()->format('Y-m');
 
-// 2. Fetch surveys
-$currentSurveys = Survey::where('date_taken', 'like', "$currentMonth%")->get();
-$lastSurveys = Survey::where('date_taken', 'like', "$lastMonth%")->get();
+// // 2. Fetch surveys
+// $currentSurveys = Survey::where('date_taken', 'like', "$currentMonth%")->get();
+// $lastSurveys = Survey::where('date_taken', 'like', "$lastMonth%")->get();
+
+// // 3. Function to compute average score
+// function computeSurveyAverage($surveys) {
+//     $totalScore = 0;
+//     $totalCount = 0;
+
+//     foreach ($surveys as $survey) {
+//         for ($i = 0; $i <= 8; $i++) {
+//             $column = 'sqd' . $i;
+
+//             if (!empty($survey->$column)) {
+//                 // Each column may be just a number or a string with commas
+//                 $scores = explode(',', $survey->$column); // handles both '5' and '5,4'
+
+//                 foreach ($scores as $score) {
+//                     $num = (int) trim($score);
+//                     if ($num > 0) {
+//                         $totalScore += $num;
+//                         $totalCount++;
+//                     }
+//                 }
+//             }
+//         }
+//     }
+
+//     return $totalCount > 0 ? round($totalScore / $totalCount, 2) : 0;
+// }
+
+// // 4. Compute scores
+// $currentAvg = computeSurveyAverage($currentSurveys);
+// $lastAvg = computeSurveyAverage($lastSurveys);
+// $trendIcon = $currentAvg > $lastAvg ? '↑' : ($currentAvg < $lastAvg ? '↓' : '→');
+
+// //all survey average
+// function computeOverallAverage($surveys) {
+//     $totalScore = 0;
+//     $totalCount = 0;
+
+//     foreach ($surveys as $survey) {
+//         for ($i = 0; $i <= 8; $i++) {
+//             $column = 'sqd' . $i;
+//             if (!empty($survey->$column)) {
+//                 $scores = explode(',', $survey->$column);
+//                 foreach ($scores as $score) {
+//                     $num = (int) $score;
+//                     if ($num > 0) {
+//                         $totalScore += $num;
+//                         $totalCount++;
+//                     }
+//                 }
+//             }
+//         }
+//     }
+
+//     return $totalCount > 0 ? round($totalScore / $totalCount, 2) : 0;
+// }
+
+// $allSurveys = Survey::all();
+// $overallAvg = computeOverallAverage($allSurveys);
+
+// Current and last month in Y-m format
+$currentMonth = Carbon::now()->format('Y-m');
+$lastMonth = Carbon::now()->subMonth()->format('Y-m');
+
+// 2. Fetch feedbacks
+$currentFeedbacks = Feedback::where('created_at', 'like', "$currentMonth%")->get();
+$lastFeedbacks = Feedback::where('created_at', 'like', "$lastMonth%")->get();
 
 // 3. Function to compute average score
-function computeSurveyAverage($surveys) {
+function computeFeedbackAverage($feedbacks) {
     $totalScore = 0;
     $totalCount = 0;
 
-    foreach ($surveys as $survey) {
-        for ($i = 0; $i <= 8; $i++) {
-            $column = 'sqd' . $i;
-
-            if (!empty($survey->$column)) {
-                // Each column may be just a number or a string with commas
-                $scores = explode(',', $survey->$column); // handles both '5' and '5,4'
-
-                foreach ($scores as $score) {
-                    $num = (int) trim($score);
-                    if ($num > 0) {
-                        $totalScore += $num;
-                        $totalCount++;
-                    }
-                }
-            }
+    foreach ($feedbacks as $feedback) {
+        if (!empty($feedback->rating) && $feedback->rating > 0) {
+            $totalScore += $feedback->rating;
+            $totalCount++;
         }
     }
 
@@ -406,50 +462,25 @@ function computeSurveyAverage($surveys) {
 }
 
 // 4. Compute scores
-$currentAvg = computeSurveyAverage($currentSurveys);
-$lastAvg = computeSurveyAverage($lastSurveys);
+$currentAvg = computeFeedbackAverage($currentFeedbacks);
+$lastAvg = computeFeedbackAverage($lastFeedbacks);
 $trendIcon = $currentAvg > $lastAvg ? '↑' : ($currentAvg < $lastAvg ? '↓' : '→');
 
-//all survey average
-function computeOverallAverage($surveys) {
-    $totalScore = 0;
-    $totalCount = 0;
-
-    foreach ($surveys as $survey) {
-        for ($i = 0; $i <= 8; $i++) {
-            $column = 'sqd' . $i;
-            if (!empty($survey->$column)) {
-                $scores = explode(',', $survey->$column);
-                foreach ($scores as $score) {
-                    $num = (int) $score;
-                    if ($num > 0) {
-                        $totalScore += $num;
-                        $totalCount++;
-                    }
-                }
-            }
-        }
-    }
-
-    return $totalCount > 0 ? round($totalScore / $totalCount, 2) : 0;
-}
-
-$allSurveys = Survey::all();
-$overallAvg = computeOverallAverage($allSurveys);
-
+// Overall average
+$allFeedbacks = Feedback::all();
+$overallAvg = computeFeedbackAverage($allFeedbacks);
 // for feedback in dashboard
-$clientFeedbacks = Survey::where('survey_status', 1)
-    ->whereNotNull('suggestions')
-    ->latest('date_taken') // optional: to sort latest first
-    ->take(10) // optional: limit to latest 10 feedbacks
+$clientFeedbacks = Feedback::where('feedback_stat', 1) // feedback submitted
+    ->whereNotNull('comments') // only feedbacks with comments
+    ->latest('created_at') // latest first
+    ->take(10) // limit to latest 10
     ->get()
     ->map(function ($feedback) {
         $user = User::find($feedback->user_id);
         return [
-            'name' => $user ? $user->fname . ' ' . $user->lname : 'Anonymous',
-            'date' => \Carbon\Carbon::parse($feedback->date_taken)->format('M d, Y'),
-            'message' => $feedback->suggestions,
-            
+            'name' => $user->fname . ' ' . $user->lname, // no anonymous fallback
+            'date' => \Carbon\Carbon::parse($feedback->created_at)->format('M d, Y'),
+            'message' => $feedback->comments,
         ];
     });
 
@@ -493,7 +524,7 @@ $clientFeedbacks = Survey::where('survey_status', 1)
         'lastAvg',
         'overallAvg',
         'clientFeedbacks',
-        'allSurveys',
+        'allFeedbacks',
         'workProgress'
     ));
 }
@@ -546,8 +577,14 @@ public function updateWork(Request $request, $id)
 
     $validated = $request->validate([
         'progress'    => 'required|numeric|min:0|max:100',
+        'attachment'  => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:2048',
         'proj_status' => 'required|in:Ongoing,Completed,Onhold',
     ]);
+
+    if ($request->hasFile('attachment')) {
+        // Store in public/work_progress/attachments
+        $validated['attachment'] = $request->file('attachment')->store('work_progress/attachments', 'public');
+    }
 
     $progress->update($validated);
 

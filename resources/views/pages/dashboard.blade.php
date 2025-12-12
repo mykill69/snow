@@ -275,7 +275,7 @@
                                         <div class="chart">
                                             <div class="position-relative mb-4">
                                                 <canvas id="sale-chart"
-                                                    style="min-height: 370px; height: 370px; max-height: 370px370px; max-width: 100%;"></canvas>
+                                                    style="min-height: 340px; height: 340px; max-height: 340px; max-width: 100%;"></canvas>
                                             </div>
                                         </div>
                                     </div>
@@ -436,7 +436,7 @@
                                                         style="background-color: white; cursor: pointer;">
                                                         <span
                                                             class="info-box-icon elevation-1 d-flex align-items-center justify-content-center"
-                                                            style="font-size:3.5rem; min-width: 33%; height: 80px; min-height: 80px;background-color:#1E152A;">
+                                                            style="font-size:3.5rem; min-width: 33%; height: 80px; min-height: 80px;background-color:#C94C4C;">
                                                             <i class="fa fa-calendar-times" style="color: #fff;"></i>
                                                         </span>
                                                         <div class="info-box-content">
@@ -470,7 +470,7 @@
                                                             </span>
                                                             <span class="info-box-text w-100 text-center text-muted"
                                                                 style="font-size:1rem; font-weight: normal;">
-                                                                Pending Client Survey
+                                                                Pending Feedback
                                                             </span>
                                                         </div>
                                                     </div>
@@ -779,40 +779,15 @@
         //-------------
         var salesChartCanvas = $('#sale-chart').get(0).getContext('2d');
 
-        // var salesChartData = {
-        //     labels: {!! json_encode($departmentStats->pluck('department')) !!},
-        //     datasets: [{
-        //         label: 'Office/College',
-        //         backgroundColor: '#4E6766',
-        //         borderColor: '#4E6766',
-        //         data: {!! json_encode($departmentStats->pluck('total')) !!}
-        //     }]
-        // };
-        // var salesChartData = {
-        //     labels: {!! json_encode($departmentStats->pluck('department')) !!},
-        //     datasets: [{
-        //         label: 'Office/College',
-        //         backgroundColor: '#4E6766',
-        //         borderColor: '#4E6766',
-        //         data: {!! json_encode($departmentStats->pluck('total')) !!}
-        //     }]
-        // };
-
-        // var salesChartOptions = {
-        //     responsive: true,
-        //     maintainAspectRatio: false,
-        //     scales: {
-        //         y: {
-        //             beginAtZero: true
-        //         }
-        //     }
-        // };
-
-        // new Chart(salesChartCanvas, {
-        //     type: 'bar',
-        //     data: salesChartData,
-        //     options: salesChartOptions
-        // })
+        var salesChartData = {
+            labels: {!! json_encode($departmentStats->pluck('department')) !!},
+            datasets: [{
+                label: 'Office/College',
+                backgroundColor: '#4E6766',
+                borderColor: '#4E6766',
+                data: {!! json_encode($departmentStats->pluck('total')) !!}
+            }]
+        };
         var salesChartData = {
             labels: {!! json_encode($departmentStats->pluck('department')) !!},
             datasets: [{
@@ -824,17 +799,11 @@
         };
 
         var salesChartOptions = {
-            indexAxis: 'y', // ✅ Makes the bars horizontal
             responsive: true,
             maintainAspectRatio: false,
             scales: {
-                x: {
-                    beginAtZero: true
-                },
                 y: {
-                    ticks: {
-                        autoSkip: false
-                    }
+                    beginAtZero: true
                 }
             }
         };
@@ -843,7 +812,38 @@
             type: 'bar',
             data: salesChartData,
             options: salesChartOptions
-        });
+        })
+        // var salesChartData = {
+        //     labels: {!! json_encode($departmentStats->pluck('department')) !!},
+        //     datasets: [{
+        //         label: 'Office/College',
+        //         backgroundColor: '#4E6766',
+        //         borderColor: '#4E6766',
+        //         data: {!! json_encode($departmentStats->pluck('total')) !!}
+        //     }]
+        // };
+
+        // var salesChartOptions = {
+        //     indexAxis: 'y', // ✅ Makes the bars horizontal
+        //     responsive: true,
+        //     maintainAspectRatio: false,
+        //     scales: {
+        //         x: {
+        //             beginAtZero: true
+        //         },
+        //         y: {
+        //             ticks: {
+        //                 autoSkip: false
+        //             }
+        //         }
+        //     }
+        // };
+
+        // new Chart(salesChartCanvas, {
+        //     type: 'bar',
+        //     data: salesChartData,
+        //     options: salesChartOptions
+        // });
 
 
         const donutChartCanvas = document.getElementById('piesChart').getContext('2d');

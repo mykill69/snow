@@ -15,6 +15,7 @@ class WorkProgress extends Model
         'members', 
         'duration',
         'progress',
+        'attachment',
         'proj_status',
         'date_from',
         'date_to',
