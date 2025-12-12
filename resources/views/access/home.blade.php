@@ -127,7 +127,8 @@
             <div style="width: 100%; max-width: 1000px;">
                 <div class="position-relative">
                     <input type="text" id="search-input" class="form-control form-control-lg shadow-sm rounded-pill px-4"
-                        placeholder="🔍 Search tickets or articles…" style="background-color: white;" />
+                        placeholder="🔍 Search tickets or articles to find solutions and learn how to resolve similar issues yourself…"
+                        style="background-color: white;" />
 
                     <!-- Suggestions dropdown -->
                     <div id="suggestions" class="list-group position-absolute w-100 rounded shadow-sm"
@@ -140,7 +141,7 @@
 
 
         <div class="d-flex pt-2" style="min-height: 300px;">
-            <div class="divider-content-left flex-grow-1" style="flex-basis: 66.66%; padding: 20px;">
+            <div class="divider-content-left flex-grow-1" style="flex-basis: 75%; padding: 10px;">
 
                 <div class="container" style="max-width: 100%;">
                     <div class="row g-3">
@@ -208,591 +209,247 @@
                 <!-- Ticket Status Tabs -->
                 <div class="row mt-4">
                     <div class="col-12">
-                        <ul class="nav nav-tabs mb-3 w-100" id="ticketStatusTabs" role="tablist" style="display: flex;">
-                            <li class="nav-item flex-fill text-center" role="presentation">
-                                <button class="nav-link active w-100" id="active-tab" data-bs-toggle="tab"
-                                    data-bs-target="#active" type="button" role="tab" aria-controls="active"
-                                    aria-selected="true">
-                                    <i class="fas fa-bolt text-info me-1"></i> NEW TICKET
-                                </button>
-                            </li>
-                            <li class="nav-item flex-fill text-center" role="presentation">
-                                <button class="nav-link w-100" id="resolved-tab" data-bs-toggle="tab"
-                                    data-bs-target="#resolved" type="button" role="tab" aria-controls="resolved"
-                                    aria-selected="false">
-                                    <i class="fas fa-check text-success me-1"></i> RESOLVED TICKET
-                                </button>
-                            </li>
-                            <li class="nav-item flex-fill text-center" role="presentation">
-                                <button class="nav-link w-100" id="pending-tab" data-bs-toggle="tab"
-                                    data-bs-target="#pending" type="button" role="tab" aria-controls="pending"
-                                    aria-selected="false">
-                                    <i class="fas fa-hourglass-half text-warning me-1"></i> PENDING TICKET
-                                </button>
-                            </li>
-                            <li class="nav-item flex-fill text-center" role="presentation">
-                                <button class="nav-link w-100 " id="canceled-tab" data-bs-toggle="tab"
-                                    data-bs-target="#canceled" type="button" role="tab" aria-controls="canceled"
-                                    aria-selected="false">
-                                    <i class="fas fa-ban text-danger me-1"></i> CLOSED TICKET
-                                </button>
-                            </li>
+                        <!-- Tabs -->
+                        <ul class="nav nav-tabs mb-3 w-100" id="ticketStatusTabs" role="tablist">
+                            @foreach ([
+            '1' => ['label' => 'New', 'icon' => 'fas fa-plus-circle', 'color' => 'bg-info text-white'],
+            '3' => ['label' => 'Resolved', 'icon' => 'fas fa-check-circle', 'color' => 'bg-success text-white'],
+            '2' => ['label' => 'Pending', 'icon' => 'fas fa-hourglass-half', 'color' => 'bg-warning text-dark'],
+            '4' => ['label' => 'Closed', 'icon' => 'fas fa-times-circle', 'color' => 'bg-danger text-white'],
+        ] as $status => $data)
+                                <li class="nav-item flex-fill text-center" role="presentation">
+                                    <button
+                                        class="nav-link w-100 text-uppercase fw-bold d-flex align-items-center justify-content-center gap-2 {{ $loop->first ? 'active' : '' }}"
+                                        id="{{ $data['label'] }}-tab" data-bs-toggle="tab"
+                                        data-bs-target="#{{ $data['label'] }}" type="button" role="tab"
+                                        aria-controls="{{ $data['label'] }}"
+                                        aria-selected="{{ $loop->first ? 'true' : 'false' }}">
+                                        <i class="{{ $data['icon'] }}"></i>&nbsp; {{ $data['label'] }} Ticket
+                                    </button>
+                                </li>
+                            @endforeach
                         </ul>
+                        <!-- Tab Content -->
                         <div class="tab-content" id="ticketStatusTabsContent">
-                            <div class="tab-pane fade show active" id="active" role="tabpanel"
-                                aria-labelledby="active-tab">
-                                @if ($tickets->where('status', 1)->count())
-                                    <table class="table table-bordered text-sm text-center mb-0">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>TICKET NO.</th>
-                                                <th>SUBJECT</th>
-                                                <th>CATEGORY</th>
-                                                <th>SUB-CATEGORY</th>
-                                                <th>ATTACHED FILE</th>
-                                                <th>STATUS</th>
-                                                <th>ACTION TAKEN</th>
-                                                <th>MIS ASSIGNED</th>
-                                                <th>DATE CREATED</th>
-                                                <th>DATE RESOLVED</th>
-                                                <th>DURATION</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($tickets->where('status', 1) as $ticket)
-                                                <tr>
-                                                    <td><a href="{{ route('createdTicket', $ticket->ticket_no) }}"
-                                                            class="text-primary" target="_blank"
-                                                            style="text-decoration: none;">
-                                                            {{ $ticket->ticket_no }}
-                                                            <small>Click to chat</small>
-                                                        </a></td>
-                                                    <td>
+                            @foreach (['1' => 'New', '3' => 'Resolved', '2' => 'Pending', '4' => 'Closed'] as $status => $label)
+                                @php
+                                    $tabTickets = $tickets->where('status', (int) $status);
+                                @endphp
+
+                                <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}"
+                                    id="{{ $label }}" role="tabpanel">
+                                    @if ($tabTickets->count())
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered text-center mb-0"
+                                                id="table-{{ $label }}" style="font-size: 14px;">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th>TICKET NO.</th>
+                                                        <th>SUBJECT</th>
+                                                        <th>CATEGORY</th>
+                                                        <th>SUB-CATEGORY</th>
+                                                        <th>ATTACHED FILE</th>
+                                                        {{-- <th>STATUS</th> --}}
+                                                        <th>ACTION TAKEN</th>
+                                                        <th>MIS ASSIGNED</th>
+                                                        <th>DATE CREATED</th>
+                                                        <th>DATE RESOLVED</th>
+                                                        <th>DURATION</th>
+                                                        @if ($status == 3)
+                                                            <th>SURVEY</th>
+                                                        @endif
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($tabTickets as $ticket)
                                                         @php
-                                                            $subject = $ticket->subject;
                                                             $subjectId = 'subject-' . $ticket->id;
-                                                        @endphp
-
-                                                        @if (strlen($subject) > 40)
-                                                            <span
-                                                                id="{{ $subjectId }}-short">{{ Str::limit($subject, 40) }}</span>
-                                                            <span id="{{ $subjectId }}-full"
-                                                                style="display: none;">{{ $subject }}</span>
-                                                            <a href="javascript:void(0);" class="text-primary small ms-1"
-                                                                onclick="toggleText('{{ $subjectId }}')"
-                                                                id="{{ $subjectId }}-toggle">See more...</a>
-                                                        @else
-                                                            {{ $subject }}
-                                                        @endif
-                                                    </td>
-
-                                                    <td>{{ $ticket->category }}</td>
-                                                    <td>{{ $ticket->sub_cat }}</td>
-                                                    <td>
-                                                        @if ($ticket->file_name)
-                                                            <a href="{{ asset('storage/' . $ticket->file_name) }}"
-                                                                target="_blank">View File</a>
-                                                        @else
-                                                            No File
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                        @switch($ticket->status)
-                                                            @case(1)
-                                                                <span class="badge" style="background-color: #BBE6E4;">New</span>
-                                                            @break
-
-                                                            @case(2)
-                                                                <span class="badge bg-warning">Pending</span>
-                                                            @break
-
-                                                            @case(3)
-                                                                <span class="badge"
-                                                                    style="background-color: #42BFDD;">Resolved</span>
-                                                            @break
-
-                                                            @case(4)
-                                                                <span class="badge bg-danger">Canceled</span>
-                                                            @break
-
-                                                            @default
-                                                                <span class="badge bg-secondary">Unknown</span>
-                                                        @endswitch
-                                                    </td>
-                                                    <td>
-                                                        @php
-                                                            $remarks = $ticket->remarks ?? '-';
                                                             $remarksId = 'remarks-' . $ticket->id;
+                                                            $admins = \App\Models\User::whereIn(
+                                                                'id',
+                                                                explode(',', $ticket->admin_id),
+                                                            )->get();
                                                         @endphp
+                                                        <tr>
+                                                            <td>
+                                                                <a href="{{ route('createdTicket', $ticket->ticket_no) }}"
+                                                                    class="text-primary"
+                                                                    target="_blank">{{ $ticket->ticket_no }} <br>
+                                                                    <small>( Open chat )</small>
+                                                                </a>
 
-                                                        @if (strlen($remarks) > 60)
-                                                            <span
-                                                                id="{{ $remarksId }}-short">{{ Str::limit($remarks, 60) }}</span>
-                                                            <span id="{{ $remarksId }}-full"
-                                                                style="display: none;">{{ $remarks }}</span>
-                                                            <a href="javascript:void(0);" class="text-primary small ms-1"
-                                                                onclick="toggleText('{{ $remarksId }}')"
-                                                                id="{{ $remarksId }}-toggle">See more...</a>
-                                                        @else
-                                                            {{ $remarks }}
-                                                        @endif
-                                                    </td>
 
-                                                    <td>
-                                                        @php
-                                                            $adminIds = explode(',', $ticket->admin_id);
-                                                            $admins = \App\Models\User::whereIn('id', $adminIds)->get();
-                                                            $visibleAdmins = $admins->take(2); // first 2 always visible
-                                                            $isMore = $admins->count() > 2; // show link only if >2
-                                                        @endphp
+                                                            </td>
+                                                            <td>
+                                                                @if (strlen($ticket->subject) > 40)
+                                                                    <span
+                                                                        id="{{ $subjectId }}-short">{{ Str::limit($ticket->subject, 40) }}</span>
+                                                                    <span id="{{ $subjectId }}-full"
+                                                                        style="display:none;">{{ $ticket->subject }}</span>
+                                                                    <a href="javascript:void(0);"
+                                                                        class="text-primary small ms-1"
+                                                                        onclick="toggleText('{{ $subjectId }}')">See
+                                                                        more...</a>
+                                                                @else
+                                                                    {{ $ticket->subject }}
+                                                                @endif
+                                                            </td>
+                                                            <td>{{ $ticket->category }}</td>
+                                                            <td>{{ $ticket->sub_cat }}</td>
+                                                            <td>
+                                                                @if ($ticket->file_name)
+                                                                    <a href="{{ asset('storage/' . $ticket->file_name) }}"
+                                                                        target="_blank">View File</a>
+                                                                @else
+                                                                    No File
+                                                                @endif
+                                                            </td>
+                                                            {{-- <td>
+                                                                @php
+                                                                    $statusColors = [
+                                                                        1 => 'bg-info',
+                                                                        2 => 'bg-warning',
+                                                                        3 => 'bg-success',
+                                                                        4 => 'bg-danger',
+                                                                    ];
+                                                                    $statusNames = [
+                                                                        1 => 'New',
+                                                                        2 => 'Pending',
+                                                                        3 => 'Resolved',
+                                                                        4 => 'Closed',
+                                                                    ];
+                                                                @endphp
+                                                                <span
+                                                                    class="badge {{ $statusColors[$ticket->status] ?? 'bg-secondary' }}">{{ $statusNames[$ticket->status] ?? 'Unknown' }}</span>
+                                                            </td> --}}
+                                                            <td>
+                                                                @if (strlen($ticket->remarks ?? '-') > 60)
+                                                                    <span
+                                                                        id="{{ $remarksId }}-short">{{ Str::limit($ticket->remarks, 60) }}</span>
+                                                                    <span id="{{ $remarksId }}-full"
+                                                                        style="display:none;">{{ $ticket->remarks }}</span>
+                                                                    <a href="javascript:void(0);"
+                                                                        class="text-primary small ms-1"
+                                                                        onclick="toggleText('{{ $remarksId }}')">See
+                                                                        more...</a>
+                                                                @else
+                                                                    {{ $ticket->remarks ?? '-' }}
+                                                                @endif
+                                                            </td>
+                                                            <td>
+                                                                @if ($admins->isNotEmpty())
+                                                                    @php
+                                                                        $visibleAdmins = $admins->take(2); // first 2 always visible
+                                                                        $isMore = $admins->count() > 2; // show link only if more than 2
+                                                                    @endphp
 
-                                                        <div id="admin-list-{{ $ticket->id }}">
-                                                            {{-- first two badges --}}
-                                                            @foreach ($visibleAdmins as $admin)
-                                                                <span class="badge text-white me-1 mb-1"
-                                                                    style="background-color: #42BFDD;">
-                                                                    {{ $admin->fname }} {{ $admin->lname }}
-                                                                </span>
-                                                            @endforeach
-
-                                                            {{-- hidden extra badges --}}
-                                                            @if ($isMore)
-                                                                <span id="more-admins-{{ $ticket->id }}"
-                                                                    style="display:none;">
-                                                                    @foreach ($admins->slice(2) as $admin)
-                                                                        <span class="badge text-white me-1 mb-1"
-                                                                            style="background-color: #42BFDD;">
+                                                                    {{-- First 2 admins --}}
+                                                                    @foreach ($visibleAdmins as $admin)
+                                                                        <span class="badge text-white mb-1"
+                                                                            style="background-color: #42BFDD; display: block;">
                                                                             {{ $admin->fname }} {{ $admin->lname }}
                                                                         </span>
                                                                     @endforeach
-                                                                </span>
 
-                                                                {{-- toggle link --}}
-                                                                <a href="javascript:void(0);"
-                                                                    id="toggle-link-{{ $ticket->id }}"
-                                                                    onclick="toggleAdminList({{ $ticket->id }})"
-                                                                    class="text-primary small ms-1">
-                                                                    See more...
-                                                                </a>
+                                                                    {{-- Hidden extra admins --}}
+                                                                    @if ($isMore)
+                                                                        <span id="more-admins-{{ $ticket->id }}"
+                                                                            style="display:none;">
+                                                                            @foreach ($admins->slice(2) as $admin)
+                                                                                <span class="badge text-white mb-1"
+                                                                                    style="background-color: #42BFDD; display: block;">
+                                                                                    {{ $admin->fname }}
+                                                                                    {{ $admin->lname }}
+                                                                                </span>
+                                                                            @endforeach
+                                                                        </span>
+
+                                                                        {{-- Toggle link --}}
+                                                                        <a href="javascript:void(0);"
+                                                                            id="toggle-link-{{ $ticket->id }}"
+                                                                            class="text-primary small ms-1"
+                                                                            onclick="toggleAdminList({{ $ticket->id }})">See
+                                                                            more...</a>
+                                                                    @endif
+                                                                @else
+                                                                    Not Assigned
+                                                                @endif
+                                                            </td>
+
+
+                                                            <td>{{ \Carbon\Carbon::parse($ticket->created_at)->format('M d, Y h:i A') }}
+                                                            </td>
+                                                            <td>{{ $ticket->status == 3 ? \Carbon\Carbon::parse($ticket->updated_at)->format('M d, Y h:i A') : '-' }}
+                                                            </td>
+                                                            <td>{{ $ticket->status == 3 ? \Carbon\Carbon::parse($ticket->created_at)->diffForHumans($ticket->updated_at, true) : 'In Progress' }}
+                                                            </td>
+                                                            @if ($status == 3)
+                                                                <td>
+                                                                    @if ($ticket->survey == 1)
+                                                                        <button class="btn btn-sm btn-secondary"
+                                                                            disabled>Survey Submitted</button>
+                                                                    @else
+                                                                        <button
+                                                                            class="btn btn-sm btn-primary submit-feedback"
+                                                                            data-ticket="{{ $ticket->ticket_no }}">Submit
+                                                                            Feedback</button>
+                                                                    @endif
+                                                                </td>
                                                             @endif
-                                                        </div>
-                                                    </td>
-
-
-
-                                                    <td>{{ \Carbon\Carbon::parse($ticket->created_at)->format('M d, Y h:i A') }}
-                                                    </td>
-                                                    <td>{{ $ticket->status == 3 ? \Carbon\Carbon::parse($ticket->updated_at)->format('M d, Y h:i A') : '-' }}
-                                                    </td>
-                                                    <td>
-                                                        @if ($ticket->status == 3)
-                                                            {{ \Carbon\Carbon::parse($ticket->created_at)->diffForHumans($ticket->updated_at, true) }}
-                                                        @else
-                                                            In Progress
-                                                        @endif
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                @else
-                                    <div class="text-muted">No tickets found.</div>
-                                @endif
-
-                            </div>
-                            <div class="tab-pane fade" id="resolved" role="tabpanel" aria-labelledby="resolved-tab">
-                                @if ($tickets->where('status', 3)->count())
-                                    <table class="table table-bordered text-sm text-center mb-0">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>TICKET NO.</th>
-                                                <th>SUBJECT</th>
-                                                <th>CATEGORY</th>
-                                                <th>SUB-CATEGORY</th>
-                                                <th>ATTACHED FILE</th>
-                                                <th>STATUS</th>
-                                                <th>ACTION TAKEN</th>
-                                                <th>MIS ASSIGNED</th>
-                                                <th>DATE CREATED</th>
-                                                <th>DATE RESOLVED</th>
-                                                <th>DURATION</th>
-                                                <th>SURVEY</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($tickets->where('status', 3) as $ticket)
-                                                <tr>
-                                                    <td><a href="{{ route('createdTicket', $ticket->ticket_no) }}"
-                                                            class="text-primary" target="_blank"
-                                                            style="text-decoration: none;">
-                                                            {{ $ticket->ticket_no }}
-                                                        </a></td>
-                                                    <td>
-                                                        @php
-                                                            $subject = $ticket->subject;
-                                                            $subjectId = 'subject-' . $ticket->id;
-                                                        @endphp
-
-                                                        @if (strlen($subject) > 40)
-                                                            <span
-                                                                id="{{ $subjectId }}-short">{{ Str::limit($subject, 40) }}</span>
-                                                            <span id="{{ $subjectId }}-full"
-                                                                style="display: none;">{{ $subject }}</span>
-                                                            <a href="javascript:void(0);" class="text-primary small ms-1"
-                                                                onclick="toggleText('{{ $subjectId }}')"
-                                                                id="{{ $subjectId }}-toggle">See more...</a>
-                                                        @else
-                                                            {{ $subject }}
-                                                        @endif
-                                                    </td>
-                                                    <td>{{ $ticket->category }}</td>
-                                                    <td>{{ $ticket->sub_cat }}</td>
-                                                    <td>
-                                                        @if ($ticket->file_name)
-                                                            <a href="{{ asset('storage/' . $ticket->file_name) }}"
-                                                                target="_blank">View File</a>
-                                                        @else
-                                                            No File
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                        @switch($ticket->status)
-                                                            @case(1)
-                                                                <span class="badge bg-info">New</span>
-                                                            @break
-
-                                                            @case(2)
-                                                                <span class="badge bg-warning">Pending</span>
-                                                            @break
-
-                                                            @case(3)
-                                                                <span class="badge bg-success">Resolved</span>
-                                                            @break
-
-                                                            @case(4)
-                                                                <span class="badge bg-danger">Canceled</span>
-                                                            @break
-
-                                                            @default
-                                                                <span class="badge bg-secondary">Unknown</span>
-                                                        @endswitch
-                                                    </td>
-                                                    <td>
-                                                        @php
-                                                            $remarks = $ticket->remarks ?? '-';
-                                                            $remarksId = 'remarks-' . $ticket->id;
-                                                        @endphp
-
-                                                        @if (strlen($remarks) > 60)
-                                                            <span
-                                                                id="{{ $remarksId }}-short">{{ Str::limit($remarks, 60) }}</span>
-                                                            <span id="{{ $remarksId }}-full"
-                                                                style="display: none;">{{ $remarks }}</span>
-                                                            <a href="javascript:void(0);" class="text-primary small ms-1"
-                                                                onclick="toggleText('{{ $remarksId }}')"
-                                                                id="{{ $remarksId }}-toggle">See more...</a>
-                                                        @else
-                                                            {{ $remarks }}
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                        @php
-                                                            $adminIds = explode(',', $ticket->admin_id);
-                                                            $admins = \App\Models\User::whereIn('id', $adminIds)->get();
-                                                        @endphp
-
-                                                        @if ($admins->isNotEmpty())
-                                                            @foreach ($admins as $admin)
-                                                                {{ $admin->fname }} {{ $admin->lname }}, <br>
-                                                            @endforeach
-                                                        @else
-                                                            Not Assigned
-                                                        @endif
-                                                    </td>
-                                                    <td>{{ \Carbon\Carbon::parse($ticket->created_at)->format('M d, Y h:i A') }}
-                                                    </td>
-                                                    <td>{{ $ticket->status == 3 ? \Carbon\Carbon::parse($ticket->updated_at)->format('M d, Y h:i A') : '-' }}
-                                                    </td>
-                                                    <td>
-                                                        @if ($ticket->status == 3)
-                                                            {{ \Carbon\Carbon::parse($ticket->created_at)->diffForHumans($ticket->updated_at, true) }}
-                                                        @else
-                                                            In Progress
-                                                        @endif
-                                                    </td>
-                                                    <!-- feedback button -->
-                                                    <td>
-                                                        @if ($ticket->status == 3)
-                                                            @if ($ticket->survey == 1)
-                                                                <button class="btn btn-sm btn-secondary" disabled>
-                                                                    Survey Submitted
-                                                                </button>
-                                                            @else
-                                                                <button class="btn btn-sm btn-primary submit-feedback"
-                                                                    data-ticket="{{ $ticket->ticket_no }}">
-                                                                    Submit a feedback
-                                                                </button>
-                                                            @endif
-                                                        @endif
-                                                    </td>
-
-
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                @else
-                                    <div class="text-muted">No tickets found.</div>
-                                @endif
-                            </div>
-                            <div class="tab-pane fade" id="pending" role="tabpanel" aria-labelledby="pending-tab">
-                                @if ($tickets->where('status', 2)->count())
-                                    <table class="table table-bordered text-sm text-center mb-0">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>TICKET NO.</th>
-                                                <th>SUBJECT</th>
-                                                <th>CATEGORY</th>
-                                                <th>SUB-CATEGORY</th>
-                                                <th>ATTACHED FILE</th>
-                                                <th>STATUS</th>
-                                                <th>ACTION TAKEN</th>
-                                                <th>MIS ASSIGNED</th>
-                                                <th>DATE CREATED</th>
-                                                <th>DATE RESOLVED</th>
-                                                <th>DURATION</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($tickets->where('status', 2) as $ticket)
-                                                <tr>
-                                                    <td>{{ $ticket->ticket_no }}</td>
-                                                    <td>{{ $ticket->subject }}</td>
-                                                    <td>
-                                                        @php
-                                                            $subject = $ticket->subject;
-                                                            $subjectId = 'subject-' . $ticket->id;
-                                                        @endphp
-
-                                                        @if (strlen($subject) > 40)
-                                                            <span
-                                                                id="{{ $subjectId }}-short">{{ Str::limit($subject, 40) }}</span>
-                                                            <span id="{{ $subjectId }}-full"
-                                                                style="display: none;">{{ $subject }}</span>
-                                                            <a href="javascript:void(0);" class="text-primary small ms-1"
-                                                                onclick="toggleText('{{ $subjectId }}')"
-                                                                id="{{ $subjectId }}-toggle">See more...</a>
-                                                        @else
-                                                            {{ $subject }}
-                                                        @endif
-                                                    </td>
-                                                    <td>{{ $ticket->sub_cat }}</td>
-                                                    <td>
-                                                        @if ($ticket->file_name)
-                                                            <a href="{{ asset('storage/' . $ticket->file_name) }}"
-                                                                target="_blank">View File</a>
-                                                        @else
-                                                            No File
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                        @switch($ticket->status)
-                                                            @case(1)
-                                                                <span class="badge bg-info">New</span>
-                                                            @break
-
-                                                            @case(2)
-                                                                <span class="badge bg-warning">Pending</span>
-                                                            @break
-
-                                                            @case(3)
-                                                                <span class="badge bg-success">Resolved</span>
-                                                            @break
-
-                                                            @case(4)
-                                                                <span class="badge bg-danger">Canceled</span>
-                                                            @break
-
-                                                            @default
-                                                                <span class="badge bg-secondary">Unknown</span>
-                                                        @endswitch
-                                                    </td>
-                                                    <td>
-                                                        @php
-                                                            $remarks = $ticket->remarks ?? '-';
-                                                            $remarksId = 'remarks-' . $ticket->id;
-                                                        @endphp
-
-                                                        @if (strlen($remarks) > 60)
-                                                            <span
-                                                                id="{{ $remarksId }}-short">{{ Str::limit($remarks, 60) }}</span>
-                                                            <span id="{{ $remarksId }}-full"
-                                                                style="display: none;">{{ $remarks }}</span>
-                                                            <a href="javascript:void(0);" class="text-primary small ms-1"
-                                                                onclick="toggleText('{{ $remarksId }}')"
-                                                                id="{{ $remarksId }}-toggle">See more...</a>
-                                                        @else
-                                                            {{ $remarks }}
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                        @php
-                                                            $adminIds = explode(',', $ticket->admin_id);
-                                                            $admins = \App\Models\User::whereIn('id', $adminIds)->get();
-                                                        @endphp
-
-                                                        @if ($admins->isNotEmpty())
-                                                            @foreach ($admins as $admin)
-                                                                {{ $admin->fname }} {{ $admin->lname }}, <br>
-                                                            @endforeach
-                                                        @else
-                                                            Not Assigned
-                                                        @endif
-                                                    </td>
-                                                    <td>{{ \Carbon\Carbon::parse($ticket->created_at)->format('M d, Y h:i A') }}
-                                                    </td>
-                                                    <td>{{ $ticket->status == 3 ? \Carbon\Carbon::parse($ticket->updated_at)->format('M d, Y h:i A') : '-' }}
-                                                    </td>
-                                                    <td>
-                                                        @if ($ticket->status == 3)
-                                                            {{ \Carbon\Carbon::parse($ticket->created_at)->diffForHumans($ticket->updated_at, true) }}
-                                                        @else
-                                                            In Progress
-                                                        @endif
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                @else
-                                    <div class="text-muted">No tickets found.</div>
-                                @endif
-
-                            </div>
-                            <div class="tab-pane fade" id="canceled" role="tabpanel" aria-labelledby="canceled-tab">
-                                @if ($tickets->where('status', 4)->count())
-                                    <table class="table table-bordered text-sm text-center mb-0">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>TICKET NO.</th>
-                                                <th>SUBJECT</th>
-                                                <th>CATEGORY</th>
-                                                <th>ATTACHED FILE</th>
-                                                <th>STATUS</th>
-                                                <th>ACTION TAKEN</th>
-                                                <th>MIS ASSIGNED</th>
-                                                <th>DATE CREATED</th>
-                                                <th>DATE RESOLVED</th>
-                                                <th>DURATION</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($tickets->where('status', 4) as $ticket)
-                                                <tr>
-                                                    <td>{{ $ticket->ticket_no }}</td>
-                                                    <td>{{ $ticket->subject }}</td>
-                                                    <td>{{ $ticket->category }}</td>
-                                                    <td>
-                                                        @if ($ticket->file_name)
-                                                            <a href="{{ asset('storage/' . $ticket->file_name) }}"
-                                                                target="_blank">View File</a>
-                                                        @else
-                                                            No File
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                        @switch($ticket->status)
-                                                            @case(1)
-                                                                <span class="badge bg-info">New</span>
-                                                            @break
-
-                                                            @case(2)
-                                                                <span class="badge bg-warning">Pending</span>
-                                                            @break
-
-                                                            @case(3)
-                                                                <span class="badge bg-success">Resolved</span>
-                                                            @break
-
-                                                            @case(4)
-                                                                <span class="badge bg-danger">Canceled</span>
-                                                            @break
-
-                                                            @default
-                                                                <span class="badge bg-secondary">Unknown</span>
-                                                        @endswitch
-                                                    </td>
-                                                    <td>{{ $ticket->remarks ?? '-' }}</td>
-                                                    <td>
-                                                        @php
-                                                            $adminIds = explode(',', $ticket->admin_id);
-                                                            $admins = \App\Models\User::whereIn('id', $adminIds)->get();
-                                                        @endphp
-
-                                                        @if ($admins->isNotEmpty())
-                                                            @foreach ($admins as $admin)
-                                                                {{ $admin->fname }} {{ $admin->lname }}, <br>
-                                                            @endforeach
-                                                        @else
-                                                            Not Assigned
-                                                        @endif
-                                                    </td>
-                                                    <td>{{ \Carbon\Carbon::parse($ticket->created_at)->format('M d, Y h:i A') }}
-                                                    </td>
-                                                    <td>{{ $ticket->status == 3 ? \Carbon\Carbon::parse($ticket->updated_at)->format('M d, Y h:i A') : '-' }}
-                                                    </td>
-                                                    <td>
-                                                        @if ($ticket->status == 3)
-                                                            {{ \Carbon\Carbon::parse($ticket->created_at)->diffForHumans($ticket->updated_at, true) }}
-                                                        @else
-                                                            In Progress
-                                                        @endif
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                @else
-                                    <div class="text-muted">No tickets found.</div>
-                                @endif
-
-                            </div>
-
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    @else
+                                        <div class="text-muted">No tickets found.</div>
+                                    @endif
+                                </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="divider-content-right d-flex flex-column justify-content-start"
-                style="flex-basis: 33.33%; padding: 20px; gap: 15px;">
+                style="flex-basis: 25%; padding: 20px; gap: 15px;">
 
                 <!-- 📌 Reminders Section -->
                 <div class="card border-0 shadow-sm rounded">
-                    <div class="card-header text-white text-center" style="background-color: #42BFDD;">
-                        <h5 class="fw-bold mb-0">REMINDERS</h5>
+                    <div class="card-header text-white text-center py-2" style="background-color: #42BFDD;">
+                        <h6 class="fw-bold mb-0">REMINDERS</h6>
                     </div>
-                    <div class="card-body p-0">
+                    <div class="card-body p-2">
                         <ul class="list-group list-group-flush">
-                            <li class="list-group-item text-center border-0 py-2">
-                                ✅ <strong>Provide complete details</strong> when creating a ticket.
+                            <li class="list-group-item border-0 py-1 d-flex align-items-center">
+
+                                <span><strong>Provide complete details</strong> when creating a ticket so we can understand
+                                    your issue.</span>
                             </li>
-                            <li class="list-group-item text-center border-0 py-2">
-                                📎 <strong>Attach relevant screenshots or documents</strong> to help us assist you better.
+                            <li class="list-group-item border-0 py-1 d-flex align-items-center">
+
+                                <span><strong>Attach relevant screenshots or documents</strong> to help us assist you
+                                    faster.</span>
                             </li>
-                            <li class="list-group-item text-center border-0 py-2">
-                                📬 <strong>Check your email</strong> regularly for ticket updates.
+                            <li class="list-group-item border-0 py-1 d-flex align-items-center">
+
+                                <span><strong>Check your email</strong> regularly for ticket updates.</span>
                             </li>
-                            <li class="list-group-item text-center border-0 py-2">
-                                📞 For urgent issues, contact the <strong>MIS hotline</strong>.
+                            <li class="list-group-item border-0 py-1 d-flex align-items-center">
+
+                                <span>For urgent issues, contact the <strong>MIS hotline</strong>.</span>
                             </li>
-                            <li class="list-group-item text-center border-0 py-2">
-                                💬 You may also reach us via <strong>MS Teams</strong> at <i>MIS Helpdesk</i><br>
-                                or email us at <a href="https://mail.google.com/mail/" target="_blank"
-                                    class="text-primary">cpsu_mis@cpsu.edu.ph</a>.
+                            <li class="list-group-item border-0 py-1 text-center">
+                                <span class="d-block mb-1">💬 Reach us via <strong>MS Teams</strong> at <i>MIS
+                                        Helpdesk</i></span>
+                                <span>Email: <a href="https://mail.google.com/mail/" target="_blank"
+                                        class="text-primary">cpsu_mis@cpsu.edu.ph</a></span>
                             </li>
                         </ul>
                     </div>
                 </div>
+
+
 
                 <!-- ✅ Buttons Section -->
                 <div class="row">
@@ -801,7 +458,7 @@
                         <a href="#"
                             class="btn btn-lg w-100 d-flex flex-column text-black text-start text-bold text-md py-1 px-3"
                             style="background-color: #BBE6E4;">
-                            Pending Client Survey
+                            Pending Survey
                             <span class="badge bg-light text-dark text-xl mt-1">{{ $pendingSurveyCount }}</span>
                         </a>
                     </div>
@@ -832,7 +489,7 @@
 
                                 <!-- Text content -->
                                 <div class="col-md-10 text-start">
-                                    <div class="h1 fw-bold mb-1">Self Reset Password</div>
+                                    <div class="h3 fw-bold mb-1">Self Reset Password</div>
                                     <div class="text-white-50">Institutional Email or Teams</div>
                                 </div>
                             </div>
@@ -861,7 +518,7 @@
         <script src="{{ asset('template/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
 
 
-
+        {{-- 
         <script>
             function toggleAdminList(id) {
                 const more = document.getElementById('more-admins-' + id);
@@ -889,8 +546,36 @@
                 fullEl.style.display = isShortVisible ? 'inline' : 'none';
                 toggleLink.textContent = isShortVisible ? 'See less...' : 'See more...';
             }
-        </script>
+        </script> --}}
 
+        <script>
+            const tabs = document.querySelectorAll('#ticketStatusTabs .nav-link');
+            const tabColors = {
+                'New': 'bg-info text-white',
+                'Resolved': 'bg-success text-white',
+                'Pending': 'bg-warning text-dark',
+                'Closed': 'bg-danger text-white'
+            };
+
+            function updateTabColors() {
+                tabs.forEach(tab => {
+                    const label = tab.textContent.trim().split(' ')[0]; // Get first word
+                    if (tab.classList.contains('active')) {
+                        tab.classList.add(...tabColors[label].split(' '));
+                    } else {
+                        tab.classList.remove('bg-info', 'bg-success', 'bg-warning', 'bg-danger', 'text-white',
+                            'text-dark');
+                    }
+                });
+            }
+
+            tabs.forEach(tab => {
+                tab.addEventListener('shown.bs.tab', updateTabColors);
+            });
+
+            // Initialize on page load
+            updateTabColors();
+        </script>
 
         <script>
             $(function() {
@@ -1202,5 +887,64 @@
             });
         </script>
 
+        <script>
+            // Toggle long text (subject or remarks)
+            function toggleText(baseId) {
+                const shortEl = document.getElementById(`${baseId}-short`);
+                const fullEl = document.getElementById(`${baseId}-full`);
+                const toggleLink = document.getElementById(`${baseId}-toggle`);
 
+                const isShortVisible = shortEl.style.display !== 'none';
+
+                shortEl.style.display = isShortVisible ? 'none' : 'inline';
+                fullEl.style.display = isShortVisible ? 'inline' : 'none';
+                toggleLink.textContent = isShortVisible ? 'See less...' : 'See more...';
+            }
+
+            // Toggle admin list
+            function toggleAdminList(id) {
+                const more = document.getElementById('more-admins-' + id);
+                const link = document.getElementById('toggle-link-' + id);
+
+                if (more.style.display === 'none') {
+                    more.style.display = 'inline';
+                    link.textContent = 'See less...';
+                } else {
+                    more.style.display = 'none';
+                    link.textContent = 'See more...';
+                }
+            }
+
+            // DataTables initialization for all tabs
+            window.onload = function() {
+                const tables = {};
+                ['New', 'Resolved', 'Pending', 'Closed'].forEach(id => {
+                    let tableEl = document.getElementById('table-' + id);
+                    if (tableEl) {
+                        tables[id] = $(tableEl).DataTable({
+                            responsive: true,
+                            autoWidth: false,
+                            paging: true,
+                            searching: true,
+                            ordering: true,
+                            lengthChange: true,
+                            pageLength: 10,
+                            language: {
+                                search: "Search:",
+                                lengthMenu: "Show _MENU_ entries",
+                                zeroRecords: "No matching tickets found",
+                                info: "Showing _START_ to _END_ of _TOTAL_ tickets",
+                                infoEmpty: "No tickets available"
+                            }
+                        });
+                    }
+                });
+
+                $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function() {
+                    $.each(tables, (key, table) => {
+                        table.columns.adjust().responsive.recalc();
+                    });
+                });
+            };
+        </script>
     @endsection
