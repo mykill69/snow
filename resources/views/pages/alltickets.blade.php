@@ -248,12 +248,12 @@
                                                                             @if ($ticket->survey == 1)
                                                                                 <button class="btn btn-sm btn-secondary"
                                                                                     disabled>
-                                                                                    Survey Submitted
+                                                                                    Feedback Submitted
                                                                                 </button>
                                                                             @else
                                                                                 <a href="{{ route('clientSatisfaction', $ticket->ticket_no) }}"
                                                                                     class="btn btn-sm btn-primary">
-                                                                                    Client Satisfaction Survey
+                                                                                    Follow up client feedback
                                                                                 </a>
                                                                             @endif
                                                                         @endif
