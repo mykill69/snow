@@ -298,9 +298,13 @@
     <!-- AdminLTE App -->
     <script src="{{ asset('template/dist/js/adminlte.min.js') }}"></script>
     <script>
-        $(function() {
-            // Ensure pushmenu is initialized
-            $('[data-widget="pushmenu"]').PushMenu();
+        // Ensure AdminLTE JS is loaded
+        $(document).ready(function() {
+            // Toggle the sidebar when clicking the pushmenu link
+            $('[data-widget="pushmenu"]').on('click', function(e) {
+                e.preventDefault();
+                $('body').toggleClass('sidebar-collapse'); // collapses or expands sidebar
+            });
         });
     </script>
 
@@ -336,52 +340,54 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
 
 
-  <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const newChatContainer = $('#newChat');
-    const notifBadge = $('#notifBadge');
-    const maxComments = 20;
-    let displayedTickets = new Set(); // Track displayed ticket_no
-    let latestId = 0;
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const newChatContainer = $('#newChat');
+            const notifBadge = $('#notifBadge');
+            const maxComments = 20;
+            let displayedTickets = new Set(); // Track displayed ticket_no
+            let latestId = 0;
 
-    // Initial badge count from Blade
-    let totalUnseen = {{ $latestComments->count() ?? 0 }};
-    if (totalUnseen > 0) notifBadge.text(totalUnseen).show();
+            // Initial badge count from Blade
+            let totalUnseen = {{ $latestComments->count() ?? 0 }};
+            if (totalUnseen > 0) notifBadge.text(totalUnseen).show();
 
-    function fetchNewComments() {
-        $.ajax({
-            url: '{{ route("latestCommentId", ":id") }}'.replace(':id', latestId),
-            type: 'GET',
-            success: function(response) {
-                if (response.success && response.newComments.length > 0) {
-                    // Group unseen user comments by ticket_no
-                    const grouped = {};
-                    response.newComments.forEach(comment => {
-                        if (comment.com_stat != 0 || !comment.user_id) return; // skip seen/admin comments
-                        if (!grouped[comment.ticket_no]) grouped[comment.ticket_no] = [];
-                        grouped[comment.ticket_no].push(comment);
-                    });
+            function fetchNewComments() {
+                $.ajax({
+                    url: '{{ route('latestCommentId', ':id') }}'.replace(':id', latestId),
+                    type: 'GET',
+                    success: function(response) {
+                        if (response.success && response.newComments.length > 0) {
+                            // Group unseen user comments by ticket_no
+                            const grouped = {};
+                            response.newComments.forEach(comment => {
+                                if (comment.com_stat != 0 || !comment.user_id)
+                            return; // skip seen/admin comments
+                                if (!grouped[comment.ticket_no]) grouped[comment
+                            .ticket_no] = [];
+                                grouped[comment.ticket_no].push(comment);
+                            });
 
-                    let newTotalUnseen = 0;
+                            let newTotalUnseen = 0;
 
-                    Object.keys(grouped).forEach(ticketNo => {
-                        const comments = grouped[ticketNo];
-                        newTotalUnseen += comments.length;
+                            Object.keys(grouped).forEach(ticketNo => {
+                                const comments = grouped[ticketNo];
+                                newTotalUnseen += comments.length;
 
-                        // Only display one row per ticket
-                        if (displayedTickets.has(ticketNo)) return;
+                                // Only display one row per ticket
+                                if (displayedTickets.has(ticketNo)) return;
 
-                        const latestComment = comments[0]; // show the latest comment
-                        let userName = latestComment.user ?
-                            latestComment.user.fname + ' ' + latestComment.user.lname :
-                            'User';
-                        const commentText = latestComment.comments.length > 100 ?
-                            latestComment.comments.substring(0, 100) + '...' :
-                            latestComment.comments;
-                        const ticketRoute = '{{ route("ticketDetails", ":ticketNo") }}'
-                            .replace(':ticketNo', ticketNo);
+                                const latestComment = comments[0]; // show the latest comment
+                                let userName = latestComment.user ?
+                                    latestComment.user.fname + ' ' + latestComment.user.lname :
+                                    'User';
+                                const commentText = latestComment.comments.length > 100 ?
+                                    latestComment.comments.substring(0, 100) + '...' :
+                                    latestComment.comments;
+                                const ticketRoute = '{{ route('ticketDetails', ':ticketNo') }}'
+                                    .replace(':ticketNo', ticketNo);
 
-                        const commentHtml = `
+                                const commentHtml = `
                         <form id="ticketForm-${ticketNo}" action="{{ route('ticket.markSeen') }}" method="POST" style="display: none;">
                             @csrf
                             <input type="hidden" name="ticket_no" value="${ticketNo}">
@@ -391,9 +397,9 @@ document.addEventListener("DOMContentLoaded", function() {
                             <div class="position-relative mr-3">
                                 <i class="fas fa-user-circle text-secondary" style="font-size: 40px;"></i>
                                 ${comments.length > 0 ? `
-                                    <span class="badge badge-danger position-absolute" style="bottom: -5px; left: -5px; font-size: 10px;">
-                                        ${comments.length}
-                                    </span>` : ''}
+                                        <span class="badge badge-danger position-absolute" style="bottom: -5px; left: -5px; font-size: 10px;">
+                                            ${comments.length}
+                                        </span>` : ''}
                             </div>
 
                             <div class="media-body">
@@ -409,40 +415,42 @@ document.addEventListener("DOMContentLoaded", function() {
                         <div class="dropdown-divider"></div>
                         `;
 
-                        $(commentHtml).hide().prependTo(newChatContainer).fadeIn('slow');
-                        displayedTickets.add(ticketNo);
-                        latestId = Math.max(latestId, latestComment.id);
-                    });
+                                $(commentHtml).hide().prependTo(newChatContainer).fadeIn(
+                                'slow');
+                                displayedTickets.add(ticketNo);
+                                latestId = Math.max(latestId, latestComment.id);
+                            });
 
-                    totalUnseen = newTotalUnseen;
-                    if (totalUnseen > 0) notifBadge.text(totalUnseen).show();
-                    else notifBadge.hide();
+                            totalUnseen = newTotalUnseen;
+                            if (totalUnseen > 0) notifBadge.text(totalUnseen).show();
+                            else notifBadge.hide();
 
-                    // Limit displayed comments
-                    const children = newChatContainer.children('a.dropdown-item');
-                    if (children.length > maxComments) {
-                        children.slice(maxComments).remove();
-                        newChatContainer.children('div.dropdown-divider').slice(maxComments).remove();
+                            // Limit displayed comments
+                            const children = newChatContainer.children('a.dropdown-item');
+                            if (children.length > maxComments) {
+                                children.slice(maxComments).remove();
+                                newChatContainer.children('div.dropdown-divider').slice(maxComments)
+                                    .remove();
+                            }
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('AJAX Error:', status, error);
                     }
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('AJAX Error:', status, error);
+                });
             }
-        });
-    }
 
-    fetchNewComments();
-    setInterval(fetchNewComments, 1000);
-    
-    // Handle click: submit hidden form to mark as seen, then redirect
-    $(document).on('click', '.ticket-link', function(e) {
-        e.preventDefault();
-        const formId = $(this).data('form');
-        document.getElementById(formId).submit();
-    });
-});
-</script>
+            fetchNewComments();
+            setInterval(fetchNewComments, 1000);
+
+            // Handle click: submit hidden form to mark as seen, then redirect
+            $(document).on('click', '.ticket-link', function(e) {
+                e.preventDefault();
+                const formId = $(this).data('form');
+                document.getElementById(formId).submit();
+            });
+        });
+    </script>
 
 
 
