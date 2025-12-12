@@ -267,7 +267,7 @@
                             <div class="col-md-6">
                                 <div class="card">
                                     <div class="card-header">
-                                        <h3 class="card-title" style=" color: #1E152A;font-weight: bold;">Top 5
+                                        <h3 class="card-title" style=" color: #1E152A;font-weight: bold;">Top 10
                                             Offices/Colleges</h3>
 
                                     </div>
