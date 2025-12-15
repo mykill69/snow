@@ -150,21 +150,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-12">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h3 class="card-title" style="color: #1E152A;font-weight: bold;">Forecasted Ticket
-                                            Volume
-                                        </h3>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="chart">
-                                            <canvas id="ticketForecastChart"
-                                                style="min-height: 290px; height: 290px; max-height: 290px; max-width: 100%;"></canvas>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            
 
                         </div>
                         <div class="card" style="background-color: white;">
@@ -280,8 +266,25 @@
                                     </div>
                                 </div>
                             </div>
+
+                            
                         </div>
                         <div class="row">
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title" style="color: #1E152A;font-weight: bold;">Forecasted Ticket
+                                            Volume
+                                        </h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="chart">
+                                            <canvas id="ticketForecastChart"
+                                                style="min-height: 290px; height: 290px; max-height: 290px; max-width: 100%;"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="col-md-6">
                                 <div class="card">
                                     <div class="card-header">
