@@ -775,18 +775,21 @@ $pieData = $categoryCounts->pluck('total')->toArray();
 //         $q->whereDate('created_at', $request->date_taken_from);
 //     })
 //     ->get();
-$feedbackReports = \App\Models\Feedback::with('user')
+$feedbackReports = Feedback::with('user')
     ->leftJoin('ticket_dtl', 'ticket_dtl.ticket_no', '=', 'feedback.ticket_no')
-    ->select('feedback.*', 'ticket_dtl.admin_id')  // ✔ include MIS Personnel
+    ->select('feedback.*', 'ticket_dtl.admin_id')
     ->when($request->filled('date_taken_from') && $request->filled('date_taken_to'), function ($q) use ($request) {
         $q->whereBetween('feedback.created_at', [$request->date_taken_from, $request->date_taken_to]);
     })
     ->when($request->filled('date_taken_from') && !$request->filled('date_taken_to'), function ($q) use ($request) {
         $q->whereDate('feedback.created_at', $request->date_taken_from);
     })
+    ->when($request->filled('admin_id'), function ($q) use ($request) {
+        $q->where('ticket_dtl.admin_id', $request->admin_id); // filter by selected MIS Personnel
+    })
     ->get();
 
-    $admins = User::where('role', 'administrator')->get();
+    $adminUsers = User::where('role', 'administrator')->get();
 
 // Compute average feedback rating
 $feedbackAverage = $feedbackReports->avg('rating') ?? null;
@@ -801,7 +804,7 @@ $feedbackAverage = $feedbackReports->avg('rating') ?? null;
     'pieLabels',
     'pieData',
     'feedbackReports',
-    'feedbackAverage'
+    'feedbackAverage',
 ));
 }
 
