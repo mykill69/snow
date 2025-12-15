@@ -150,7 +150,7 @@
                                 </div>
                             </div>
 
-                            
+
 
                         </div>
                         <div class="card" style="background-color: white;">
@@ -267,14 +267,14 @@
                                 </div>
                             </div>
 
-                            
+
                         </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-header">
-                                        <h3 class="card-title" style="color: #1E152A;font-weight: bold;">Forecasted Ticket
-                                            Volume
+                                        <h3 class="card-title" style="color: #1E152A;font-weight: bold;">Predicted Ticket
+                                            Volume for the Next 5 Working Days
                                         </h3>
                                     </div>
                                     <div class="card-body">
