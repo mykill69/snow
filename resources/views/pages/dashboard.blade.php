@@ -1295,14 +1295,34 @@
     </script>
 
     <script>
-        // Use unique variable names to avoid conflicts with other charts
-        const ticketForecastDates = @json($tickets->pluck('day'));
-        const ticketForecastCounts = @json($tickets->pluck('count'));
-        const ticketForecastNext = @json($forecast);
+        const ticketForecastDates = @json($tickets->pluck('day')); // historical dates (YYYY-MM-DD)
+        const ticketForecastCounts = @json($tickets->pluck('count')); // historical ticket counts
+        const ticketForecastNext = @json($forecast); // forecast counts
 
-        // Merge labels for chart
-        const ticketForecastLabels = [...ticketForecastDates];
-        ticketForecastNext.forEach((_, i) => ticketForecastLabels.push("Forecast Day " + (i + 1)));
+        // Format historical dates as "Dec 15, 2025"
+        const historicalLabels = ticketForecastDates.map(dateStr => {
+            const d = new Date(dateStr);
+            return d.toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric'
+            });
+        });
+
+        // Calculate forecast dates based on last historical date
+        const lastDate = new Date(ticketForecastDates[ticketForecastDates.length - 1]);
+        const forecastLabels = ticketForecastNext.map((_, i) => {
+            const nextDate = new Date(lastDate);
+            nextDate.setDate(lastDate.getDate() + (i + 1));
+            return nextDate.toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric'
+            });
+        });
+
+        // Merge historical and forecast labels
+        const ticketForecastLabels = [...historicalLabels, ...forecastLabels];
 
         // Merge data
         const ticketForecastData = [...ticketForecastCounts, ...ticketForecastNext];
@@ -1363,6 +1383,7 @@
             }
         });
     </script>
+
 
 
     </body>
