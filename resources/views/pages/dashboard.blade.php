@@ -936,7 +936,7 @@
             labels: {!! json_encode($priorityLabels) !!},
             datasets: [{
                 data: {!! json_encode($priorityData) !!},
-                backgroundColor: ['#4E6766', '#1E152A', '#FFB140'],
+                backgroundColor: ['#4E6766', '#1E152A', '#C94C4C'],
             }]
         };
 
