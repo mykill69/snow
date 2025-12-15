@@ -86,17 +86,63 @@
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-6">
-                                    <label for="priority">Category</label>
-                                    <input type="text" class="form-control" id="exampleInputPassword1" name="category"
-                                        value="{{ $ticket->category }}" readonly>
+                                    <label for="category">Category</label>
+
+                                    <select class="form-control" id="category" name="category"
+                                        @if (auth()->user()->role !== 'Administrator') disabled @endif required>
+
+                                        {{-- Show current ticket category --}}
+                                        <option value="{{ $ticket->category }}" selected>
+                                            {{ $ticket->category }}
+                                        </option>
+
+                                        {{-- Other options (admin only) --}}
+                                        @if (auth()->user()->role === 'Administrator')
+                                            @php
+                                                $categories = [
+                                                    'ICT Repair/Troubleshooting',
+                                                    'Network Connection',
+                                                    'DTR Concern',
+                                                    'UTP Cable Replacement/Installation',
+                                                    'System Account Creation',
+                                                    'System Update Request',
+                                                    'Institutional Email/MS Teams',
+                                                    'Software Installation',
+                                                ];
+                                            @endphp
+
+                                            @foreach ($categories as $category)
+                                                @if ($category !== $ticket->category)
+                                                    <option value="{{ $category }}">{{ $category }}</option>
+                                                @endif
+                                            @endforeach
+                                        @endif
                                     </select>
+
+                                    {{-- Ensure value is submitted for non-admin --}}
+                                    @if (auth()->user()->role !== 'Administrator')
+                                        <input type="hidden" name="category" value="{{ $ticket->category }}">
+                                    @endif
                                 </div>
 
                                 <div class="form-group col-md-6">
-                                    <label for="exampleInputPassword1">Sub-category</label>
-                                    <input type="text" class="form-control" id="exampleInputPassword1" name="sub_cat"
-                                        value="{{ $ticket->sub_cat }}" readonly>
+                                    <label for="sub_cat">Sub-category</label>
+
+                                    <select class="form-control" id="sub_cat" name="sub_cat"
+                                        @if (auth()->user()->role !== 'Administrator') disabled @endif required>
+
+                                        {{-- Current sub-category --}}
+                                        <option value="{{ $ticket->sub_cat }}" selected>
+                                            {{ $ticket->sub_cat }}
+                                        </option>
+                                    </select>
+
+                                    {{-- Ensure value is submitted for non-admin --}}
+                                    @if (auth()->user()->role !== 'Administrator')
+                                        <input type="hidden" name="sub_cat" value="{{ $ticket->sub_cat }}">
+                                    @endif
                                 </div>
+
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-6">
@@ -254,6 +300,103 @@
             }
         });
     </script>
+
+    <script>
+        const subCategories = {
+            "ICT Repair/Troubleshooting": [
+                "Printer",
+                "Desktop",
+                "Laptop",
+                "Other ICT"
+            ],
+            "Network Connection": [
+                "Network Account",
+                "Internet Connection",
+                "Others"
+            ],
+            "DTR Concern": [
+                "Missing Logs",
+                "Verify Logs",
+                "Others"
+            ],
+            "UTP Cable Replacement/Installation": [
+                "New Installation",
+                "Cable Replacement",
+                "Network Port Relocation",
+                "Cable Testing",
+                "Others"
+            ],
+            "System Account Creation": [
+                "CISS",
+                "HRIS",
+                "Document Tracking System",
+                "PPEI",
+                "Others"
+            ],
+            "System Update Request": [
+                "Feature Enhancement",
+                "Bug Fix",
+                "Access Modification",
+                "UI/UX Request",
+                "Others"
+            ],
+            "Institutional Email/MS Teams": [
+                "Account Creation",
+                "Password Reset",
+                "Email/MS Teams Configuration",
+                "Others"
+            ],
+            "Software Installation": [
+                "Office Applications",
+                "Antivirus",
+                "Design/Editing Tools",
+                "Programming Tools",
+                "Others"
+            ],
+            "Others": [
+                "Hardware Issue",
+                "Software Concern",
+                "Account Permissions",
+                "General Inquiry",
+                "Others"
+            ]
+        };
+
+        const categorySelect = document.getElementById('category');
+        const subCatSelect = document.getElementById('sub_cat');
+
+        function loadSubCategories(category, selectedSubCat = null) {
+            subCatSelect.innerHTML = '<option value="" disabled>Select Sub-category</option>';
+
+            if (!subCategories[category]) return;
+
+            subCategories[category].forEach(sub => {
+                const option = document.createElement('option');
+                option.value = sub;
+                option.text = sub;
+
+                if (sub === selectedSubCat) {
+                    option.selected = true;
+                }
+
+                subCatSelect.appendChild(option);
+            });
+        }
+
+        // Initial load (for edit/view page)
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentCategory = "{{ $ticket->category }}";
+            const currentSubCat = "{{ $ticket->sub_cat }}";
+
+            loadSubCategories(currentCategory, currentSubCat);
+        });
+
+        // Change event (Admin only)
+        categorySelect?.addEventListener('change', function() {
+            loadSubCategories(this.value);
+        });
+    </script>
+
     </body>
 
     </html>

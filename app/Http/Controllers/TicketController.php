@@ -37,6 +37,7 @@ class TicketController extends Controller
     $validator = Validator::make($request->all(), [
         'subject'  => 'required|string|max:255',
         'category' => 'required|string|max:255',
+        'sub_cat'   => 'required|string|max:255',
         'status'   => 'required|integer',
         'remarks'  => 'nullable|string',
     ]);
@@ -49,6 +50,7 @@ class TicketController extends Controller
     $ticket->fill([
         'subject'   => $request->subject,
         'category'  => $request->category,
+        'sub_cat'   => $request->sub_cat,
         'status'    => $request->status,
         'remarks'   => $request->remarks,
         'admin_id'  => auth()->id(), // ID of who updated
