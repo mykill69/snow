@@ -241,7 +241,7 @@
                                                         $clientTypes = [
                                                             '1' => 'CPSU Employee<br>
                                                                     (if service/transaction is requested and availed by an individual employee)
-',
+                                                                ',
                                                             '2' => 'CPSU Office/Unit<br>
                                                                     (if service/transaction is requested and availed by another CPSU Office/Unit)',
                                                             '3' => 'CPSU Student',

@@ -12,8 +12,7 @@ use App\Http\Controllers\WatchListController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\AIController;
-
-
+use App\Http\Controllers\WorkController;
 
 Route::group(['middleware'=>['guest']],function(){
     Route::get('/', function () {
@@ -42,6 +41,10 @@ Route::group(['middleware'=>['guest']],function(){
     Route::get('/reports-pages', [PagesController::class, 'ticketReports'])->name('ticketReports');
     Route::get('/reports-pages/bar-data', [PagesController::class, 'barChartData'])->name('reports.barChartData');
     Route::get('/reports-pages/admin-category-report', [PagesController::class, 'adminCategoryReport'])->name('adminCategoryReport');
+
+
+
+    Route::get('/reports-pages/gantt-chart', [WorkController::class, 'ganttReports'])->name('ganttReports');
 
 
 
