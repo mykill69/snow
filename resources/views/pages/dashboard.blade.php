@@ -130,6 +130,7 @@
                                 </div>
                             </div>
 
+                            <!-- Dec 15, 2025 AI integration -->
                             <div class="col-md-6">
                                 <div class="card">
                                     <div class="card-header">
@@ -148,6 +149,22 @@
                                     <!-- /.card-body -->
                                 </div>
                             </div>
+
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title" style="color: #1E152A;font-weight: bold;">Ticket Forecast
+                                        </h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="chart">
+                                            <canvas id="ticketForecastChart"
+                                                style="min-height: 290px; height: 290px; max-height: 290px; max-width: 100%;"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                         <div class="card" style="background-color: white;">
                             <div class="row m-2 text-center">
@@ -650,10 +667,12 @@
     <!-- Bootstrap 4 -->
     <script src="template/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- ChartJS -->
-    <script src="template/plugins/chart.js/Chart.min.js"></script>
-    <script src="template/plugins/chart.js/Chart.js"></script>
+    {{-- <script src="template/plugins/chart.js/Chart.min.js"></script>
+    <script src="template/plugins/chart.js/Chart.js"></script> --}}
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    {{-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> --}}
     <!-- AdminLTE App -->
     <script src="template/dist/js/adminlte.min.js"></script>
 
@@ -1274,6 +1293,78 @@
 
         });
     </script>
+
+    <script>
+        // Use unique variable names to avoid conflicts with other charts
+        const ticketForecastDates = @json($tickets->pluck('day'));
+        const ticketForecastCounts = @json($tickets->pluck('count'));
+        const ticketForecastNext = @json($forecast);
+
+        // Merge labels for chart
+        const ticketForecastLabels = [...ticketForecastDates];
+        ticketForecastNext.forEach((_, i) => ticketForecastLabels.push("Forecast Day " + (i + 1)));
+
+        // Merge data
+        const ticketForecastData = [...ticketForecastCounts, ...ticketForecastNext];
+
+        const ctxForecast = document.getElementById('ticketForecastChart').getContext('2d');
+        const ticketForecastChart = new Chart(ctxForecast, {
+            type: 'line',
+            data: {
+                labels: ticketForecastLabels,
+                datasets: [{
+                    label: 'Tickets',
+                    data: ticketForecastData,
+                    borderColor: '#1E152A',
+                    backgroundColor: '#FFB140',
+                    fill: false,
+                    tension: 0.3,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#FFB140',
+                    pointBorderColor: '#FFB140',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#FFB140'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                return tooltipItems[0].label;
+                            },
+                            label: function(tooltipItem) {
+                                return 'Tickets: ' + tooltipItem.formattedValue;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Ticket Count'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            maxRotation: 45,
+                            minRotation: 45
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+
     </body>
 
     </html>

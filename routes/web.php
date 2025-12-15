@@ -11,6 +11,8 @@ use App\Http\Controllers\ArticlesController;
 use App\Http\Controllers\WatchListController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\AIController;
+
 
 
 Route::group(['middleware'=>['guest']],function(){

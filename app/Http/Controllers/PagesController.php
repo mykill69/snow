@@ -488,6 +488,24 @@ $clientFeedbacks = Feedback::where('feedback_stat', 1) // feedback submitted
     $workProgress = WorkProgress::latest()->get();
     $adminUsers = User::where('role', 'Administrator')->whereNotIn('id', [3, 12])->get();
 
+ // Fetch last 30 days ticket counts
+        $tickets = TicketDtl::selectRaw('DATE(created_at) as day, count(*) as count')
+    ->where('created_at', '>=', now()->subDays(30))
+    ->groupBy('day')
+    ->orderBy('day')
+    ->get();
+
+$data = $tickets->pluck('count')->toArray();
+
+// Simple moving average forecast for next 7 days
+$window = 7;
+$forecast = [];
+for ($i = 0; $i < 7; $i++) {
+    $sum = array_sum(array_slice($data, -$window));
+    $next = round($sum / $window);
+    $forecast[] = $next;
+    $data[] = $next; // roll forward
+}
 
 
     return view('pages.dashboard', compact(
@@ -499,8 +517,8 @@ $clientFeedbacks = Feedback::where('feedback_stat', 1) // feedback submitted
         'adminStats',
         'departmentStats',
         'dailyDates',
-'dailyCreatedCounts',
-'dailyResolvedCounts',    
+        'dailyCreatedCounts',
+        'dailyResolvedCounts',    
         // 'dailyCounts',
         'pieLabels',
         'pieData',
@@ -515,9 +533,9 @@ $clientFeedbacks = Feedback::where('feedback_stat', 1) // feedback submitted
         'monthlyLabels',
         'monthlyCounts',
          'thisMonthAvgTime',
-    'lastMonthAvgTime',
-    'thisMonthAvgTimeFormatted',
-    'lastMonthAvgTimeFormatted',
+        'lastMonthAvgTime',
+        'thisMonthAvgTimeFormatted',
+        'lastMonthAvgTimeFormatted',
         'overdueTickets',
         'currentAvg' ,
         'trendIcon',
@@ -525,7 +543,9 @@ $clientFeedbacks = Feedback::where('feedback_stat', 1) // feedback submitted
         'overallAvg',
         'clientFeedbacks',
         'allFeedbacks',
-        'workProgress'
+        'workProgress',
+        'tickets',
+        'forecast'
     ));
 }
 
