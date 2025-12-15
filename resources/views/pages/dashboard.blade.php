@@ -1309,41 +1309,49 @@
             });
         });
 
-        // Calculate forecast dates based on last historical date
-        const lastDate = new Date(ticketForecastDates[ticketForecastDates.length - 1]);
-        const forecastLabels = ticketForecastNext.map((_, i) => {
-            const nextDate = new Date(lastDate);
-            nextDate.setDate(lastDate.getDate() + (i + 1));
-            return nextDate.toLocaleDateString('en-US', {
-                month: 'short',
-                day: 'numeric',
-                year: 'numeric'
-            });
-        });
+        // Calculate forecast dates based on last historical date, skipping weekends
+        let lastDate = new Date(ticketForecastDates[ticketForecastDates.length - 1]);
+        const forecastLabels = [];
+        let forecastIndex = 0;
 
-        // Merge historical and forecast labels
+        while (forecastIndex < ticketForecastNext.length) {
+            lastDate.setDate(lastDate.getDate() + 1); // move to next day
+            const dayOfWeek = lastDate.getDay(); // 0=Sunday,6=Saturday
+            if (dayOfWeek !== 0 && dayOfWeek !== 6) { // skip weekends
+                const formattedDate = lastDate.toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric'
+                });
+                forecastLabels.push(formattedDate);
+                forecastIndex++;
+            }
+        }
+
+        // Merge historical + forecast labels
         const ticketForecastLabels = [...historicalLabels, ...forecastLabels];
 
-        // Merge data
+        // Merge historical + forecast data
         const ticketForecastData = [...ticketForecastCounts, ...ticketForecastNext];
 
+        // Create the Chart
         const ctxForecast = document.getElementById('ticketForecastChart').getContext('2d');
         const ticketForecastChart = new Chart(ctxForecast, {
             type: 'line',
             data: {
                 labels: ticketForecastLabels,
                 datasets: [{
-                    label: 'Tickets',
+                    label: 'Number of Tickets',
                     data: ticketForecastData,
-                    borderColor: '#1E152A',
+                    borderColor: 'grey',
                     backgroundColor: '#FFB140',
                     fill: false,
                     tension: 0.3,
                     pointRadius: 4,
-                    pointBackgroundColor: '#FFB140',
-                    pointBorderColor: '#FFB140',
+                    pointBackgroundColor: 'red',
+                    pointBorderColor: 'red',
                     pointHoverBackgroundColor: '#fff',
-                    pointHoverBorderColor: '#FFB140'
+                    pointHoverBorderColor: 'red'
                 }]
             },
             options: {
@@ -1383,6 +1391,7 @@
             }
         });
     </script>
+
 
 
 
