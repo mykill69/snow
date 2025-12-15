@@ -47,58 +47,64 @@
 
                     <!-- Resolved Ticket -->
                     <div class="col-lg-3 col-6">
-                        <div class="small-box text-white d-flex align-items-center"
-                            style="background-color: #4E6766; border-radius: 20px; height: 140px;">
-                            <div class="row w-100 px-4">
-                                <div class="col-8 d-flex flex-column justify-content-center">
-                                    <p class="mb-0" style="font-size: 1.6rem;">Resolved</p>
-                                    <h3 class="fw-bold" style="font-size: 4rem;">
-                                        {{ $ticketCount->where('status', 3)->count() }}
-                                    </h3>
-                                </div>
-                                <div class="col-4 d-flex align-items-center justify-content-end">
-                                    <i class="fas fa-check-circle fa-6x"
-                                        style="color: rgba(255, 255, 255, 0.2); border-radius: 10px;"></i>
+                        <a href="{{ route('allTickets') }}">
+                            <div class="small-box text-white d-flex align-items-center"
+                                style="background-color: #4E6766; border-radius: 20px; height: 140px;">
+                                <div class="row w-100 px-4">
+                                    <div class="col-8 d-flex flex-column justify-content-center">
+                                        <p class="mb-0" style="font-size: 1.6rem;">Resolved</p>
+                                        <h3 class="fw-bold" style="font-size: 4rem;">
+                                            {{ $ticketCount->where('status', 3)->count() }}
+                                        </h3>
+                                    </div>
+                                    <div class="col-4 d-flex align-items-center justify-content-end">
+                                        <i class="fas fa-check-circle fa-6x"
+                                            style="color: rgba(255, 255, 255, 0.2); border-radius: 10px;"></i>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
 
                     <!-- Pending Ticket -->
                     <div class="col-lg-3 col-6">
-                        <div class="small-box d-flex align-items-center"
-                            style="background-color: #FFB140; border-radius: 20px; color: #1E152A; height: 140px;">
-                            <div class="row w-100 px-4">
-                                <div class="col-8 d-flex flex-column justify-content-center">
-                                    <p class="mb-0" style="font-size: 1.6rem;">Pending</p>
-                                    <h3 class="fw-bold" style="font-size: 4rem;">
-                                        {{ $ticketCount->where('status', 2)->count() }}
-                                    </h3>
-                                </div>
-                                <div class="col-4 d-flex align-items-center justify-content-end">
-                                    <i class="fas fa-hourglass-half fa-6x"
-                                        style="color: rgba(0, 0, 0, 0.2); border-radius: 10px;"></i>
+                        <a href="{{ route('allTickets') }}">
+                            <div class="small-box d-flex align-items-center"
+                                style="background-color: #FFB140; border-radius: 20px; color: #1E152A; height: 140px;">
+                                <div class="row w-100 px-4">
+                                    <div class="col-8 d-flex flex-column justify-content-center">
+                                        <p class="mb-0" style="font-size: 1.6rem;">Pending</p>
+                                        <h3 class="fw-bold" style="font-size: 4rem;">
+                                            {{ $ticketCount->where('status', 2)->count() }}
+                                        </h3>
+                                    </div>
+                                    <div class="col-4 d-flex align-items-center justify-content-end">
+                                        <i class="fas fa-hourglass-half fa-6x"
+                                            style="color: rgba(0, 0, 0, 0.2); border-radius: 10px;"></i>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                     <!-- Canceled/Closed Ticket -->
                     <div class="col-lg-3 col-6">
-                        <div class="small-box text-white d-flex align-items-center"
-                            style="background-color: #C94C4C; border-radius: 20px; height: 140px;">
-                            <div class="row w-100 px-4">
-                                <div class="col-8 d-flex flex-column justify-content-center">
-                                    <p class="mb-0" style="font-size: 1.6rem;">Closed</p>
-                                    <h3 class="fw-bold" style="font-size: 4rem;">
-                                        {{ $ticketCount->where('status', 4)->count() }}
-                                    </h3>
-                                </div>
-                                <div class="col-4 d-flex align-items-center justify-content-end">
-                                    <i class="fas fa-times-circle fa-6x"
-                                        style="color: rgba(255, 255, 255, 0.2); border-radius: 10px;"></i>
+                        <a href="{{ route('allTickets') }}">
+                            <div class="small-box text-white d-flex align-items-center"
+                                style="background-color: #C94C4C; border-radius: 20px; height: 140px;">
+                                <div class="row w-100 px-4">
+                                    <div class="col-8 d-flex flex-column justify-content-center">
+                                        <p class="mb-0" style="font-size: 1.6rem;">Closed</p>
+                                        <h3 class="fw-bold" style="font-size: 4rem;">
+                                            {{ $ticketCount->where('status', 4)->count() }}
+                                        </h3>
+                                    </div>
+                                    <div class="col-4 d-flex align-items-center justify-content-end">
+                                        <i class="fas fa-times-circle fa-6x"
+                                            style="color: rgba(255, 255, 255, 0.2); border-radius: 10px;"></i>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
 
                     <!-- /.col -->
