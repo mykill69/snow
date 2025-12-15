@@ -153,7 +153,7 @@
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-header">
-                                        <h3 class="card-title" style="color: #1E152A;font-weight: bold;">Ticket Forecast
+                                        <h3 class="card-title" style="color: #1E152A;font-weight: bold;">Forecasted Ticket Volume
                                         </h3>
                                     </div>
                                     <div class="card-body">
