@@ -316,10 +316,10 @@
                                                     <label for="admin_id">MIS Personnel</label>
                                                     <select name="admin_id" class="form-control">
                                                         <option value="">-- All MIS Personnel --</option>
-                                                        @foreach ($admins as $admin)
-                                                            <option value="{{ $admin->id }}"
-                                                                {{ request('admin_id') == $admin->id ? 'selected' : '' }}>
-                                                                {{ $admin->fname }} {{ $admin->lname }}
+                                                        @foreach ($adminUsers as $adminUser)
+                                                            <option value="{{ $adminUser->id }}"
+                                                                {{ request('admin_id') == $adminUser->id ? 'selected' : '' }}>
+                                                                {{ $adminUser->fname }} {{ $adminUser->lname }}
                                                             </option>
                                                         @endforeach
                                                     </select>
