@@ -39,6 +39,31 @@ class ArticlesController extends Controller
 
    return redirect()->back()->with('success', 'Article added successfully.');
 }
+   public function editArticle($article_code)
+{
+    // dd($article_code); // see what comes from the URL
+
+    $article = Article::where('article_code', $article_code)->firstOrFail();
+  
+    return view('pages.edit_article', compact('article'));
+}
+    public function updateArticle(Request $request, $article_code)
+{
+    $request->validate([
+        'title' => 'required|string|max:255',
+        'article_type' => 'required|integer',
+        'content' => 'required|string|max:255',
+    ]);
+
+    $article = Article::where('article_code', $article_code)->firstOrFail();
+
+    $article->article_type = $request->article_type;
+    $article->title = $request->title;
+    $article->content = $request->content;
+    $article->save();
+
+    return redirect()->route('articles')->with('success', 'Article updated successfully.');
+}
 
 public function articlesUser()
 {

@@ -31,92 +31,81 @@
                         </ul>
                     </div>
                 @endif
-               <form id="submissionForm" method="POST" action="{{ route('addArticles') }}" enctype="multipart/form-data">
-    @csrf
+                <form id="submissionForm" method="POST" action="{{ route('addArticles') }}"
+                    enctype="multipart/form-data">
+                    @csrf
 
-    <div class="row">
-        <div class="col-md-10">
-            <div class="input-group mb-2">
-                <div class="input-group-prepend">
-                    <span class="input-group-text"><i class="fa fa-pen"></i></span>
-                </div>
-                <input type="text" class="form-control" id="title" name="title"
-                    placeholder="Article Title" required>
-            </div>
-        </div>
+                    <div class="row">
+                        <div class="col-md-10">
+                            <div class="input-group mb-2">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fa fa-pen"></i></span>
+                                </div>
+                                <input type="text" class="form-control" id="title" name="title"
+                                    placeholder="Article Title" required>
+                            </div>
+                        </div>
 
-        <div class="col-md-2">
-            <div class="input-group mb-2">
-                <div class="input-group-prepend">
-                    <span class="input-group-text"><i class="fa fa-list-ul"></i></span>
-                </div>
-                <select class="form-control" id="article_type" name="article_type" required>
-                    <option value="" disabled selected>Category</option>
-                    <option value="1">FAQs</option>
-                    <option value="2">Article</option>
-                </select>
-            </div>
-        </div>
-    </div>
+                        <div class="col-md-2">
+                            <div class="input-group mb-2">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fa fa-list-ul"></i></span>
+                                </div>
+                                <select class="form-control" id="article_type" name="article_type" required>
+                                    <option value="" disabled selected>Category</option>
+                                    <option value="1">FAQs</option>
+                                    <option value="2">Article</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
 
-    <div class="row">
-    <div class="col-md-12">
-       
+                    <div class="row">
+                        <div class="col-md-12">
 
-        <!-- Beautified button group -->
-        <div class="d-flex align-items-center mb-2">
-            <div class="note-btn-group btn-group note-para" role="group" aria-label="Text formatting tools">
-                <button 
-                    type="button" 
-                    class="note-btn btn btn-light btn-sm" 
-                    onclick="addBulletToSelection()" 
-                    title="Toggle bullet">
-                    <i class="fas fa-list-ul"></i>
-                </button>
-                <button 
-                    type="button" 
-                    class="note-btn btn btn-light btn-sm" 
-                    onclick="addNumberingToSelection()" 
-                    title="Toggle numbering">
-                    <i class="fas fa-list-ol"></i>
-                </button>
-                <button 
-                    type="button" 
-                    class="note-btn btn btn-light btn-sm" 
-                    onclick="addParagraphIndent()" 
-                    title="Toggle paragraph indent">
-                    <i class="fas fa-paragraph"></i>
-                </button>
-            </div>
-        </div>
 
-        <!-- Textarea with icon on the left -->
-        <div class="input-group mb-2">
-            <div class="input-group-prepend">
-                <span class="input-group-text">
-                    <i class="fas fa-book"></i>
-                </span>
-            </div>
-            <textarea 
-                id="content" 
-                name="content" 
-                rows="4" 
-                class="form-control" 
-                placeholder="Type your article content here..."></textarea>
-        </div>
-    </div>
-</div>
+                            <!-- Beautified button group -->
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="note-btn-group btn-group note-para" role="group"
+                                    aria-label="Text formatting tools">
+                                    <button type="button" class="note-btn btn btn-light btn-sm"
+                                        onclick="addBulletToSelection()" title="Toggle bullet">
+                                        <i class="fas fa-list-ul"></i>
+                                    </button>
+                                    <button type="button" class="note-btn btn btn-light btn-sm"
+                                        onclick="addNumberingToSelection()" title="Toggle numbering">
+                                        <i class="fas fa-list-ol"></i>
+                                    </button>
+                                    <button type="button" class="note-btn btn btn-light btn-sm"
+                                        onclick="addParagraphIndent()" title="Toggle paragraph indent">
+                                        <i class="fas fa-paragraph"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Textarea with icon on the left -->
+                            <div class="input-group mb-2">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-book"></i>
+                                    </span>
+                                </div>
+                                <textarea id="content" name="content" rows="4" class="form-control"
+                                    placeholder="Type your article content here..."></textarea>
+                            </div>
+                        </div>
+                    </div>
 
 
 
 
 
 
-    <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </div>
-</form>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
 
             </div>
         </div>
@@ -125,83 +114,83 @@
     <!-- /.modal-dialog -->
 </div>
 <script>
-function addBulletToSelection() {
-    const textarea = document.getElementById("content");
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const text = textarea.value;
-    const selectedText = text.substring(start, end);
+    function addBulletToSelection() {
+        const textarea = document.getElementById("content");
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const text = textarea.value;
+        const selectedText = text.substring(start, end);
 
-    if (selectedText.trim() !== "") {
-        const lines = selectedText.split("\n");
+        if (selectedText.trim() !== "") {
+            const lines = selectedText.split("\n");
 
-        // Check if already all have bullet
-        const allBulleted = lines.every(line => line.trim().startsWith("•"));
+            // Check if already all have bullet
+            const allBulleted = lines.every(line => line.trim().startsWith("•"));
 
-        const updatedLines = lines.map(line => {
-            if (allBulleted) {
-                return line.replace(/^•\s*/, '');
-            } else {
-                return "• " + line;
-            }
-        });
+            const updatedLines = lines.map(line => {
+                if (allBulleted) {
+                    return line.replace(/^•\s*/, '');
+                } else {
+                    return "• " + line;
+                }
+            });
 
-        const newText = updatedLines.join("\n");
-        textarea.value = text.substring(0, start) + newText + text.substring(end);
-        textarea.focus();
-        textarea.selectionStart = start;
-        textarea.selectionEnd = start + newText.length;
-    }
-}
-
-function addNumberingToSelection() {
-    const textarea = document.getElementById("content");
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const text = textarea.value;
-    const selectedText = text.substring(start, end);
-
-    if (selectedText.trim() !== "") {
-        const lines = selectedText.split("\n");
-
-        // Check if already numbered
-        const allNumbered = lines.every(line => /^\d+\.\s/.test(line.trim()));
-
-        const updatedLines = allNumbered
-            ? lines.map(line => line.replace(/^\d+\.\s*/, ''))
-            : lines.map((line, i) => `${i + 1}. ${line}`);
-
-        const newText = updatedLines.join("\n");
-        textarea.value = text.substring(0, start) + newText + text.substring(end);
-        textarea.focus();
-        textarea.selectionStart = start;
-        textarea.selectionEnd = start + newText.length;
-    }
-}
-
-function addParagraphIndent() {
-    const textarea = document.getElementById("content");
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const text = textarea.value;
-    const selectedText = text.substring(start, end);
-
-    if (selectedText.trim() !== "") {
-        let newText;
-
-        // Add or remove a tab or 4 spaces
-        if (selectedText.startsWith("\t") || selectedText.startsWith("    ")) {
-            newText = selectedText.replace(/^(\t| {4})/, '');
-        } else {
-            newText = "\t" + selectedText;
+            const newText = updatedLines.join("\n");
+            textarea.value = text.substring(0, start) + newText + text.substring(end);
+            textarea.focus();
+            textarea.selectionStart = start;
+            textarea.selectionEnd = start + newText.length;
         }
-
-        textarea.value = text.substring(0, start) + newText + text.substring(end);
-        textarea.focus();
-        textarea.selectionStart = start;
-        textarea.selectionEnd = start + newText.length;
     }
-}
+
+    function addNumberingToSelection() {
+        const textarea = document.getElementById("content");
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const text = textarea.value;
+        const selectedText = text.substring(start, end);
+
+        if (selectedText.trim() !== "") {
+            const lines = selectedText.split("\n");
+
+            // Check if already numbered
+            const allNumbered = lines.every(line => /^\d+\.\s/.test(line.trim()));
+
+            const updatedLines = allNumbered ?
+                lines.map(line => line.replace(/^\d+\.\s*/, '')) :
+                lines.map((line, i) => `${i + 1}. ${line}`);
+
+            const newText = updatedLines.join("\n");
+            textarea.value = text.substring(0, start) + newText + text.substring(end);
+            textarea.focus();
+            textarea.selectionStart = start;
+            textarea.selectionEnd = start + newText.length;
+        }
+    }
+
+    function addParagraphIndent() {
+        const textarea = document.getElementById("content");
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const text = textarea.value;
+        const selectedText = text.substring(start, end);
+
+        if (selectedText.trim() !== "") {
+            let newText;
+
+            // Add or remove a tab or 4 spaces
+            if (selectedText.startsWith("\t") || selectedText.startsWith("    ")) {
+                newText = selectedText.replace(/^(\t| {4})/, '');
+            } else {
+                newText = "\t" + selectedText;
+            }
+
+            textarea.value = text.substring(0, start) + newText + text.substring(end);
+            textarea.focus();
+            textarea.selectionStart = start;
+            textarea.selectionEnd = start + newText.length;
+        }
+    }
 </script>
 
 

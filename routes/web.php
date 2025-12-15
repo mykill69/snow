@@ -62,6 +62,8 @@ Route::group(['middleware'=>['guest']],function(){
 
     //Adding of Articles
     Route::post('/addArticles', [ArticlesController::class, 'addArticles'])->name('addArticles');
+    Route::get('/editArticle/{article_code}', [ArticlesController::class, 'editArticle'])->name('editArticle');
+    Route::put('/updateArticle/{article_code}', [ArticlesController::class, 'updateArticle'])->name('updateArticle');
     Route::get('/articles-faQs', [ArticlesController::class, 'articlesUser'])->name('articlesUser');
 
     //users

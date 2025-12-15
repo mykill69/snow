@@ -10,7 +10,7 @@
         padding: 0 10px;
         margin-top: 0.31rem;
     }
-    
+
     .swal2-article-popup {
         font-family: 'Segoe UI', sans-serif;
         font-size: 1rem;
@@ -51,6 +51,7 @@
         font-size: 0.9rem;
         color: #666;
     }
+
     .swal2-article-popup .swal-article-body {
         text-align: left;
     }
@@ -94,37 +95,45 @@
                                                 <th>Category</th>
                                                 <th>Uploaded By</th>
                                                 <th>Date Uploaded</th>
+                                                <th>Edit</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-    @foreach ($articles as $article)
-        <tr>
-            <td>
-                <a href="#"
-                   class="text-primary text-decoration-none swalDefaultInfo"
-                   data-title="{{ $article->title }}"
-                   data-content="{{ strip_tags($article->content) }}"
-                   data-code="{{ $article->article_code }}"
-                   data-author="{{ $article->admin->fname ?? 'Unknown' }} {{ $article->admin->lname ?? '' }}"
-                   data-date="{{ $article->created_at->format('M d, Y') }}">
-                    {{ $article->article_code }}
-                </a>
-            </td>
-            <td>{{ $article->title }}</td>
-            <td>
-                @if ($article->article_type == 1)
-                    <span class="badge badge-primary">FAQs</span>
-                @elseif ($article->article_type == 2)
-                    <span class="badge badge-success">Article</span>
-                @else
-                    <span class="badge badge-secondary">Unknown</span>
-                @endif
-            </td>
-            <td>{{ $article->admin->fname ?? 'N/A' }} {{ $article->admin->lname ?? '' }}</td>
-            <td>{{ $article->created_at->format('M d, Y h:i A') }}</td>
-        </tr>
-    @endforeach
-</tbody>
+                                            @foreach ($articles as $article)
+                                                <tr>
+                                                    <td>
+                                                        <a href="#"
+                                                            class="text-primary text-decoration-none swalDefaultInfo"
+                                                            data-title="{{ $article->title }}"
+                                                            data-content="{{ strip_tags($article->content) }}"
+                                                            data-code="{{ $article->article_code }}"
+                                                            data-author="{{ $article->admin->fname ?? 'Unknown' }} {{ $article->admin->lname ?? '' }}"
+                                                            data-date="{{ $article->created_at->format('M d, Y') }}">
+                                                            {{ $article->article_code }}
+                                                        </a>
+                                                    </td>
+                                                    <td>{{ $article->title }}</td>
+                                                    <td>
+                                                        @if ($article->article_type == 1)
+                                                            <span class="badge badge-primary">FAQs</span>
+                                                        @elseif ($article->article_type == 2)
+                                                            <span class="badge badge-success">Article</span>
+                                                        @else
+                                                            <span class="badge badge-secondary">Unknown</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>{{ $article->admin->fname ?? 'N/A' }}
+                                                        {{ $article->admin->lname ?? '' }}</td>
+                                                    <td>{{ $article->created_at->format('M d, Y h:i A') }}</td>
+                                                    <td>
+                                                        <a href="{{ route('editArticle', $article->article_code) }}"
+                                                            class="btn btn-sm btn-warning">
+                                                            <i class="fas fa-edit"></i> Edit Article
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
 
                                     </table>
                                 </div>
@@ -178,9 +187,9 @@
     </div><!--/. container-fluid -->
     </section>
 
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="{{ asset('template/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-  <!-- SweetAlert2 -->
+    <!-- SweetAlert2 -->
     <script src="{{ asset('template/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
     <script>
         $(function() {
@@ -228,7 +237,7 @@
             }
         });
     </script>
-    
+
     </body>
 
     </html>
