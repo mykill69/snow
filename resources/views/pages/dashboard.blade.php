@@ -1299,40 +1299,52 @@
         const ticketForecastCounts = @json($tickets->pluck('count')); // historical ticket counts
         const ticketForecastNext = @json($forecast); // forecast counts
 
-        // Format historical dates as "Dec 15, 2025"
-        const historicalLabels = ticketForecastDates.map(dateStr => {
+        // Get current month and year
+        const now = new Date();
+        const currentMonth = now.getMonth(); // 0-11
+        const currentYear = now.getFullYear();
+
+        // Format historical dates as "Dec 15, 2025" and filter by current month
+        const historicalLabels = [];
+        const historicalData = [];
+
+        ticketForecastDates.forEach((dateStr, index) => {
             const d = new Date(dateStr);
-            return d.toLocaleDateString('en-US', {
-                month: 'short',
-                day: 'numeric',
-                year: 'numeric'
-            });
+            if (d.getMonth() === currentMonth && d.getFullYear() === currentYear) {
+                historicalLabels.push(d.toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric'
+                }));
+                historicalData.push(ticketForecastCounts[index]);
+            }
         });
 
-        // Calculate forecast dates based on last historical date, skipping weekends
+        // Generate forecast dates based on last historical date, skipping weekends, only if in current month
         let lastDate = new Date(ticketForecastDates[ticketForecastDates.length - 1]);
         const forecastLabels = [];
+        const forecastData = [];
         let forecastIndex = 0;
 
         while (forecastIndex < ticketForecastNext.length) {
             lastDate.setDate(lastDate.getDate() + 1); // move to next day
             const dayOfWeek = lastDate.getDay(); // 0=Sunday,6=Saturday
             if (dayOfWeek !== 0 && dayOfWeek !== 6) { // skip weekends
-                const formattedDate = lastDate.toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric'
-                });
-                forecastLabels.push(formattedDate);
+                if (lastDate.getMonth() === currentMonth && lastDate.getFullYear() === currentYear) {
+                    forecastLabels.push(lastDate.toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric'
+                    }));
+                    forecastData.push(ticketForecastNext[forecastIndex]);
+                }
                 forecastIndex++;
             }
         }
 
-        // Merge historical + forecast labels
+        // Merge historical + forecast labels and data
         const ticketForecastLabels = [...historicalLabels, ...forecastLabels];
-
-        // Merge historical + forecast data
-        const ticketForecastData = [...ticketForecastCounts, ...ticketForecastNext];
+        const ticketForecastData = [...historicalData, ...forecastData];
 
         // Create the Chart
         const ctxForecast = document.getElementById('ticketForecastChart').getContext('2d');
@@ -1391,6 +1403,7 @@
             }
         });
     </script>
+
 
 
 
