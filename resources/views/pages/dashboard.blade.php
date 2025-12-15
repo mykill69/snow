@@ -153,7 +153,8 @@
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-header">
-                                        <h3 class="card-title" style="color: #1E152A;font-weight: bold;">Forecasted Ticket Volume
+                                        <h3 class="card-title" style="color: #1E152A;font-weight: bold;">Forecasted Ticket
+                                            Volume
                                         </h3>
                                     </div>
                                     <div class="card-body">
@@ -1299,18 +1300,17 @@
         const ticketForecastCounts = @json($tickets->pluck('count')); // historical ticket counts
         const ticketForecastNext = @json($forecast); // forecast counts
 
-        // Get current month and year
+        // Get current date
         const now = new Date();
-        const currentMonth = now.getMonth(); // 0-11
-        const currentYear = now.getFullYear();
 
-        // Format historical dates as "Dec 15, 2025" and filter by current month
+        // Filter historical tickets: last 15 days only
         const historicalLabels = [];
         const historicalData = [];
 
         ticketForecastDates.forEach((dateStr, index) => {
             const d = new Date(dateStr);
-            if (d.getMonth() === currentMonth && d.getFullYear() === currentYear) {
+            const diffDays = Math.floor((now - d) / (1000 * 60 * 60 * 24));
+            if (diffDays < 15 && diffDays >= 0) { // last 15 days
                 historicalLabels.push(d.toLocaleDateString('en-US', {
                     month: 'short',
                     day: 'numeric',
@@ -1320,24 +1320,22 @@
             }
         });
 
-        // Generate forecast dates based on last historical date, skipping weekends, only if in current month
+        // Generate forecast dates based on last historical date, skipping weekends
         let lastDate = new Date(ticketForecastDates[ticketForecastDates.length - 1]);
         const forecastLabels = [];
         const forecastData = [];
         let forecastIndex = 0;
 
-        while (forecastIndex < ticketForecastNext.length) {
+        while (forecastIndex < ticketForecastNext.length && forecastLabels.length < 15) {
             lastDate.setDate(lastDate.getDate() + 1); // move to next day
             const dayOfWeek = lastDate.getDay(); // 0=Sunday,6=Saturday
             if (dayOfWeek !== 0 && dayOfWeek !== 6) { // skip weekends
-                if (lastDate.getMonth() === currentMonth && lastDate.getFullYear() === currentYear) {
-                    forecastLabels.push(lastDate.toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric'
-                    }));
-                    forecastData.push(ticketForecastNext[forecastIndex]);
-                }
+                forecastLabels.push(lastDate.toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric'
+                }));
+                forecastData.push(ticketForecastNext[forecastIndex]);
                 forecastIndex++;
             }
         }
