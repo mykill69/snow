@@ -83,8 +83,8 @@
                                                         <thead class="table-light">
                                                             <tr>
                                                                 <th>TICKET NO.</th>
-                                                                <th>SUBJECT</th>
                                                                 <th>REQUESTED BY</th>
+                                                                <th>SUBJECT</th>
                                                                 <th>CATEGORY</th>
                                                                 <th>SUB-CATEGORY</th>
                                                                 <th>ATTACHED FILE</th>
@@ -111,6 +111,10 @@
                                                                         </a>
                                                                     </td>
                                                                     <td>
+                                                                        {{ $ticket->user->fname ?? '' }}
+                                                                        {{ $ticket->user->lname ?? '' }}
+                                                                    </td>
+                                                                    <td>
                                                                         @php
                                                                             $subject = $ticket->subject;
                                                                             $subjectId = 'subject-' . $ticket->id;
@@ -129,14 +133,12 @@
                                                                             {{ $subject }}
                                                                         @endif
                                                                     </td>
+                                                                    
                                                                     <td>{{ $ticket->category }}</td>
                                                                     <td><span
                                                                             class="badge bg-warning">{{ $ticket->sub_cat }}</span>
                                                                     </td>
-                                                                    <td>
-                                                                        {{ $ticket->user->fname ?? '' }}
-                                                                        {{ $ticket->user->lname ?? '' }}
-                                                                    </td>
+                                                                    
                                                                     <td>
                                                                         @if ($ticket->file_name)
                                                                             <a href="{{ asset('storage/' . $ticket->file_name) }}"
