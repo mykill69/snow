@@ -153,8 +153,7 @@
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-header">
-                                        <h3 class="card-title" style="color: #1E152A;font-weight: bold;">Forecasted Ticket
-                                            Volume
+                                        <h3 class="card-title" style="color: #1E152A;font-weight: bold;">Forecasted Ticket Volume
                                         </h3>
                                     </div>
                                     <div class="card-body">
@@ -1296,111 +1295,83 @@
     </script>
 
     <script>
-        const ticketForecastDates = @json($tickets->pluck('day')); // historical dates (YYYY-MM-DD)
-        const ticketForecastCounts = @json($tickets->pluck('count')); // historical ticket counts
-        const ticketForecastNext = @json($forecast); // forecast counts
+    const ticketForecastDates = @json($tickets->pluck('day')); // historical dates (YYYY-MM-DD)
+    const ticketForecastCounts = @json($tickets->pluck('count')); // historical ticket counts
+    const ticketForecastNext = @json($forecast); // forecast counts
 
-        // Get current date
-        const now = new Date();
-
-        // Filter historical tickets: last 15 days only
-        const historicalLabels = [];
-        const historicalData = [];
-
-        ticketForecastDates.forEach((dateStr, index) => {
-            const d = new Date(dateStr);
-            const diffDays = Math.floor((now - d) / (1000 * 60 * 60 * 24));
-            if (diffDays < 15 && diffDays >= 0) { // last 15 days
-                historicalLabels.push(d.toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric'
-                }));
-                historicalData.push(ticketForecastCounts[index]);
-            }
-        });
-
-        // Generate forecast dates based on last historical date, skipping weekends
-        let lastDate = new Date(ticketForecastDates[ticketForecastDates.length - 1]);
-        const forecastLabels = [];
-        const forecastData = [];
-        let forecastIndex = 0;
-
-        while (forecastIndex < ticketForecastNext.length && forecastLabels.length < 15) {
-            lastDate.setDate(lastDate.getDate() + 1); // move to next day
-            const dayOfWeek = lastDate.getDay(); // 0=Sunday,6=Saturday
-            if (dayOfWeek !== 0 && dayOfWeek !== 6) { // skip weekends
-                forecastLabels.push(lastDate.toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric'
-                }));
-                forecastData.push(ticketForecastNext[forecastIndex]);
-                forecastIndex++;
-            }
+    // Filter last 5 historical working days
+    const historicalLabels = [];
+    const historicalData = [];
+    let addedHistorical = 0;
+    for (let i = ticketForecastDates.length - 1; i >= 0 && addedHistorical < 5; i--) {
+        const d = new Date(ticketForecastDates[i]);
+        const dayOfWeek = d.getDay();
+        if (dayOfWeek !== 0 && dayOfWeek !== 6) { // skip weekends
+            historicalLabels.unshift(d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }));
+            historicalData.unshift(ticketForecastCounts[i]);
+            addedHistorical++;
         }
+    }
 
-        // Merge historical + forecast labels and data
-        const ticketForecastLabels = [...historicalLabels, ...forecastLabels];
-        const ticketForecastData = [...historicalData, ...forecastData];
+    // Generate next 5 forecast days, skipping weekends
+    let lastDate = new Date(ticketForecastDates[ticketForecastDates.length - 1]);
+    const forecastLabels = [];
+    const forecastData = [];
+    let forecastIndex = 0;
+    while (forecastLabels.length < 5 && forecastIndex < ticketForecastNext.length) {
+        lastDate.setDate(lastDate.getDate() + 1);
+        const dayOfWeek = lastDate.getDay();
+        if (dayOfWeek !== 0 && dayOfWeek !== 6) { // skip weekends
+            forecastLabels.push(lastDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }));
+            forecastData.push(ticketForecastNext[forecastIndex]);
+        }
+        forecastIndex++;
+    }
 
-        // Create the Chart
-        const ctxForecast = document.getElementById('ticketForecastChart').getContext('2d');
-        const ticketForecastChart = new Chart(ctxForecast, {
-            type: 'line',
-            data: {
-                labels: ticketForecastLabels,
-                datasets: [{
-                    label: 'Number of Tickets',
-                    data: ticketForecastData,
-                    borderColor: '#C94C4C',
-                    backgroundColor: '#C94C4C',
-                    fill: false,
-                    tension: 0.3,
-                    pointRadius: 4,
-                    pointBackgroundColor: 'black',
-                    pointBorderColor: 'black',
-                    pointHoverBackgroundColor: '#fff',
-                    pointHoverBorderColor: '#C94C4C'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top'
-                    },
-                    tooltip: {
-                        callbacks: {
-                            title: function(tooltipItems) {
-                                return tooltipItems[0].label;
-                            },
-                            label: function(tooltipItem) {
-                                return 'Tickets: ' + tooltipItem.formattedValue;
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Ticket Count'
-                        }
-                    },
-                    x: {
-                        ticks: {
-                            maxRotation: 45,
-                            minRotation: 45
-                        }
+    // Merge historical + forecast
+    const ticketForecastLabels = [...historicalLabels, ...forecastLabels];
+    const ticketForecastData = [...historicalData, ...forecastData];
+
+    // Create Chart
+    const ctxForecast = document.getElementById('ticketForecastChart').getContext('2d');
+    const ticketForecastChart = new Chart(ctxForecast, {
+        type: 'line',
+        data: {
+            labels: ticketForecastLabels,
+            datasets: [{
+                label: 'Number of Tickets',
+                data: ticketForecastData,
+                borderColor: '#C94C4C',
+                backgroundColor: '#C94C4C',
+                fill: false,
+                tension: 0.3,
+                pointRadius: 4,
+                pointBackgroundColor: 'black',
+                pointBorderColor: 'black',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: '#C94C4C'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: true, position: 'top' },
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItems) { return tooltipItems[0].label; },
+                        label: function(tooltipItem) { return 'Tickets: ' + tooltipItem.formattedValue; }
                     }
                 }
+            },
+            scales: {
+                y: { beginAtZero: true, title: { display: true, text: 'Ticket Count' } },
+                x: { ticks: { maxRotation: 45, minRotation: 45 } }
             }
-        });
-    </script>
+        }
+    });
+</script>
+
 
 
 
