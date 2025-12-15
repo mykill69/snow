@@ -1343,15 +1343,15 @@
                 datasets: [{
                     label: 'Number of Tickets',
                     data: ticketForecastData,
-                    borderColor: 'grey',
-                    backgroundColor: '#FFB140',
+                    borderColor: '#C94C4C',
+                    backgroundColor: '#C94C4C',
                     fill: false,
                     tension: 0.3,
                     pointRadius: 4,
-                    pointBackgroundColor: 'red',
-                    pointBorderColor: 'red',
+                    pointBackgroundColor: 'black',
+                    pointBorderColor: 'black',
                     pointHoverBackgroundColor: '#fff',
-                    pointHoverBorderColor: 'red'
+                    pointHoverBorderColor: '#C94C4C'
                 }]
             },
             options: {
