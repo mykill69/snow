@@ -204,7 +204,7 @@
                                     <div class="row align-items-center">
                                         <div class="col-3 d-flex justify-content-center align-items-center">
 
-                                            <i class="fas fa-award fa-8x pl-4 pt-2" style="color: #FFB140"></i>
+                                            <i class="fas fa-medal fa-8x pl-4 pt-2" style="color: #FFB140"></i>
 
                                         </div>
                                         <div class="col-9 d-flex flex-column">

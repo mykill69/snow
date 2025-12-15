@@ -294,7 +294,9 @@
 
                                         <form method="GET" action="{{ route('ticketReports') }}">
                                             <input type="hidden" name="active_tab" value="feedback">
+
                                             <div class="form-row align-items-end px-2">
+
                                                 <!-- Date From -->
                                                 <div class="col-md-2">
                                                     <label for="date_taken_from">From</label>
@@ -309,6 +311,20 @@
                                                         value="{{ request('date_taken_to') }}">
                                                 </div>
 
+                                                <!-- Administrator Dropdown -->
+                                                <div class="col-md-3">
+                                                    <label for="admin_id">MIS Personnel</label>
+                                                    <select name="admin_id" class="form-control">
+                                                        <option value="">-- All MIS Personnel --</option>
+                                                        @foreach ($admins as $admin)
+                                                            <option value="{{ $admin->id }}"
+                                                                {{ request('admin_id') == $admin->id ? 'selected' : '' }}>
+                                                                {{ $admin->fname }} {{ $admin->lname }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+
                                                 <!-- Submit -->
                                                 <div class="col-md-2 d-flex align-items-end">
                                                     <button type="submit"
@@ -318,6 +334,7 @@
                                         </form>
 
 
+
                                         <div class="card-body">
 
                                             <!-- Feedback Table -->
@@ -325,9 +342,10 @@
                                                 <thead>
                                                     <tr>
                                                         <th>Ticket No</th>
-                                                        <th>User</th>
+                                                        <th>Personnel</th>
                                                         <th>Office/College</th>
                                                         <th>Date Submitted</th>
+                                                        <th>MIS Personnel</th>
                                                         <th>Rating</th>
                                                         <th>Comments</th>
                                                     </tr>
@@ -348,6 +366,10 @@
 
                                                             <td>
                                                                 {{ \Carbon\Carbon::parse($feedback->created_at)->format('M d, Y') }}
+                                                            </td>
+                                                            <td>
+                                                                {{ optional(\App\Models\User::find($feedback->admin_id))->fname ?? 'N/A' }}
+                                                                {{ optional(\App\Models\User::find($feedback->admin_id))->lname ?? '' }}
                                                             </td>
 
                                                             <td>{{ $feedback->rating }}</td>

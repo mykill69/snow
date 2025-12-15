@@ -747,14 +747,26 @@ $pieLabels = $categoryCounts->pluck('category')->toArray();
 $pieData = $categoryCounts->pluck('total')->toArray();
 
 // Fetch feedback reports
+// $feedbackReports = \App\Models\Feedback::with('user')
+//     ->when($request->filled('date_taken_from') && $request->filled('date_taken_to'), function ($q) use ($request) {
+//         $q->whereBetween('created_at', [$request->date_taken_from, $request->date_taken_to]);
+//     })
+//     ->when($request->filled('date_taken_from') && !$request->filled('date_taken_to'), function ($q) use ($request) {
+//         $q->whereDate('created_at', $request->date_taken_from);
+//     })
+//     ->get();
 $feedbackReports = \App\Models\Feedback::with('user')
+    ->leftJoin('ticket_dtl', 'ticket_dtl.ticket_no', '=', 'feedback.ticket_no')
+    ->select('feedback.*', 'ticket_dtl.admin_id')  // ✔ include MIS Personnel
     ->when($request->filled('date_taken_from') && $request->filled('date_taken_to'), function ($q) use ($request) {
-        $q->whereBetween('created_at', [$request->date_taken_from, $request->date_taken_to]);
+        $q->whereBetween('feedback.created_at', [$request->date_taken_from, $request->date_taken_to]);
     })
     ->when($request->filled('date_taken_from') && !$request->filled('date_taken_to'), function ($q) use ($request) {
-        $q->whereDate('created_at', $request->date_taken_from);
+        $q->whereDate('feedback.created_at', $request->date_taken_from);
     })
     ->get();
+
+    $admins = User::where('role', 'administrator')->get();
 
 // Compute average feedback rating
 $feedbackAverage = $feedbackReports->avg('rating') ?? null;

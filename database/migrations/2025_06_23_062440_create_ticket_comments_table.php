@@ -26,6 +26,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ticket_comments');
+        Schema::table('ticket_comments', function (Blueprint $table) {
+        $table->string('comments', 255)->change();
+    });
     }
 };
