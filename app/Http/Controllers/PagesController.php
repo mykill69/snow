@@ -584,10 +584,6 @@ public function editWork($id)
                        ->whereNotIn('id', [3, 12])
                        ->get();
 
-    /*  ─────  NOTE  ─────
-        We return ONLY the inside of the modal (no <html> / <body>) so it
-        can be injected into an existing empty modal container.
-    */
     return view('modal.editWorkProgress', compact('progress', 'adminUsers'));
 }
 

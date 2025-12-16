@@ -126,8 +126,8 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('ganttReports') }}"
-                        class="nav-link {{ request()->routeIs('ganttReports') ? 'active' : '' }}">
+                    <a href="{{ route('displayProject') }}"
+                        class="nav-link {{ request()->routeIs('displayProject') ? 'active' : '' }}">
                         <i class="far fa-circle nav-icon"></i>
                         <p>Gantt Chart Report</p>
                     </a>

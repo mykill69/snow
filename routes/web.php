@@ -44,7 +44,27 @@ Route::group(['middleware'=>['guest']],function(){
 
 
 
-    Route::get('/reports-pages/gantt-chart', [WorkController::class, 'ganttReports'])->name('ganttReports');
+    Route::get('/reports-pages/gantt-chart', [WorkController::class, 'displayProject'])->name('displayProject');
+    Route::post('/reports-pages/add-project', [WorkController::class, 'addProject'])->name('addProject');
+//     Route::get('/projects/{id}/tasks', [WorkController::class, 'getProjectTasks'])->name('projects.tasks');
+
+
+// Route::post('/tasks/{id}/update-dates', [WorkController::class, 'updateTaskDates'])->name('tasks.updateDates');
+// Route::post('/tasks/{id}/update-assigned', [WorkController::class, 'updateTaskAssigned'])->name('tasks.updateAssigned');
+
+Route::get('/projects/{id}/tasks', [WorkController::class, 'getProjectTasks'])->name('projects.tasks');
+Route::post('/tasks/{id}/update-dates', [WorkController::class, 'updateTaskDates'])->name('tasks.updateDates');
+Route::post('/tasks/{id}/update-assigned', [WorkController::class, 'updateTaskAssigned'])->name('tasks.updateAssigned');
+
+
+
+
+
+    // Route::post('/reports-pages/gantt-chart', [WorkController::class, 'storeTask'])->name('storeTask');
+   // Show modal content for adding/editing task
+
+    // // Store or update task
+    // Route::post('/gantt-task/store/{project?}', [WorkController::class, 'storeOrUpdateTask'])->name('storeOrUpdateTask');
 
 
 
