@@ -95,7 +95,7 @@
                                             <div class="btn-group btn-group-sm" role="group">
                                                 <!-- Edit Button -->
 
-                                                <button type="button" class="btn btn-default btn-sm edit-btn"
+                                                <button type="button" class="btn btn-primary btn-sm edit-btn"
                                                     data-toggle="modal" data-target="#addTask"
                                                     data-project-id="{{ $project->id }}"
                                                     data-project-name="{{ $project->project_name }}">
@@ -136,6 +136,16 @@
         </div>
         <i>Maintained and Managed by Management Information System Office. All rights reserved.</i>
     </footer>
+
+
+
+    <!-- /.row -->
+    </div><!--/. container-fluid -->
+    </section>
+
+    <!-- AdminLTE for demo purposes -->
+
+
 
 
 
