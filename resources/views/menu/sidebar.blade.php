@@ -129,7 +129,7 @@
                     <a href="{{ route('displayProject') }}"
                         class="nav-link {{ request()->routeIs('displayProject') ? 'active' : '' }}">
                         <i class="far fa-circle nav-icon"></i>
-                        <p>Gantt Chart Report</p>
+                        <p>Progress Report</p>
                     </a>
                 </li>
             </ul>
