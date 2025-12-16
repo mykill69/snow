@@ -51,8 +51,8 @@ public function addProject(Request $request)
 
     // Preset tasks
     $presetTasks = [
-        ['project_id' => $project->id, 'task_name' => 'Requirements Gathering', 'percentage' => 8],
         ['project_id' => $project->id, 'task_name' => 'Project Proposal & Approval', 'percentage' => 4],
+        ['project_id' => $project->id, 'task_name' => 'Requirements Gathering', 'percentage' => 8],
         ['project_id' => $project->id, 'task_name' => 'System Architecture Design', 'percentage' => 10],
         ['project_id' => $project->id, 'task_name' => 'UI/UX Design', 'percentage' => 8],
         ['project_id' => $project->id, 'task_name' => 'Database Design', 'percentage' => 7],
