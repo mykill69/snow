@@ -55,7 +55,7 @@ Route::group(['middleware'=>['guest']],function(){
 Route::get('/projects/{id}/tasks', [WorkController::class, 'getProjectTasks'])->name('projects.tasks');
 Route::post('/tasks/{id}/update-dates', [WorkController::class, 'updateTaskDates'])->name('tasks.updateDates');
 Route::post('/tasks/{id}/update-assigned', [WorkController::class, 'updateTaskAssigned'])->name('tasks.updateAssigned');
-
+Route::get('/gantt-reports/{project}', [WorkController::class, 'show'])->name('gantt.reports');
 
 
 

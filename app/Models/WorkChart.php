@@ -19,9 +19,9 @@ class WorkChart extends Model
         'assigned_to',
     ];
 
-    // public function admin()
-    // {
-    //     return $this->belongsTo(User::class, 'assigned_to');
-    // }
+    public function admin()
+    {
+        return $this->belongsTo(User::class, 'assigned_to');
+    }
 }
 

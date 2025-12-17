@@ -166,6 +166,21 @@ public function updateTaskAssigned(Request $request, $id)
 
     return response()->json(['success' => true]);
 }
+public function show($projectId)
+{
+    $project = Project::findOrFail($projectId);
+
+    $tasks = WorkChart::with('admin')
+        ->where('project_id', $projectId)
+        ->get();
+
+    // If AJAX request, return only partial HTML
+    if(request()->ajax()) {
+        return view('pages.ganttChart', compact('project', 'tasks'));
+    }
+
+    return view('pages.ganttChart', compact('project', 'tasks'));
+}
 
 
 }

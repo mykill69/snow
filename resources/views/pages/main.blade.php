@@ -86,7 +86,7 @@
 
 <body
     class="hold-transition sidebar-mini  {{-- sidebar-collapse --}} layout-fixed layout-navbar-fixed layout-footer-fixed text-sm">
-    <div class="wrapper">
+    <div class="wrapper" style="background-color:red;">
         <!-- Navbar -->
         <nav class="main-header navbar navbar-expand" style="background-color: #FFFF;">
             <!-- Left navbar links -->

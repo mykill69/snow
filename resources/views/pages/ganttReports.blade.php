@@ -42,7 +42,7 @@
                     </div>
 
                     <div class="card-body">
-                        <table class="table table-bordered table-striped">
+                        <table class="table " id="example1">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -55,8 +55,13 @@
                             <tbody>
                                 @foreach ($projects as $index => $project)
                                     <tr>
-                                        <td>{{ $index + 1 }}</td>
-                                        <td>{{ $project->project_name }}</td>
+                                        <td>{{ $index + 1 }}.</td>
+                                        <td>
+                                            <a href="javascript:void(0)" class="open-gantt"
+                                                data-project-id="{{ $project->id }}">
+                                                {{ $project->project_name }}
+                                            </a>
+                                        </td>
                                         <td>
                                             @php
                                                 $adminIds = explode(',', $project->admin_id ?? '');
@@ -125,6 +130,22 @@
 
                 </div>
 
+                <hr>
+
+                <div class="card" style="border:1px solid #ddd; min-height: 300px;">
+                    <div class="card-body" id="projectTasksContainer" style="margin-bottom: 5%;">
+                        <div id="tasksTable">
+                            <!-- Existing projects/tasks table -->
+                        </div>
+
+                        <!-- Gantt Chart Container -->
+                        <div id="ganttChartContainer"
+                            style="display:none; margin-top:20px; max-height:700px; overflow-y:auto;">
+                            <!-- AJAX content will be injected here -->
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </section>
     </div>
@@ -145,6 +166,37 @@
 
     <!-- AdminLTE for demo purposes -->
 
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const ganttContainer = document.getElementById('ganttChartContainer');
+
+            $('.open-gantt').on('click', function() {
+                let projectId = $(this).data('project-id');
+
+                // Build the AJAX URL
+                let url = "{{ url('/gantt-reports') }}/" + projectId;
+
+                // Fetch partial view and inject into container
+                fetch(url, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(res => res.text())
+                    .then(html => {
+                        ganttContainer.innerHTML = html;
+                        ganttContainer.style.display = 'block';
+
+                        // Optional: scroll to container
+                        $('html, body').animate({
+                            scrollTop: $(ganttContainer).offset().top
+                        }, 500);
+                    })
+                    .catch(err => console.error(err));
+            });
+        });
+    </script>
 
 
 
@@ -167,6 +219,36 @@
             $('.toast').toast('show');
         });
     </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            $('.open-gantt').on('click', function() {
+                let projectId = $(this).data('project-id');
+
+                // build URL for iframe
+                let ganttUrl = "{{ url('/gantt-reports') }}/" + projectId;
+
+                // set iframe src
+                $('#ganttFrame').attr('src', ganttUrl);
+
+                // show iframe container
+                $('#ganttContainer').slideDown();
+
+                // optional: scroll to iframe
+                $('html, body').animate({
+                    scrollTop: $('#ganttContainer').offset().top
+                }, 500);
+            });
+
+        });
+    </script>
+
+
+
+
+
+
     @include('modal.addProject')
     @include('modal.addTask')
 
