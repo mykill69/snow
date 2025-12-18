@@ -323,6 +323,8 @@
                     "Network Connection": [
                         "Network Account",
                         "Internet Connection",
+                        "WiFi Access",
+                        "Router Installation",
                         "Others"
                     ],
                     "DTR Concern": [
