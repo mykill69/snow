@@ -16,6 +16,26 @@
         margin-right: 3px;
         /* small gap between avatars */
     }
+
+    #projectTasksContainer {
+        padding-bottom: 40px;
+        /* extra space at the bottom */
+    }
+
+    #gantt_chart {
+        width: 100%;
+        min-width: 800px;
+        /* keeps chart readable on desktop */
+        /* optional: extra bottom margin if needed */
+        margin-bottom: 20px;
+    }
+
+    @media (max-width: 768px) {
+        #gantt_chart {
+            min-width: 600px;
+            /* smaller screens */
+        }
+    }
 </style>
 @section('body')
     <div class="content-wrapper">
@@ -128,22 +148,17 @@
                         </table>
                     </div>
 
-                </div>
+                    <hr>
 
-                <hr>
+                    <div class="card-body pb-5" id="projectTasksContainer">
+                        <h4 id="gantt_project_title" class="text-center fw-bold text-primary mb-3" style="font-size:24px;">
+                        </h4>
 
-                <div class="card" style="border:1px solid #ddd; min-height: 300px;">
-                    <div class="card-body" id="projectTasksContainer" style="margin-bottom: 5%;">
-                        <div id="tasksTable">
-                            <!-- Existing projects/tasks table -->
-                        </div>
-
-                        <!-- Gantt Chart Container -->
-                        <div id="ganttChartContainer"
-                            style="display:none; margin-top:20px; max-height:700px; overflow-y:auto;">
-                            <!-- AJAX content will be injected here -->
+                        <div id="gantt_chart"
+                            style="width:100%; height:480px; border:1px solid #ddd; border-radius:8px; padding:10px; background:#f9f9f9; margin-bottom:20px;">
                         </div>
                     </div>
+
                 </div>
 
             </div>
@@ -159,44 +174,215 @@
     </footer>
 
 
-
     <!-- /.row -->
     </div><!--/. container-fluid -->
     </section>
 
-    <!-- AdminLTE for demo purposes -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 
 
     <script>
+        google.charts.load('current', {
+            packages: ['gantt']
+        });
+        google.charts.setOnLoadCallback(registerGanttClick);
+
+        function registerGanttClick() {
+
+            $(document).on('click', '.open-gantt', function() {
+
+                var projectId = $(this).data('project-id');
+                var projectName = $(this).text().trim();
+
+                // Display project name above chart
+                $('#gantt_project_title').text(projectName);
+
+                $.ajax({
+                    url: "{{ url('/projects') }}/" + projectId + "/gantt",
+                    type: 'GET',
+                    success: function(response) {
+                        drawGanttChart(response.tasks);
+                    },
+                    error: function(xhr) {
+                        console.error(xhr.status, xhr.responseText);
+                        alert('Failed to load Gantt chart data.');
+                    }
+                });
+            });
+        }
+
+        function drawGanttChart(tasks) {
+
+            if (!tasks || tasks.length === 0) {
+                alert('No tasks with valid dates to display.');
+                return;
+            }
+
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Task ID');
+            data.addColumn('string', 'Task Name');
+            data.addColumn('string', 'Resource');
+            data.addColumn('date', 'Start Date');
+            data.addColumn('date', 'End Date');
+            data.addColumn('number', 'Duration');
+            data.addColumn('number', 'Percent Complete');
+            data.addColumn('string', 'Dependencies');
+
+            tasks.forEach(function(task, index) {
+                data.addRow([
+                    'T' + index,
+                    task.task_name,
+                    'System Development',
+                    new Date(task.start_date),
+                    new Date(task.end_date),
+                    null,
+                    task.progress,
+                    null
+                ]);
+            });
+
+            // Fixed container height
+            var containerHeight = 450;
+
+            // Calculate row height so all tasks fit inside container
+            var trackHeight = Math.max(25, Math.floor((containerHeight - 60) / tasks.length));
+
+            var options = {
+                height: containerHeight, // fixed height
+                gantt: {
+                    trackHeight: trackHeight,
+                    barCornerRadius: 6,
+                    labelStyle: {
+                        fontName: 'Arial',
+                        fontSize: 14,
+                        color: '#333',
+                        bold: true
+                    },
+                    percentStyle: {
+                        fill: '#4CAF50',
+                        stroke: '#388E3C',
+                        strokeWidth: 2
+                    },
+                    criticalPathEnabled: false,
+                    barHeight: Math.floor(trackHeight * 0.7), // bar slightly smaller than track
+                },
+                backgroundColor: '#f0f2f5',
+                tooltip: {
+                    isHtml: true
+                }
+            };
+
+            var chart = new google.visualization.Gantt(document.getElementById('gantt_chart'));
+            chart.draw(data, options);
+        }
+    </script>
+
+
+
+    {{-- 
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const ganttContainer = document.getElementById('ganttChartContainer');
 
             $('.open-gantt').on('click', function() {
-                let projectId = $(this).data('project-id');
+                const projectId = $(this).data('project-id');
+                const url = "{{ url('/gantt-reports') }}/" + projectId;
 
-                // Build the AJAX URL
-                let url = "{{ url('/gantt-reports') }}/" + projectId;
-
-                // Fetch partial view and inject into container
                 fetch(url, {
                         headers: {
                             'X-Requested-With': 'XMLHttpRequest'
                         }
                     })
-                    .then(res => res.text())
-                    .then(html => {
-                        ganttContainer.innerHTML = html;
-                        ganttContainer.style.display = 'block';
+                    .then(res => res.json())
+                    .then(data => {
 
-                        // Optional: scroll to container
-                        $('html, body').animate({
-                            scrollTop: $(ganttContainer).offset().top
-                        }, 500);
+                        $('#ganttChartContainer').html(data.html).slideDown();
+
+                        const tasks = data.tasks || [];
+                        if (!tasks.length) return;
+
+                        const labels = tasks.map(t => t.task_name);
+
+                        const canvas = document.getElementById('ganttChart');
+                        if (!canvas) return;
+
+                        canvas.height = tasks.length * 40; // dynamic height
+                        const ctx = canvas.getContext('2d');
+
+                        if (window.ganttChartInstance) {
+                            window.ganttChartInstance.destroy();
+                        }
+
+                        // Calculate duration in days
+                        const durations = tasks.map(t => {
+                            const start = new Date(t.start_date);
+                            const end = new Date(t.end_date);
+                            const diffTime = end - start;
+                            const diffDays = diffTime / (1000 * 60 * 60 * 24) +
+                                1; // include start day
+                            return diffDays;
+                        });
+
+                        // Create bar chart with fixed shading
+                        window.ganttChartInstance = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: 'Duration (days)',
+                                    data: durations,
+                                    backgroundColor: 'rgba(54, 162, 235, 0.85)',
+                                    borderRadius: 6,
+                                    barThickness: 18
+                                }]
+                            },
+                            options: {
+                                indexAxis: 'y', // horizontal bars
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        display: false
+                                    },
+                                    tooltip: {
+                                        callbacks: {
+                                            label: ctx => {
+                                                const t = tasks[ctx.dataIndex];
+                                                const start = new Date(t.start_date)
+                                                    .toLocaleDateString();
+                                                const end = new Date(t.end_date)
+                                                    .toLocaleDateString();
+                                                return `${t.task_name}: ${start} → ${end} (${durations[ctx.dataIndex]} days)`;
+                                            }
+                                        }
+                                    }
+                                },
+                                scales: {
+                                    x: {
+                                        beginAtZero: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Duration (days)'
+                                        }
+                                    },
+                                    y: {
+                                        title: {
+                                            display: true,
+                                            text: 'Tasks'
+                                        }
+                                    }
+                                }
+                            }
+                        });
+
                     })
-                    .catch(err => console.error(err));
+                    .catch(err => console.error('Failed to load gantt data:', err));
             });
+
         });
-    </script>
+    </script> --}}
+
 
 
 
@@ -220,7 +406,9 @@
         });
     </script>
 
-    <script>
+
+
+    {{-- <script>
         document.addEventListener('DOMContentLoaded', function() {
 
             $('.open-gantt').on('click', function() {
@@ -243,7 +431,7 @@
 
         });
     </script>
-
+ --}}
 
 
 

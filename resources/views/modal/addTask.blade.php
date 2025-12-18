@@ -41,7 +41,9 @@
                             <th>Task Name</th>
                             <th>Percentage</th>
                             <th>Start & End date</th>
+                            <th>Duration (days)</th>
                             <th>Assigned To</th>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -61,95 +63,18 @@
 
 <script src="{{ asset('template/plugins/jquery/jquery.min.js') }}"></script>
 
-{{-- <script>
-    document.addEventListener('DOMContentLoaded', function() {
 
-    // Pass PHP $adminUsers to JS
-    var adminUsers = @json($adminUsers);
-
-    $('.edit-btn').click(function() {
-        var projectId = $(this).data('project-id');
-        var projectName = $(this).data('project-name');
-
-        // Set project info
-        $('#modalProjectName').text(projectName);
-        $('#modalProjectId').val(projectId);
-
-        // Clear old rows
-        $('#tasksTable tbody').empty();
-
-        // Fetch tasks via AJAX
-        $.ajax({
-            url: "{{ url('/projects') }}/" + projectId + "/tasks",
-            type: 'GET',
-            success: function(response) {
-                if (response.tasks.length === 0) {
-                    $('#tasksTable tbody').append(
-                        '<tr><td colspan="4" class="text-center">No tasks found</td></tr>'
-                    );
-                    return;
-                }
-
-                response.tasks.forEach(function(task, index) {
-                    // Build start & end date pickers
-                    var startDate = task.start_date ?? '';
-                    var endDate = task.end_date ?? '';
-                    var dateInputs = 
-                        '<input type="date" class="form-control mb-1 start-date" value="' + startDate + '">' +
-                        '<input type="date" class="form-control end-date" value="' + endDate + '">';
-
-                    // Build Assigned To dropdown
-                    var selectOptions = '';
-                    adminUsers.forEach(function(admin) {
-                        var selected = '';
-                        if(task.assigned_to) {
-                            // assigned_to may be comma-separated IDs
-                            var assignedIds = task.assigned_to.toString().split(',');
-                            selected = assignedIds.includes(admin.id.toString()) ? 'selected' : '';
-                        }
-                        selectOptions += '<option value="' + admin.id + '" ' + selected + '>' +
-                            admin.fname + ' ' + admin.lname + '</option>';
-                    });
-
-                    var assignedDropdown = '<select class="form-control select2" name="assigned_to[]" multiple>' +
-                        selectOptions +
-                        '</select>';
-
-                    // Build table row
-                    var row = '<tr>' +
-                        '<td>' + task.task_name + '</td>' +
-                        '<td>' + task.percentage + '%</td>' +
-                        '<td>' + dateInputs + '</td>' +
-                        '<td>' + assignedDropdown + '</td>' +
-                        '</tr>';
-
-                    $('#tasksTable tbody').append(row);
-
-                    // Initialize select2 for this row
-                    $('#tasksTable tbody tr:last .select2').select2({
-                        theme: 'bootstrap4',
-                        width: '100%'
-                    });
-                });
-            },
-            error: function(err) {
-                console.error(err);
-                alert('Failed to fetch tasks.');
-            }
-        });
-    });
-
-});
-
-</script> --}}
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
 
         var adminUsers = @json($adminUsers);
 
-        // Open modal and load tasks
-        $('.edit-btn').click(function() {
+        /* ===============================
+           OPEN MODAL & LOAD TASKS
+        =============================== */
+        $('.edit-btn').on('click', function() {
+
             var projectId = $(this).data('project-id');
             var projectName = $(this).data('project-name');
 
@@ -160,18 +85,21 @@
             $.ajax({
                 url: "{{ route('projects.tasks', ':id') }}".replace(':id', projectId),
                 type: 'GET',
-                dataType: 'json', // ensure JSON expected
+                dataType: 'json',
                 success: function(response) {
-                    if (response.tasks.length === 0) {
+
+                    if (!response.tasks || response.tasks.length === 0) {
                         $('#tasksTable tbody').append(
-                            '<tr><td colspan="4" class="text-center">No tasks found</td></tr>'
+                            '<tr><td colspan="5" class="text-center">No tasks found</td></tr>'
                         );
                         return;
                     }
 
                     response.tasks.forEach(function(task) {
+
                         var startDate = task.start_date ?? '';
                         var endDate = task.end_date ?? '';
+
                         var dateInputs =
                             '<input type="date" class="form-control mb-1 start-date" data-task-id="' +
                             task.id + '" value="' + startDate + '">' +
@@ -179,22 +107,30 @@
                             task.id + '" value="' + endDate + '">';
 
                         var selectOptions = '<option value="">Select user</option>';
+
                         adminUsers.forEach(function(admin) {
                             var selected = (task.assigned_to == admin.id) ?
                                 'selected' : '';
-                            selectOptions += '<option value="' + admin.id +
-                                '" ' + selected + '>' + admin.fname + ' ' +
-                                admin.lname + '</option>';
+                            selectOptions +=
+                                '<option value="' + admin.id + '" ' +
+                                selected + '>' +
+                                admin.fname + ' ' + admin.lname +
+                                '</option>';
                         });
 
                         var assignedDropdown =
                             '<select class="form-control assigned-to" data-task-id="' +
-                            task.id + '">' + selectOptions + '</select>';
+                            task.id + '">' +
+                            selectOptions +
+                            '</select>';
 
-                        var row = '<tr>' +
+                        var row =
+                            '<tr>' +
                             '<td>' + task.task_name + '</td>' +
                             '<td>' + task.percentage + '%</td>' +
                             '<td>' + dateInputs + '</td>' +
+                            '<td class="duration-cell">' + (task.duration ?? '-') +
+                            '</td>' +
                             '<td>' + assignedDropdown + '</td>' +
                             '</tr>';
 
@@ -208,12 +144,21 @@
             });
         });
 
-        // Autosave dates
-        $(document).on('blur', '.start-date, .end-date', function() {
-            var taskId = $(this).data('task-id');
+        /* ===============================
+           AUTO-SAVE DATES + DURATION
+        =============================== */
+        $(document).on('change', '.start-date, .end-date', function() {
+
             var row = $(this).closest('tr');
+            var taskId = $(this).data('task-id');
             var startDate = row.find('.start-date').val();
             var endDate = row.find('.end-date').val();
+
+            // Do nothing if both are empty
+            if (!startDate && !endDate) {
+                row.find('.duration-cell').text('-');
+                return;
+            }
 
             $.ajax({
                 url: "{{ url('/tasks') }}/" + taskId + "/update-dates",
@@ -223,8 +168,8 @@
                     end_date: endDate,
                     _token: $('meta[name="csrf-token"]').attr('content')
                 },
-                success: function() {
-                    console.log('Dates updated for task ' + taskId);
+                success: function(response) {
+                    row.find('.duration-cell').text(response.duration ?? '-');
                 },
                 error: function(xhr) {
                     console.error(xhr.responseText);
@@ -233,8 +178,11 @@
             });
         });
 
-        // Autosave assigned user
+        /* ===============================
+           AUTO-SAVE ASSIGNED USER
+        =============================== */
         $(document).on('change', '.assigned-to', function() {
+
             var taskId = $(this).data('task-id');
             var assignedId = $(this).val() || null;
 

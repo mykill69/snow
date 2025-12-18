@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\JsonResponse;
 
 class WorkController extends Controller
 {
@@ -75,39 +76,16 @@ public function addProject(Request $request)
 // public function getProjectTasks($id)
 // {
 //     $project = Project::findOrFail($id);
-//     $tasks = WorkChart::with('admin')->where('project_id', $id)->get();
-
-//     return response()->json([
-//         'project' => $project,
-//         'tasks' => $tasks
-//     ]);
-// }
-
-// public function getProjectTasks($id)
-// {
-//     $project = Project::findOrFail($id);
-//     $tasks = WorkChart::with('admin')->where('project_id', $id)->get();
-
-//     return response()->json([
-//         'project' => $project,
-//         'tasks' => $tasks
-//     ]);
-// }
-
-// public function getProjectTasks($id)
-// {
-//     $project = Project::findOrFail($id);
 //     $tasks = WorkChart::where('project_id', $id)->get();
 
 //     // Convert assigned_to IDs to user names
 //     $tasks->map(function($task) {
+//         $task->assigned_users = [];
 //         if($task->assigned_to){
 //             $userIds = explode(',', $task->assigned_to);
 //             $task->assigned_users = \App\Models\User::whereIn('id', $userIds)
 //                                         ->pluck('fname', 'id')
 //                                         ->toArray();
-//         } else {
-//             $task->assigned_users = [];
 //         }
 //         return $task;
 //     });
@@ -117,44 +95,75 @@ public function addProject(Request $request)
 //         'tasks' => $tasks
 //     ]);
 // }
-// Get tasks
 public function getProjectTasks($id)
 {
     $project = Project::findOrFail($id);
+
     $tasks = WorkChart::where('project_id', $id)->get();
 
-    // Convert assigned_to IDs to user names
-    $tasks->map(function($task) {
-        $task->assigned_users = [];
-        if($task->assigned_to){
-            $userIds = explode(',', $task->assigned_to);
-            $task->assigned_users = \App\Models\User::whereIn('id', $userIds)
-                                        ->pluck('fname', 'id')
-                                        ->toArray();
-        }
-        return $task;
+    $tasks->transform(function ($task) {
+        return [
+            'id'           => $task->id,
+            'task_name'    => $task->task_name,
+            'percentage'   => $task->percentage,
+            'assigned_to'  => $task->assigned_to,
+            'duration'     => $task->duration,
+            'start_date'   => optional($task->start_date)->format('Y-m-d'),
+            'end_date'     => optional($task->end_date)->format('Y-m-d'),
+        ];
     });
 
     return response()->json([
         'project' => $project,
-        'tasks' => $tasks
+        'tasks'   => $tasks,
     ]);
 }
 
 // Update task dates
+// public function updateTaskDates(Request $request, $id)
+// {
+//     $request->validate([
+//         'start_date' => 'nullable|date',
+//         'end_date' => 'nullable|date',
+//     ]);
+
+//     $task = WorkChart::findOrFail($id);
+//     $task->start_date = $request->start_date;
+//     $task->end_date = $request->end_date;
+//     $task->save();
+
+//     return response()->json(['success' => true]);
+// }
+
 public function updateTaskDates(Request $request, $id)
 {
     $request->validate([
         'start_date' => 'nullable|date',
-        'end_date' => 'nullable|date',
+        'end_date'   => 'nullable|date|after_or_equal:start_date',
     ]);
 
     $task = WorkChart::findOrFail($id);
+
     $task->start_date = $request->start_date;
-    $task->end_date = $request->end_date;
+    $task->end_date   = $request->end_date;
+
+    // ✅ Calculate duration ONLY if both dates exist
+    if ($request->start_date && $request->end_date) {
+        $start = Carbon::parse($request->start_date);
+        $end   = Carbon::parse($request->end_date);
+
+        // Inclusive day count
+        $task->duration = $start->diffInDays($end) + 1;
+    } else {
+        $task->duration = null;
+    }
+
     $task->save();
 
-    return response()->json(['success' => true]);
+    return response()->json([
+        'success'  => true,
+        'duration' => $task->duration
+    ]);
 }
 
 public function updateTaskAssigned(Request $request, $id)
@@ -166,20 +175,67 @@ public function updateTaskAssigned(Request $request, $id)
 
     return response()->json(['success' => true]);
 }
+
 public function show($projectId)
 {
     $project = Project::findOrFail($projectId);
 
-    $tasks = WorkChart::with('admin')
-        ->where('project_id', $projectId)
+    $tasks = WorkChart::where('project_id', $projectId)
+        ->orderBy('start_date')
+        ->get([
+            'task_name',
+            'start_date',
+            'end_date',
+            'duration'
+        ]);
+
+    $minDate = $tasks->min('start_date');
+    $maxDate = $tasks->max('end_date');
+
+    return response()->json([
+        'tasks'   => $tasks,
+        'minDate'=> $minDate,
+        'maxDate'=> $maxDate,
+    ]);
+}
+
+
+
+public function gantt($projectId): JsonResponse
+{
+    $today = Carbon::today();
+
+    $tasks = WorkChart::where('project_id', $projectId)
+        ->whereNotNull('start_date')
+        ->whereNotNull('end_date')
+        ->orderBy('start_date')
         ->get();
 
-    // If AJAX request, return only partial HTML
-    if(request()->ajax()) {
-        return view('pages.ganttChart', compact('project', 'tasks'));
-    }
+    return response()->json([
+        'tasks' => $tasks->map(function ($task) use ($today) {
 
-    return view('pages.ganttChart', compact('project', 'tasks'));
+            $start = Carbon::parse($task->start_date);
+            $end   = Carbon::parse($task->end_date);
+
+            $totalDays = $start->diffInDays($end) + 1;
+
+            if ($today->lt($start)) {
+                $progress = 0;
+            } elseif ($today->gt($end)) {
+                $progress = 100;
+            } else {
+                $elapsedDays = $start->diffInDays($today) + 1;
+                $progress = round(($elapsedDays / $totalDays) * 100);
+            }
+
+            return [
+                'task_name'   => $task->task_name,
+                'start_date'  => $start->format('Y-m-d'),
+                'end_date'    => $end->format('Y-m-d'),
+                'progress'    => $progress, // ✅ TIME-BASED
+            ];
+        })
+    ]);
 }
 
 

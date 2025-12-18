@@ -57,7 +57,7 @@ Route::post('/tasks/{id}/update-dates', [WorkController::class, 'updateTaskDates
 Route::post('/tasks/{id}/update-assigned', [WorkController::class, 'updateTaskAssigned'])->name('tasks.updateAssigned');
 Route::get('/gantt-reports/{project}', [WorkController::class, 'show'])->name('gantt.reports');
 
-
+Route::get('/projects/{project}/gantt', [WorkController::class, 'gantt']);
 
 
     // Route::post('/reports-pages/gantt-chart', [WorkController::class, 'storeTask'])->name('storeTask');
