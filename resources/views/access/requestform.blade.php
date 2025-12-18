@@ -163,7 +163,7 @@
                     </div>
                     <!-- /.card-body -->
                     <div class="card">
-                        <button type="submit" class="btn" style="background-color:#42BFDD;">Submit</button>
+                        <button type="submit" class="btn bg-primary">Submit</button>
                     </div>
                 </div>
             </form>
