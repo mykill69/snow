@@ -324,7 +324,7 @@
                         "Network Account",
                         "Internet Connection",
                         "WiFi Access",
-                        "Router Installation",
+                        "Network Device Installation",
                         "Others"
                     ],
                     "DTR Concern": [
@@ -348,6 +348,7 @@
                     ],
                     "System Update Request": [
                         "Feature Enhancement",
+                        "Additional Module",
                         "Bug Fix",
                         "Access Modification",
                         "UI/UX Request",
