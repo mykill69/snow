@@ -239,4 +239,85 @@ public function gantt($projectId): JsonResponse
 }
 
 
+public function ProjectProgress()
+{
+    $projects = Project::all();
+
+    $projectData = $projects->map(function ($project) {
+
+        $tasks = WorkChart::where('project_id', $project->id)->get();
+
+        // Dates
+        $startDate = $tasks->whereNotNull('start_date')->min('start_date');
+        $endDate   = $tasks->whereNotNull('end_date')->max('end_date');
+
+        $duration = ($startDate && $endDate)
+            ? Carbon::parse($startDate)->diffInDays(Carbon::parse($endDate)) + 1
+            : null;
+
+        $daysRemaining = $endDate
+            ? Carbon::now()->startOfDay()->diffInDays(Carbon::parse($endDate), false)
+            : null;
+
+        // ⏱ WEIGHTED TIME-BASED PROGRESS
+        $progress = 0;
+        $today = Carbon::now()->startOfDay();
+
+        foreach ($tasks as $task) {
+
+            if (!$task->start_date || !$task->end_date || !$task->percentage) {
+                continue; // skip invalid tasks
+            }
+
+            $taskStart = Carbon::parse($task->start_date);
+            $taskEnd   = Carbon::parse($task->end_date);
+
+            $taskDuration = $taskStart->diffInDays($taskEnd) + 1;
+
+            // Task not started yet
+            if ($today->lt($taskStart)) {
+                continue;
+            }
+
+            // Task completed
+            if ($today->gte($taskEnd)) {
+                $progress += $task->percentage;
+                continue;
+            }
+
+            // Task in progress
+            $elapsed = $taskStart->diffInDays($today) + 1;
+
+            $taskProgress = ($elapsed / $taskDuration) * $task->percentage;
+
+            $progress += $taskProgress;
+        }
+
+        // Cap at 100%
+        $progress = min(100, round($progress));
+
+        // ✅ GET DISTINCT TEAM MEMBERS FROM TASK ASSIGNMENTS
+        $teamMemberIds = $tasks
+            ->pluck('assigned_to')
+            ->filter()        // remove null
+            ->unique();       // distinct users
+
+        $teamMembers = \App\Models\User::whereIn('id', $teamMemberIds)->get();
+
+        return [
+            'project'        => $project,
+            'start_date'     => $startDate,
+            'end_date'       => $endDate,
+            'duration'       => $duration,
+            'days_remaining' => $daysRemaining,
+            'progress'       => $progress,
+            'team_members'   => $teamMembers,
+        ];
+    });
+
+    return view('partials.projectProgress', compact('projectData'));
+}
+
+
+
 }

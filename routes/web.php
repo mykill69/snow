@@ -46,25 +46,18 @@ Route::group(['middleware'=>['guest']],function(){
 
     Route::get('/reports-pages/gantt-chart', [WorkController::class, 'displayProject'])->name('displayProject');
     Route::post('/reports-pages/add-project', [WorkController::class, 'addProject'])->name('addProject');
-//     Route::get('/projects/{id}/tasks', [WorkController::class, 'getProjectTasks'])->name('projects.tasks');
 
 
-// Route::post('/tasks/{id}/update-dates', [WorkController::class, 'updateTaskDates'])->name('tasks.updateDates');
-// Route::post('/tasks/{id}/update-assigned', [WorkController::class, 'updateTaskAssigned'])->name('tasks.updateAssigned');
-
-Route::get('/projects/{id}/tasks', [WorkController::class, 'getProjectTasks'])->name('projects.tasks');
-Route::post('/tasks/{id}/update-dates', [WorkController::class, 'updateTaskDates'])->name('tasks.updateDates');
-Route::post('/tasks/{id}/update-assigned', [WorkController::class, 'updateTaskAssigned'])->name('tasks.updateAssigned');
-Route::get('/gantt-reports/{project}', [WorkController::class, 'show'])->name('gantt.reports');
-
-Route::get('/projects/{project}/gantt', [WorkController::class, 'gantt']);
+    Route::get('/project-progress', [WorkController::class, 'ProjectProgress'])->name('ProjectProgress');
 
 
-    // Route::post('/reports-pages/gantt-chart', [WorkController::class, 'storeTask'])->name('storeTask');
-   // Show modal content for adding/editing task
+    Route::get('/projects/{id}/tasks', [WorkController::class, 'getProjectTasks'])->name('projects.tasks');
+    Route::post('/tasks/{id}/update-dates', [WorkController::class, 'updateTaskDates'])->name('tasks.updateDates');
+    Route::post('/tasks/{id}/update-assigned', [WorkController::class, 'updateTaskAssigned'])->name('tasks.updateAssigned');
+    Route::get('/gantt-reports/{project}', [WorkController::class, 'show'])->name('gantt.reports');
 
-    // // Store or update task
-    // Route::post('/gantt-task/store/{project?}', [WorkController::class, 'storeOrUpdateTask'])->name('storeOrUpdateTask');
+    Route::get('/projects/{project}/gantt', [WorkController::class, 'gantt']);
+
 
 
 
@@ -72,9 +65,7 @@ Route::get('/projects/{project}/gantt', [WorkController::class, 'gantt']);
     Route::get('/reports/pdf', [PagesController::class, 'downloadTicketReportsPDF'])->name('downloadTicketReportsPDF');
     Route::get('/reports/survey-pdf', [PagesController::class, 'downloadSurveyReportsPDF'])->name('downloadSurveyReportsPDF');
 
-//     Route::get('/work-progress', function () {
-//     return view('partials.workProgress');
-// })->name('work.progress');
+
     Route::post('work-progress/add', [PagesController::class, 'addWorkProgress'])->name('addWorkProgress');
     Route::get('/work-progress/edit/{id}', [PagesController::class, 'editWork'])->name('editWork');
     Route::put('/work-progress/update/{id}', [PagesController::class, 'updateWork'])->name('updateWork');

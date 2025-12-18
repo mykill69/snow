@@ -637,7 +637,7 @@
                             </div>
 
                         </div>
-
+{{-- 
                         <div class="row">
                             <div class="col-md-12">
 
@@ -645,11 +645,25 @@
 
                             </div>
 
+                        </div> --}}
+
+                        <div class="row">
+
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-header">
+
+                                        <iframe src="{{ route('ProjectProgress') }}"
+                                            style="width:100%; min-height:500px;; border:0;" loading="lazy">
+                                        </iframe>
+
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
 
 
-                    <!-- /.content -->
+                        <!-- /.content -->
         </section>
     </div>
     </div>

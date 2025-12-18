@@ -79,7 +79,7 @@
                                         <td>
                                             <a href="javascript:void(0)" class="open-gantt"
                                                 data-project-id="{{ $project->id }}">
-                                                {{ $project->project_name }}
+                                              <span class="text-primary"> {{ $project->project_name }}</span> 
                                             </a>
                                         </td>
                                         <td>
