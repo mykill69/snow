@@ -247,7 +247,7 @@
             var containerHeight = 450;
 
             // Calculate row height so all tasks fit inside container
-            var trackHeight = Math.max(25, Math.floor((containerHeight - 60) / tasks.length));
+            var trackHeight = Math.max(50, Math.floor((containerHeight - 80) / tasks.length));
 
             var options = {
                 height: containerHeight, // fixed height
@@ -266,7 +266,7 @@
                         strokeWidth: 2
                     },
                     criticalPathEnabled: false,
-                    barHeight: Math.floor(trackHeight * 0.7), // bar slightly smaller than track
+                    barHeight: Math.floor(trackHeight * 0.8), // bar slightly smaller than track
                 },
                 backgroundColor: '#f0f2f5',
                 tooltip: {
