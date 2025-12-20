@@ -79,7 +79,7 @@
                                         <td>
                                             <a href="javascript:void(0)" class="open-gantt"
                                                 data-project-id="{{ $project->id }}">
-                                              <span class="text-primary"> {{ $project->project_name }}</span> 
+                                                <span class="text-primary"> {{ $project->project_name }}</span>
                                             </a>
                                         </td>
                                         <td>
@@ -151,8 +151,10 @@
                     <hr>
 
                     <div class="card-body pb-5" id="projectTasksContainer">
-                        <h4 id="gantt_project_title" class="text-center fw-bold text-primary mb-3" style="font-size:24px;">
-                        </h4>
+                        <h3 id="gantt_project_title" class="text-center fw-bold text-primary mb-3" style="font-size:24px;">
+                        </h3>
+                        <small id="gantt_project_timeline" class="text-muted text-md text-center"></small>
+
 
                         <div id="gantt_chart"
                             style="width:100%; height:480px; border:1px solid #ddd; border-radius:8px; padding:10px; background:#f9f9f9; margin-bottom:20px;">
@@ -182,8 +184,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 
-
-    <script>
+    <!-- Gantt Chart Script 12-212-2025 -->
+    {{-- <script>
         google.charts.load('current', {
             packages: ['gantt']
         });
@@ -245,9 +247,12 @@
 
             // Fixed container height
             var containerHeight = 450;
+            var axisHeight = 60;
 
-            // Calculate row height so all tasks fit inside container
-            var trackHeight = Math.max(50, Math.floor((containerHeight - 80) / tasks.length));
+            var trackHeight = Math.max(
+                30,
+                Math.min(50, Math.floor((containerHeight - axisHeight) / tasks.length))
+            );
 
             var options = {
                 height: containerHeight, // fixed height
@@ -277,8 +282,138 @@
             var chart = new google.visualization.Gantt(document.getElementById('gantt_chart'));
             chart.draw(data, options);
         }
-    </script>
+    </script> --}}
 
+    <script>
+        google.charts.load('current', {
+            packages: ['gantt']
+        });
+        google.charts.setOnLoadCallback(registerGanttClick);
+
+        function registerGanttClick() {
+
+            $(document).on('click', '.open-gantt', function() {
+
+                var projectId = $(this).data('project-id');
+                var projectName = $(this).text().trim();
+
+                // Display project name above chart
+                $('#gantt_project_title').text(projectName);
+                $('#gantt_project_timeline').text(''); // clear previous timeline
+
+                $.ajax({
+                    url: "{{ url('/projects') }}/" + projectId + "/gantt",
+                    type: 'GET',
+                    success: function(response) {
+
+                        if (response.tasks && response.tasks.length > 0) {
+
+                            // Compute overall timeline
+                            let minStart = new Date(response.tasks[0].start_date);
+                            let maxEnd = new Date(response.tasks[0].end_date);
+
+                            response.tasks.forEach(task => {
+                                let start = new Date(task.start_date);
+                                let end = new Date(task.end_date);
+
+                                if (start < minStart) minStart = start;
+                                if (end > maxEnd) maxEnd = end;
+                            });
+
+                            // Display timeline below title
+                            const optionsFormat = {
+                                month: 'long',
+                                year: 'numeric'
+                            };
+                            let timelineText = minStart.toLocaleDateString('en-US', optionsFormat) +
+                                ' – ' +
+                                maxEnd.toLocaleDateString('en-US', optionsFormat);
+                            $('#gantt_project_timeline').text(timelineText);
+
+                            // Draw Gantt chart
+                            drawGanttChart(response.tasks, minStart, maxEnd);
+
+                        } else {
+                            alert('No tasks with valid dates to display.');
+                        }
+                    },
+                    error: function(xhr) {
+                        console.error(xhr.status, xhr.responseText);
+                        alert('Failed to load Gantt chart data.');
+                    }
+                });
+            });
+        }
+
+        function drawGanttChart(tasks, minStart, maxEnd) {
+
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Task ID');
+            data.addColumn('string', 'Task Name');
+            data.addColumn('string', 'Resource');
+            data.addColumn('date', 'Start Date');
+            data.addColumn('date', 'End Date');
+            data.addColumn('number', 'Duration');
+            data.addColumn('number', 'Percent Complete');
+            data.addColumn('string', 'Dependencies');
+
+            tasks.forEach(function(task, index) {
+                data.addRow([
+                    'T' + index,
+                    task.task_name,
+                    'System Development',
+                    new Date(task.start_date),
+                    new Date(task.end_date),
+                    null,
+                    task.progress,
+                    null
+                ]);
+            });
+
+            // Fixed container height
+            var containerHeight = 450;
+            var axisHeight = 60;
+
+            var trackHeight = Math.max(
+                30,
+                Math.min(50, Math.floor((containerHeight - axisHeight) / tasks.length))
+            );
+
+            // Force start date a little earlier to show first month label
+            var paddedStart = new Date(minStart.getFullYear(), minStart.getMonth() - 1, 1);
+
+            var options = {
+                height: containerHeight,
+                gantt: {
+                    trackHeight: trackHeight,
+                    barCornerRadius: 6,
+                    labelStyle: {
+                        fontName: 'Arial',
+                        fontSize: 14,
+                        color: '#333',
+                        bold: true
+                    },
+                    percentStyle: {
+                        fill: '#4CAF50',
+                        stroke: '#388E3C',
+                        strokeWidth: 2
+                    },
+                    criticalPathEnabled: false,
+                    barHeight: Math.floor(trackHeight * 0.8)
+                },
+                hAxis: {
+                    minValue: paddedStart
+                },
+                backgroundColor: '#f0f2f5',
+                tooltip: {
+                    isHtml: true
+                }
+            };
+
+            var chart = new google.visualization.Gantt(document.getElementById('gantt_chart'));
+            chart.draw(data, options);
+        }
+    </script>
 
 
     {{-- 
