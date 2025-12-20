@@ -241,7 +241,7 @@
                                                         $clientTypes = [
                                                             '1' => 'CPSU Employee<br>
                                                                     (if service/transaction is requested and availed by an individual employee)
-                                                                ',
+',
                                                             '2' => 'CPSU Office/Unit<br>
                                                                     (if service/transaction is requested and availed by another CPSU Office/Unit)',
                                                             '3' => 'CPSU Student',
@@ -322,6 +322,20 @@
                                                                 {{ $adminUser->fname }} {{ $adminUser->lname }}
                                                             </option>
                                                         @endforeach
+                                                    </select>
+                                                </div>
+
+                                                <!-- Rating Dropdown -->
+                                                <div class="col-md-2">
+                                                    <label for="rating">Rating</label>
+                                                    <select name="rating" class="form-control">
+                                                        <option value="">-- All Ratings --</option>
+                                                        @for ($i = 5; $i >= 1; $i--)
+                                                            <option value="{{ $i }}"
+                                                                {{ request('rating') == $i ? 'selected' : '' }}>
+                                                                {{ $i }} Star{{ $i > 1 ? 's' : '' }}
+                                                            </option>
+                                                        @endfor
                                                     </select>
                                                 </div>
 

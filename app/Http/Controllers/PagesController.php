@@ -771,20 +771,83 @@ $pieData = $categoryCounts->pluck('total')->toArray();
 //         $q->whereDate('created_at', $request->date_taken_from);
 //     })
 //     ->get();
+// $feedbackReports = Feedback::with('user')
+//     ->leftJoin('ticket_dtl', 'ticket_dtl.ticket_no', '=', 'feedback.ticket_no')
+//     ->select('feedback.*', 'ticket_dtl.admin_id')
+//     ->when($request->filled('date_taken_from') && $request->filled('date_taken_to'), function ($q) use ($request) {
+//         $q->whereBetween('feedback.created_at', [$request->date_taken_from, $request->date_taken_to]);
+//     })
+//     ->when($request->filled('date_taken_from') && !$request->filled('date_taken_to'), function ($q) use ($request) {
+//         $q->whereDate('feedback.created_at', $request->date_taken_from);
+//     })
+//     ->when($request->filled('admin_id'), function ($q) use ($request) {
+//         $q->where('ticket_dtl.admin_id', $request->admin_id); // filter by selected MIS Personnel
+//     })
+//     ->get();
+
+// $feedbackReports = Feedback::with('user')
+//     ->leftJoin('ticket_dtl', 'ticket_dtl.ticket_no', '=', 'feedback.ticket_no')
+//     ->select('feedback.*', 'ticket_dtl.admin_id')
+
+//     // Filter by feedback.created_at ONLY
+//     ->when(
+//         $request->filled('date_taken_from') && $request->filled('date_taken_to'),
+//         function ($q) use ($request) {
+//             $q->whereBetween('feedback.created_at', [
+//                 $request->date_taken_from . ' 00:00:00',
+//                 $request->date_taken_to . ' 23:59:59',
+//             ]);
+//         }
+//     )
+//     ->when(
+//         $request->filled('date_taken_from') && !$request->filled('date_taken_to'),
+//         function ($q) use ($request) {
+//             $q->whereDate('feedback.created_at', $request->date_taken_from);
+//         }
+//     )
+
+//     // Filter by MIS Personnel
+//     ->when($request->filled('admin_id'), function ($q) use ($request) {
+//         $q->where('ticket_dtl.admin_id', $request->admin_id);
+//     })
+//     ->get();
+
+
 $feedbackReports = Feedback::with('user')
     ->leftJoin('ticket_dtl', 'ticket_dtl.ticket_no', '=', 'feedback.ticket_no')
     ->select('feedback.*', 'ticket_dtl.admin_id')
-    ->when($request->filled('date_taken_from') && $request->filled('date_taken_to'), function ($q) use ($request) {
-        $q->whereBetween('feedback.created_at', [$request->date_taken_from, $request->date_taken_to]);
-    })
-    ->when($request->filled('date_taken_from') && !$request->filled('date_taken_to'), function ($q) use ($request) {
-        $q->whereDate('feedback.created_at', $request->date_taken_from);
-    })
+
+    // DATE FILTER (feedback.created_at only)
+    ->when(
+        $request->filled('date_taken_from') && $request->filled('date_taken_to'),
+        function ($q) use ($request) {
+            $q->whereBetween('feedback.created_at', [
+                Carbon::parse($request->date_taken_from)->startOfDay(),
+                Carbon::parse($request->date_taken_to)->endOfDay(),
+            ]);
+        }
+    )
+    ->when(
+        $request->filled('date_taken_from') && !$request->filled('date_taken_to'),
+        function ($q) use ($request) {
+            $q->whereDate('feedback.created_at', $request->date_taken_from);
+        }
+    )
+
+    // MIS Personnel filter
     ->when($request->filled('admin_id'), function ($q) use ($request) {
-        $q->where('ticket_dtl.admin_id', $request->admin_id); // filter by selected MIS Personnel
+        $q->where('ticket_dtl.admin_id', $request->admin_id);
     })
+
+    // ⭐ Rating filter
+    ->when($request->filled('rating'), function ($q) use ($request) {
+        $q->where('feedback.rating', $request->rating);
+    })
+
     ->get();
 
+// Average rating AFTER filters
+$feedbackAverage = $feedbackReports->avg('rating');
     $adminUsers = User::where('role', 'administrator')->get();
 
 // Compute average feedback rating
