@@ -300,7 +300,7 @@
 
 
     <!-- ./wrapper -->
-    <script src="{{ asset('template/plugins/jquery/jquery.min.js') }}"></script>
+    {{-- <script src="{{ asset('template/plugins/jquery/jquery.min.js') }}"></script> --}}
 
     <!-- Bootstrap 4 -->
     <script src="{{ asset('template/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
