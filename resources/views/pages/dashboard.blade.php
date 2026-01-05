@@ -687,7 +687,7 @@
     </section>
 
     <!-- jQuery -->
-    <script src="template/plugins/jquery/jquery.min.js"></script>
+    {{-- <script src="template/plugins/jquery/jquery.min.js"></script> --}}
     <!-- Bootstrap 4 -->
     {{-- <script src="template/plugins/bootstrap/js/bootstrap.bundle.min.js"></script> --}}
     <!-- ChartJS -->
