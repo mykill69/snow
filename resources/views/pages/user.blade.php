@@ -17,7 +17,7 @@
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h3 class="card-title">List of Registered Users</h3>
                             <button type="button" class="btn btn-success" data-toggle="modal"
-                                data-target="#exampleModalUser" style="margin-left: auto; margin-right: 20px;">
+                                data-target="#UserAdd" style="margin-left: auto; margin-right: 20px;">
                                 <i class="fa fa-plus"></i> Add User
                             </button>
                         </div>
@@ -129,7 +129,7 @@
             </div>
         </div>
     </div>
-    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="{{ asset('template/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
