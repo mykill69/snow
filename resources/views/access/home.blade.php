@@ -383,8 +383,9 @@
                                                             </td>
                                                             <td>{{ $ticket->status == 3 ? \Carbon\Carbon::parse($ticket->created_at)->diffForHumans($ticket->updated_at, true) : 'In Progress' }}
                                                             </td>
-                                                            @if ($status == 3)
+                                                          
                                                                 <td>
+                                                                      @if ($status == 3)
                                                                     @if ($ticket->survey == 1)
                                                                         <button class="btn btn-sm btn-secondary"
                                                                             disabled>Survey Submitted</button>
