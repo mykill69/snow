@@ -340,17 +340,28 @@ public function storeTask(Request $request)
 
     return response()->json($task->load('user'));
 }
+// public function updateTaskDate(Request $request)
+// {
+//     $task = Task::find($request->id);
+
+//     $task->start_date = $request->start;
+//     $task->end_date = $request->end;
+
+//     if ($request->color) {
+//         $task->color = $request->color; // ✅ SAVE COLOR
+//     }
+
+//     $task->save();
+
+//     return response()->json(['success' => true]);
+// }
+
 public function updateTaskDate(Request $request)
 {
     $task = Task::find($request->id);
-
     $task->start_date = $request->start;
     $task->end_date = $request->end;
-
-    if ($request->color) {
-        $task->color = $request->color; // ✅ SAVE COLOR
-    }
-
+    if ($request->color) $task->color = $request->color;
     $task->save();
 
     return response()->json(['success' => true]);

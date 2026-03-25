@@ -8,6 +8,13 @@
         padding: 0 10px;
         margin-top: 0.31rem;
     }
+
+    #calendar {
+        height: calc(103vh - 200px);
+        /* adjusts based on viewport height minus header/footer */
+        max-height: 1000px;
+        /* caps maximum height */
+    }
 </style>
 
 @section('body')
@@ -61,12 +68,9 @@
                                                                     class="fas fa-square"></i></a></li>
                                                     </ul>
                                                 </div>
-
                                                 <div class="input-group mb-2">
-                                                    <input id="new-event" type="text" class="form-control"
-                                                        placeholder="Event Title">
+                                                    <textarea id="new-event" class="form-control" placeholder="Event Title" rows="3"></textarea>
                                                 </div>
-
                                                 <div class="input-group mb-2">
                                                     <select id="task-status" class="form-control">
                                                         <option value="pending">Pending</option>
@@ -86,7 +90,7 @@
                                     <div class="col-md-9">
                                         <div class="card card-primary">
                                             <div class="card-body p-4">
-                                                <div id="calendar"></div>
+                                                <div id="calendar" style="height: 500px;width: auto;"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -136,7 +140,7 @@
     <script src="{{ asset('template/plugins/moment/moment.min.js') }}"></script>
     <script src="{{ asset('template/plugins/fullcalendar/main.js') }}"></script>
 
-    <script>
+    {{-- <script>
         $(function() {
             const colorMap = {
                 'text-primary': 'rgb(0, 123, 255)',
@@ -229,7 +233,7 @@
                         id: taskId,
                         title: info.draggedEl.innerText.split(' (')[0], // just the title
                         status: info.draggedEl.innerText.match(/\((.*?)\)/)[
-                        1], // extract status
+                            1], // extract status
                         start: start,
                         end: start,
                         backgroundColor: bgColor,
@@ -258,7 +262,37 @@
 
             calendar.render();
 
-            var currColor = 'rgb(0, 115, 183)'; // default
+            eventDrop: function(info) {
+                    let taskId = info.event.id;
+                    let start = info.event.startStr;
+                    let end = info.event.endStr ?? info.event.startStr; // fallback for single-day events
+
+                    $.post("{{ route('tasks.updateDate') }}", {
+                        _token: "{{ csrf_token() }}",
+                        id: taskId,
+                        start: start,
+                        end: end
+                    }, function(res) {
+                        console.log('Event updated', res);
+                    });
+                },
+
+                eventResize: function(info) {
+                    let taskId = info.event.id;
+                    let start = info.event.startStr;
+                    let end = info.event.endStr ?? info.event.startStr;
+
+                    $.post("{{ route('tasks.updateDate') }}", {
+                        _token: "{{ csrf_token() }}",
+                        id: taskId,
+                        start: start,
+                        end: end
+                    }, function(res) {
+                        console.log('Event resized', res);
+                    });
+                },
+
+                var currColor = 'rgb(0, 115, 183)'; // default
             $('#color-chooser > li > a').click(function(e) {
                 e.preventDefault();
                 let classes = $(this).attr('class').split(/\s+/);
@@ -319,6 +353,216 @@
                     $('#statusModal').modal('hide');
                 });
             });
+        });
+    </script> --}}
+
+    <script>
+        $(function() {
+            const colorMap = {
+                'text-primary': 'rgb(0, 123, 255)',
+                'text-warning': 'rgb(255, 193, 7)',
+                'text-success': 'rgb(25, 105, 44)',
+                'text-danger': 'rgb(220, 53, 69)',
+                'text-muted': 'rgb(108, 117, 125)'
+            };
+
+            function ini_events(ele) {
+                ele.each(function() {
+                    var eventObject = {
+                        title: $.trim($(this).text())
+                    };
+                    $(this).data('eventObject', eventObject);
+                    $(this).draggable({
+                        zIndex: 1070,
+                        revert: true,
+                        revertDuration: 0
+                    });
+                });
+            }
+
+            ini_events($('#external-events div.external-event'));
+
+            var Calendar = FullCalendar.Calendar;
+            var Draggable = FullCalendar.Draggable;
+
+            var containerEl = document.getElementById('external-events');
+            var checkbox = document.getElementById('drop-remove');
+            var calendarEl = document.getElementById('calendar');
+
+            new Draggable(containerEl, {
+                itemSelector: '.external-event',
+                eventData: function(eventEl) {
+                    return {
+                        title: eventEl.innerText,
+                        id: eventEl.getAttribute('data-id'),
+                        backgroundColor: window.getComputedStyle(eventEl).backgroundColor,
+                        borderColor: window.getComputedStyle(eventEl).backgroundColor
+                    };
+                }
+            });
+
+            var calendar = new Calendar(calendarEl, {
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                themeSystem: 'bootstrap',
+                editable: true,
+                droppable: true,
+                eventResizableFromStart: true,
+                eventDurationEditable: true,
+
+                events: [
+                    @foreach ($tasks as $task)
+                        @if ($task->start_date)
+                            {
+                                id: '{{ $task->id }}',
+                                title: '{{ $task->title }}',
+                                status: '{{ $task->status }}',
+                                user: '{{ $task->user->fname }} {{ $task->user->lname }}',
+                                start: '{{ $task->start_date }}',
+                                end: '{{ $task->end_date }}',
+                                backgroundColor: '{{ $task->color ?? 'rgb(0, 115, 183)' }}',
+                                borderColor: '{{ $task->color ?? 'rgb(0, 115, 183)' }}'
+                            },
+                        @endif
+                    @endforeach
+                ],
+
+                eventContent: function(info) {
+                    return {
+                        html: `<div><strong>${info.event.title}</strong></div>
+                       <div style="font-size:0.85em;color:#fff;">${info.event.extendedProps.user}</div>
+                       <div style="font-size:0.85em;color:#fff;">${info.event.extendedProps.status}</div>`
+                    };
+                },
+
+                drop: function(info) {
+                    let taskId = info.draggedEl.getAttribute('data-id');
+                    let start = info.dateStr;
+                    let bgColor = window.getComputedStyle(info.draggedEl).backgroundColor;
+
+                    calendar.addEvent({
+                        id: taskId,
+                        title: info.draggedEl.innerText.split(' (')[0],
+                        status: info.draggedEl.innerText.match(/\((.*?)\)/)[1],
+                        start: start,
+                        end: start,
+                        backgroundColor: bgColor,
+                        borderColor: bgColor
+                    });
+
+                    $.post("{{ route('tasks.updateDate') }}", {
+                        _token: "{{ csrf_token() }}",
+                        id: taskId,
+                        start: start,
+                        end: start,
+                        color: bgColor
+                    });
+
+                    if (checkbox.checked) info.draggedEl.remove();
+                },
+
+                eventDrop: function(info) {
+                    let taskId = info.event.id;
+                    let start = info.event.startStr;
+                    let end = info.event.endStr ?? info.event.startStr;
+
+                    $.post("{{ route('tasks.updateDate') }}", {
+                        _token: "{{ csrf_token() }}",
+                        id: taskId,
+                        start: start,
+                        end: end
+                    });
+                },
+
+                eventResize: function(info) {
+                    let taskId = info.event.id;
+                    let start = info.event.startStr;
+                    let end = info.event.endStr ?? info.event.startStr;
+
+                    $.post("{{ route('tasks.updateDate') }}", {
+                        _token: "{{ csrf_token() }}",
+                        id: taskId,
+                        start: start,
+                        end: end
+                    });
+                },
+
+                eventClick: function(info) {
+                    let event = info.event;
+                    $('#modalTaskId').val(event.id);
+                    $('#modalTaskStatus').val(event.extendedProps.status);
+                    $('#statusModal').modal('show');
+                }
+            });
+
+            calendar.render();
+
+            var currColor = 'rgb(0, 115, 183)'; // default
+
+            $('#color-chooser > li > a').click(function(e) {
+                e.preventDefault();
+                let classes = $(this).attr('class').split(/\s+/);
+                let bootstrapClass = classes.find(c => colorMap[c]);
+                currColor = bootstrapClass ? colorMap[bootstrapClass] : currColor;
+
+                $('#color-chooser a').removeClass('active');
+                $(this).addClass('active');
+
+                $('#add-new-event').css({
+                    'background-color': currColor,
+                    'border-color': currColor
+                });
+            });
+
+            $('#add-new-event').click(function(e) {
+                e.preventDefault();
+                let title = $('#new-event').val();
+                let status = $('#task-status').val();
+                if (!title.length) return;
+
+                $.post("{{ route('tasks.store') }}", {
+                    _token: "{{ csrf_token() }}",
+                    title: title,
+                    status: status,
+                    color: currColor
+                }, function(task) {
+                    let event = $('<div />').addClass('external-event').attr('data-id', task.id)
+                        .css({
+                            'background-color': task.color ?? currColor,
+                            'border-color': task.color ?? currColor,
+                            'color': '#fff'
+                        })
+                        .text(task.title + " (" + task.status + ") - " + task.user.fname + " " +
+                            task.user.lname);
+
+                    $('#external-events').prepend(event);
+                    ini_events(event);
+                    $('#new-event').val('');
+                });
+            });
+
+            $('#updateStatusForm').submit(function(e) {
+                e.preventDefault();
+                let id = $('#modalTaskId').val();
+                let status = $('#modalTaskStatus').val();
+
+                $.post("{{ route('tasks.updateStatus') }}", {
+                    _token: "{{ csrf_token() }}",
+                    id: id,
+                    status: status
+                }, function(res) {
+                    let event = calendar.getEventById(id);
+                    if (event) {
+                        event.setExtendedProp('status', status);
+                        event.setProp('title', event.title.replace(/\((.*?)\)/, `(${status})`));
+                    }
+                    $('#statusModal').modal('hide');
+                });
+            });
+
         });
     </script>
 @endsection
