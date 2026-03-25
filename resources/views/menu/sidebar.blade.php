@@ -108,9 +108,20 @@
 
         <!-- Reports Dropdown -->
         <li
-            class="nav-item has-treeview {{ request()->routeIs('ticketReports*') || request()->routeIs('ganttReports') ? 'menu-open' : '' }}">
+            class="nav-item has-treeview 
+    {{ request()->routeIs('ticketReports*') ||
+    request()->routeIs('ganttReports') ||
+    request()->routeIs('taskCalendar')
+        ? 'menu-open'
+        : '' }}">
+
             <a href="#"
-                class="nav-link {{ request()->routeIs('ticketReports*') || request()->routeIs('ganttReports') ? 'active' : '' }}">
+                class="nav-link 
+        {{ request()->routeIs('ticketReports*') ||
+        request()->routeIs('ganttReports') ||
+        request()->routeIs('taskCalendar')
+            ? 'active'
+            : '' }}">
                 <i class="fas fa-chart-bar nav-icon"></i>
                 <p>
                     Reports
@@ -130,6 +141,13 @@
                         class="nav-link {{ request()->routeIs('displayProject') ? 'active' : '' }}">
                         <i class="far fa-circle nav-icon"></i>
                         <p>Progress Report</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('taskCalendar') }}"
+                        class="nav-link {{ request()->routeIs('taskCalendar') ? 'active' : '' }}">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Task Calendar</p>
                     </a>
                 </li>
             </ul>

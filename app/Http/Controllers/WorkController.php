@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\Task;
 use Illuminate\Http\JsonResponse;
 
 class WorkController extends Controller
@@ -319,5 +320,54 @@ public function ProjectProgress()
 }
 
 
+public function taskCalendar()
+{
+   
+
+    $tasks = Task::with('user')->get();
+
+    return view('calendar.task_calendar', compact('tasks'));
+}
+
+public function storeTask(Request $request)
+{
+    $task = Task::create([
+        'title' => $request->title,
+        'status' => $request->status,
+        'color' => $request->color, // ✅ SAVE COLOR
+        'user_id' => auth()->id(),
+    ]);
+
+    return response()->json($task->load('user'));
+}
+public function updateTaskDate(Request $request)
+{
+    $task = Task::find($request->id);
+
+    $task->start_date = $request->start;
+    $task->end_date = $request->end;
+
+    if ($request->color) {
+        $task->color = $request->color; // ✅ SAVE COLOR
+    }
+
+    $task->save();
+
+    return response()->json(['success' => true]);
+}
+
+public function updateTaskStatus(Request $request)
+{
+    $task = Task::find($request->id);
+
+    if ($task) {
+        $task->status = $request->status;
+        $task->save();
+
+        return response()->json(['success' => true]);
+    }
+
+    return response()->json(['success' => false], 404);
+}
 
 }

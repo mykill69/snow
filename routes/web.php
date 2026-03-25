@@ -47,6 +47,10 @@ Route::group(['middleware'=>['guest']],function(){
     Route::get('/reports-pages/gantt-chart', [WorkController::class, 'displayProject'])->name('displayProject');
     Route::post('/reports-pages/add-project', [WorkController::class, 'addProject'])->name('addProject');
 
+    Route::get('/reports-pages/task-calendar', [WorkController::class, 'taskCalendar'])->name('taskCalendar');
+    Route::post('/tasks/store', [WorkController::class, 'storeTask'])->name('tasks.store');
+    Route::post('/tasks/update-date', [WorkController::class, 'updateTaskDate'])->name('tasks.updateDate');
+    Route::post('/tasks/update-status', [WorkController::class, 'updateTaskStatus'])->name('tasks.updateStatus');
 
     Route::get('/project-progress', [WorkController::class, 'ProjectProgress'])->name('ProjectProgress');
 

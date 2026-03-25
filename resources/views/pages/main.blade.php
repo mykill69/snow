@@ -18,6 +18,7 @@
     <!-- Toastr -->
     <link rel="stylesheet" href="{{ asset('template/plugins/toastr/toastr.min.css') }}">
 
+    <link rel="stylesheet" href="{{ asset('template/plugins/fullcalendar/main.css') }}">
     <!-- SweetAlert2 -->
     <link rel="stylesheet" href="{{ asset('template/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
     <!-- Font Awesome -->
