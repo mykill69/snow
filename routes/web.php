@@ -34,6 +34,7 @@ Route::group(['middleware'=>['guest']],function(){
     Route::get('/tickets', [PagesController::class, 'allTickets'])->name('allTickets');
     Route::get('/my-tickets', [PagesController::class, 'myTickets'])->name('myTickets');
     Route::get('/auditTrails-logs', [PagesController::class, 'auditLogs'])->name('auditLogs');
+    Route::get('/auditTrails-logs/calendar', [PagesController::class, 'calendarLogs'])->name('auditLogs.calendar');
     Route::get('/articles', [PagesController::class, 'articles'])->name('articles');
     // Route::get('/reports-page', [PagesController::class, 'reportsPage'])->name('reportsPage');
 

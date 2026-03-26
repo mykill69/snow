@@ -11,6 +11,7 @@ use App\Models\Article;
 use App\Models\Comments;
 use App\Models\Feedback;
 use App\Models\WorkProgress;
+use App\Models\CalendarLog;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -651,6 +652,15 @@ public function auditLogs()
     $allComments = Comments::all();
     return view('pages.auditLogs', compact('allLogs', 'allComments'));
 } 
+
+public function calendarLogs()
+{
+    $logs = CalendarLog::with('user')
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+    return view('pages.calendarLogs', compact('logs'));
+}
 
 public function articles()
 {

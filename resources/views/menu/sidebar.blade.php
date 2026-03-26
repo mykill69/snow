@@ -174,11 +174,43 @@
             </a>
         </li>
 
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <a href="{{ route('auditLogs') }}" class="nav-link {{ request()->routeIs('auditLogs') ? 'active' : '' }}">
                 <i class="fas fa-clipboard-list nav-icon"></i>
                 <p>Audit Trails & Logs</p>
             </a>
+        </li> --}}
+
+        <li class="nav-item {{ request()->routeIs('auditLogs*') ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ request()->routeIs('auditLogs*') ? 'active' : '' }}">
+                <i class="fas fa-clipboard-list nav-icon"></i>
+                <p>
+                    Audit Trails & Logs
+                    <i class="right fas fa-angle-left"></i>
+                </p>
+            </a>
+
+            <ul class="nav nav-treeview">
+
+                <!-- Ticket Logs -->
+                <li class="nav-item">
+                    <a href="{{ route('auditLogs') }}"
+                        class="nav-link {{ request()->routeIs('auditLogs') ? 'active' : '' }}">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Ticket Logs</p>
+                    </a>
+                </li>
+
+                <!-- Task Calendar Logs -->
+                <li class="nav-item">
+                    <a href="{{ route('auditLogs.calendar') }}"
+                        class="nav-link {{ request()->routeIs('auditLogs.calendar') ? 'active' : '' }}">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Task Calendar Logs</p>
+                    </a>
+                </li>
+
+            </ul>
         </li>
 
     </ul>

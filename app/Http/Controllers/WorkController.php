@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Task;
+use App\Models\CalendarLog;
 use Illuminate\Http\JsonResponse;
 
 class WorkController extends Controller
@@ -323,7 +324,6 @@ public function ProjectProgress()
 public function taskCalendar()
 {
    
-
     $tasks = Task::with('user')->get();
 
     return view('calendar.task_calendar', compact('tasks'));
@@ -334,62 +334,55 @@ public function storeTask(Request $request)
     $task = Task::create([
         'title' => $request->title,
         'status' => $request->status,
-        'color' => $request->color, // ✅ SAVE COLOR
+        'color' => $request->color, 
         'user_id' => auth()->id(),
+    ]);
+
+    // Log creation
+    CalendarLog::create([
+        'task_id' => $task->id,
+        'user_id' => auth()->id(),
+        'action' => 'created',
+        'old_title' => $task->title,
+        'new_title' => $task->title,
+        'old_status' => null,
+        'new_status' => $task->status,
+        'old_start_date' => null,
+        'new_start_date' => $task->start_date,
+        'old_end_date' => null,
+        'new_end_date' => $task->end_date,
+        'remarks' => $request->remarks ?? null,
     ]);
 
     return response()->json($task->load('user'));
 }
-// public function updateTaskDate(Request $request)
-// {
-//     $task = Task::find($request->id);
-
-//     $task->start_date = $request->start;
-//     $task->end_date = $request->end;
-
-//     if ($request->color) {
-//         $task->color = $request->color; // ✅ SAVE COLOR
-//     }
-
-//     $task->save();
-
-//     return response()->json(['success' => true]);
-// }
-
-// public function updateTaskDate(Request $request)
-// {
-//     $task = Task::find($request->id);
-//     $task->start_date = $request->start;
-//     $task->end_date = $request->end;
-//     if ($request->color) $task->color = $request->color;
-//     $task->save();
-
-//     return response()->json(['success' => true]);
-// }
 
 public function updateTaskDate(Request $request)
 {
     $task = Task::find($request->id);
 
-    // ❌ Task not found
-    if (!$task) {
-        return response()->json(['success' => false], 404);
-    }
+    if (!$task) return response()->json(['success' => false], 404);
+    if (auth()->id() != $task->user_id) return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
 
-    // ❌ Not owner
-    if (auth()->id() != $task->user_id) {
-        return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
-    }
+    // Save old dates for logging
+    $old_start = $task->start_date;
+    $old_end = $task->end_date;
 
-    // ✅ Allowed
     $task->start_date = $request->start;
     $task->end_date = $request->end;
-
-    if ($request->color) {
-        $task->color = $request->color;
-    }
-
+    if ($request->color) $task->color = $request->color;
     $task->save();
+
+    // Log date change
+    CalendarLog::create([
+        'task_id' => $task->id,
+        'user_id' => auth()->id(),
+        'action' => 'date_changed',
+        'old_start_date' => $old_start,
+        'new_start_date' => $task->start_date,
+        'old_end_date' => $old_end,
+        'new_end_date' => $task->end_date,
+    ]);
 
     return response()->json(['success' => true]);
 }
@@ -398,38 +391,96 @@ public function updateTaskDate(Request $request)
 // {
 //     $task = Task::find($request->id);
 
-//     if ($task) {
-//         $task->status = $request->status;
-//         $task->remarks = $request->remarks;
-//         $task->save();
-
-//         return response()->json(['success' => true]);
+//     if (!$task) {
+//         return response()->json(['success' => false, 'message' => 'Task not found'], 404);
 //     }
 
-//     return response()->json(['success' => false], 404);
-// }
+//     if (auth()->id() != $task->user_id) {
+//         return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+//     }
 
+//     // Store old values for logging
+//     $old_title = $task->title;
+//     $old_status = $task->status;
+//     $old_start_date = $task->start_date;
+//     $old_end_date = $task->end_date;
+//     $old_remarks = $task->remarks;
+
+//     // Update task
+//     $task->title = $request->title;
+//     $task->status = $request->status;
+//     $task->remarks = $request->remarks;
+//     $task->save();
+
+//     // Log all changes
+//     CalendarLog::create([
+//         'task_id' => $task->id,
+//         'user_id' => auth()->id(),
+//         'action' => 'update_task',
+//         'old_title' => $old_title,
+//         'new_title' => $task->title,
+//         'old_status' => $old_status,
+//         'new_status' => $task->status,
+//         'remarks' => $request->remarks,
+//         'old_start_date' => $old_start_date,
+//         'new_start_date' => $task->start_date,
+//         'old_end_date' => $old_end_date,
+//         'new_end_date' => $task->end_date,
+//     ]);
+
+//     return response()->json([
+//         'success' => true,
+//         'message' => 'Task updated successfully',
+//         'task' => $task
+//     ]);
+// }
 
 public function updateTaskStatus(Request $request)
 {
     $task = Task::find($request->id);
 
-    // ❌ Task not found
     if (!$task) {
-        return response()->json(['success' => false], 404);
+        return response()->json(['success' => false, 'message' => 'Task not found'], 404);
     }
 
-    // ❌ Not owner
     if (auth()->id() != $task->user_id) {
         return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
     }
 
-    // ✅ Allowed
+    $old_status = $task->status;
+    $old_start_date = $task->start_date;
+    $old_end_date = $task->end_date;
+    $old_remarks = $task->remarks;
+    $old_title = $task->title;
+
+    // Update task
+    $task->title = $request->title;
     $task->status = $request->status;
     $task->remarks = $request->remarks;
     $task->save();
 
-    return response()->json(['success' => true]);
+    // Log changes
+    CalendarLog::create([
+        'task_id' => $task->id,
+        'user_id' => auth()->id(),
+        'action' => 'update_task',
+        'old_title' => $old_title,
+        'new_title' => $task->title,
+        'old_status' => $old_status,
+        'new_status' => $task->status,
+        'old_start_date' => $old_start_date,
+        'new_start_date' => $task->start_date,
+        'old_end_date' => $old_end_date,
+        'new_end_date' => $task->end_date,
+        'remarks' => $request->remarks,
+    ]);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Task updated successfully',
+        'task' => $task
+    ]);
 }
+
 
 }

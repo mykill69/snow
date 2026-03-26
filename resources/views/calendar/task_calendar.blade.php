@@ -65,6 +65,9 @@
         color: #fff;
     }
 </style>
+<!-- Bootstrap 5 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
 
 @section('body')
     <div class="content-wrapper">
@@ -167,19 +170,27 @@
     </div>
 
     <!-- Bootstrap modal for editing status -->
-    <div class="modal fade" id="statusModal" tabindex="-1" role="dialog">
+    <div class="modal fade" id="statusModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <form id="updateStatusForm">
                     @csrf
                     <div class="modal-header">
-                        <h5 class="modal-title">Update Task Status</h5>
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h5 class="modal-title">Update Task</h5>
+                        <!-- Bootstrap 5 close button -->
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
                     <div class="modal-body">
                         <input type="hidden" id="modalTaskId">
-                        <div class="form-group">
+
+                        <div class="form-group mb-2">
+                            <label>Title</label>
+                            <input type="text" id="modalTaskTitle" class="form-control"
+                                placeholder="Enter task title">
+                        </div>
+
+                        <div class="form-group mb-2">
                             <label>Status</label>
                             <select id="modalTaskStatus" class="form-control">
                                 <option value="PENDING">Pending</option>
@@ -188,7 +199,8 @@
                                 <option value="DONE">Done</option>
                             </select>
                         </div>
-                        <div class="form-group mt-2">
+
+                        <div class="form-group">
                             <label>Remarks</label>
                             <textarea id="modalTaskRemarks" class="form-control" rows="3" placeholder="Enter remarks..."></textarea>
                         </div>
@@ -196,12 +208,16 @@
 
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">Save changes</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
+
+
+    <!-- Bootstrap 5 JS Bundle (includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <script src="{{ asset('template/plugins/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('template/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
@@ -374,6 +390,7 @@
                 eventClick: function(info) {
                     let event = info.event;
                     $('#modalTaskId').val(event.id);
+                    $('#modalTaskTitle').val(event.title); // ✅ populate title
                     $('#modalTaskStatus').val(event.extendedProps.status);
                     $('#modalTaskRemarks').val(event.extendedProps.remarks ?? '');
                     $('#statusModal').modal('show');
@@ -430,27 +447,53 @@
                 e.preventDefault();
 
                 let id = $('#modalTaskId').val();
+                let title = $('#modalTaskTitle').val();
                 let status = $('#modalTaskStatus').val();
-                let remarks = $('#modalTaskRemarks').val(); // ✅ NEW
+                let remarks = $('#modalTaskRemarks').val();
 
                 $.post("{{ route('tasks.updateStatus') }}", {
-                    _token: "{{ csrf_token() }}",
-                    id: id,
-                    status: status,
-                    remarks: remarks // ✅ SEND
-                }, function(res) {
+                        _token: "{{ csrf_token() }}",
+                        id: id,
+                        title: title,
+                        status: status,
+                        remarks: remarks
+                    })
+                    .done(function(res) {
+                        if (res.success) {
+                            // Update the calendar event
+                            let event = calendar.getEventById(id);
+                            if (event) {
+                                event.setProp('title', title);
+                                event.setExtendedProp('status', status);
+                                event.setExtendedProp('remarks', remarks);
+                                event.setProp('display', 'auto');
+                            }
 
-                    let event = calendar.getEventById(id);
+                            // ✅ Bootstrap 4 way to close modal
+                            $('#statusModal').modal('hide');
 
-                    if (event) {
-                        event.setExtendedProp('status', status);
-                        event.setExtendedProp('remarks', remarks);
-
-                        event.setProp('display', 'auto'); // force re-render
-                    }
-
-                    $('#statusModal').modal('hide');
-                });
+                            // ✅ Show Toastr success message
+                            toastr.success(res.message, 'Success', {
+                                timeOut: 3000,
+                                closeButton: true,
+                                progressBar: true
+                            });
+                        } else {
+                            toastr.error(res.message || 'Failed to update task.', 'Error', {
+                                timeOut: 3000,
+                                closeButton: true,
+                                progressBar: true
+                            });
+                        }
+                    })
+                    .fail(function(xhr) {
+                        let msg = xhr.responseJSON?.message || 'Something went wrong.';
+                        toastr.error(msg, 'Error', {
+                            timeOut: 3000,
+                            closeButton: true,
+                            progressBar: true
+                        });
+                    });
             });
 
         });
