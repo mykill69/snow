@@ -20,6 +20,7 @@ return new class extends Migration
         $table->date('end_date')->nullable();
         $table->string('status')->default('pending');
         $table->unsignedBigInteger('user_id');
+        $table->string('remarks')->nullable();
         $table->string('color');
         $table->timestamps();
     });

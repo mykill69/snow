@@ -356,29 +356,80 @@ public function storeTask(Request $request)
 //     return response()->json(['success' => true]);
 // }
 
+// public function updateTaskDate(Request $request)
+// {
+//     $task = Task::find($request->id);
+//     $task->start_date = $request->start;
+//     $task->end_date = $request->end;
+//     if ($request->color) $task->color = $request->color;
+//     $task->save();
+
+//     return response()->json(['success' => true]);
+// }
+
 public function updateTaskDate(Request $request)
 {
     $task = Task::find($request->id);
+
+    // ❌ Task not found
+    if (!$task) {
+        return response()->json(['success' => false], 404);
+    }
+
+    // ❌ Not owner
+    if (auth()->id() != $task->user_id) {
+        return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+    }
+
+    // ✅ Allowed
     $task->start_date = $request->start;
     $task->end_date = $request->end;
-    if ($request->color) $task->color = $request->color;
+
+    if ($request->color) {
+        $task->color = $request->color;
+    }
+
     $task->save();
 
     return response()->json(['success' => true]);
 }
 
+// public function updateTaskStatus(Request $request)
+// {
+//     $task = Task::find($request->id);
+
+//     if ($task) {
+//         $task->status = $request->status;
+//         $task->remarks = $request->remarks;
+//         $task->save();
+
+//         return response()->json(['success' => true]);
+//     }
+
+//     return response()->json(['success' => false], 404);
+// }
+
+
 public function updateTaskStatus(Request $request)
 {
     $task = Task::find($request->id);
 
-    if ($task) {
-        $task->status = $request->status;
-        $task->save();
-
-        return response()->json(['success' => true]);
+    // ❌ Task not found
+    if (!$task) {
+        return response()->json(['success' => false], 404);
     }
 
-    return response()->json(['success' => false], 404);
+    // ❌ Not owner
+    if (auth()->id() != $task->user_id) {
+        return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+    }
+
+    // ✅ Allowed
+    $task->status = $request->status;
+    $task->remarks = $request->remarks;
+    $task->save();
+
+    return response()->json(['success' => true]);
 }
 
 }
