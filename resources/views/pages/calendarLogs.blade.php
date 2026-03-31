@@ -18,14 +18,14 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <h3 class="card-title">TASK CALENDAR LOGS</h3>
+                                <h3 class="card-title">TICKET LOGS</h3>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
                                     <table id="example1" class="table table-striped" style="font-size:0.8rem;">
                                         <thead class="table-light">
                                             <tr>
-                                                <th>Task Logs</th>
+                                                <th>Logs</th>
                                                 <th>Date Time</th>
                                             </tr>
                                         </thead>
@@ -128,6 +128,7 @@
             </div>
         </div>
     </div>
+
 
     <!-- /.content-wrapper -->
     <footer class="main-footer">

@@ -369,7 +369,10 @@ public function updateTaskDate(Request $request)
     $old_end = $task->end_date;
 
     $task->start_date = $request->start;
-    $task->end_date = $request->end;
+    // $task->end_date = $request->end;
+    $task->end_date = $request->end 
+    ? Carbon::parse($request->end)->subDay() 
+    : $request->start;
     if ($request->color) $task->color = $request->color;
     $task->save();
 

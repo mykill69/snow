@@ -88,7 +88,7 @@
                                             <div class="card-body">
                                                 <div id="external-events">
                                                     @foreach ($tasks as $task)
-                                                        @if (!$task->start_date)
+                                                        @if (!$task->start_date && $task->user_id == auth()->id())
                                                             <div class="external-event" data-id="{{ $task->id }}"
                                                                 style="background-color: {{ $task->color ?? 'rgb(0, 115, 183)' }};
                                                             border-color: {{ $task->color ?? 'rgb(0, 115, 183)' }};
@@ -302,7 +302,7 @@
                                 remarks: '{{ $task->remarks }}', // ✅ ADD
                                 user: '{{ $task->user->fname }} {{ $task->user->lname }}',
                                 start: '{{ $task->start_date }}',
-                                end: '{{ $task->end_date }}',
+                                end: '{{ \Carbon\Carbon::parse($task->end_date)->addDay()->format('Y-m-d') }}',
                                 backgroundColor: '{{ $task->color ?? 'rgb(0, 115, 183)' }}',
                                 borderColor: '{{ $task->color ?? 'rgb(0, 115, 183)' }}'
                             },
