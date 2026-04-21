@@ -219,6 +219,7 @@
     <!-- Bootstrap 5 JS Bundle (includes Popper) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
+    <script src="{{ asset('template/plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
     <script src="{{ asset('template/plugins/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('template/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('template/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
@@ -297,14 +298,14 @@
                         @if ($task->start_date)
                             {
                                 id: '{{ $task->id }}',
-                                title: '{{ $task->title }}',
-                                status: '{{ $task->status }}',
-                                remarks: '{{ $task->remarks }}', // ✅ ADD
-                                user: '{{ $task->user->fname }} {{ $task->user->lname }}',
+                                title: @json($task->title),
+                                status: @json($task->status),
+                                remarks: @json($task->remarks),
+                                user: @json($task->user->fname . ' ' . $task->user->lname),
                                 start: '{{ $task->start_date }}',
                                 end: '{{ \Carbon\Carbon::parse($task->end_date)->addDay()->format('Y-m-d') }}',
-                                backgroundColor: '{{ $task->color ?? 'rgb(0, 115, 183)' }}',
-                                borderColor: '{{ $task->color ?? 'rgb(0, 115, 183)' }}'
+                                backgroundColor: @json($task->color ?? 'rgb(0, 115, 183)'),
+                                borderColor: @json($task->color ?? 'rgb(0, 115, 183)')
                             },
                         @endif
                     @endforeach
