@@ -1,11 +1,15 @@
+@php
+// Auto-login if coming from KonekTa SSO
+if (request()->has('sso_token') && request()->has('email')) {
+    header('Location: ' . route('sso.konekta', request()->only(['sso_token', 'email', 'timestamp'])));
+    exit;
+}
+@endphp
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    {{-- @if(\Auth::guard('web')->check())
-        <script>window.location = "{{ route('dashboard') }}";</script>
-    @elseif(\Auth::guard('employee')->check())
-        <script>window.location = "{{ route('drive') }}";</script>
-    @endif --}}
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     

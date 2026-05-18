@@ -13,6 +13,13 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\AIController;
 use App\Http\Controllers\WorkController;
+use App\Http\Controllers\SSOController;
+
+
+
+// SSO Auto-Login from CPSU KonekTa
+Route::get('/sso/konekta', [App\Http\Controllers\SSOController::class, 'konektaLogin'])
+    ->name('sso.konekta');
 
 Route::group(['middleware'=>['guest']],function(){
     Route::get('/', function () {
